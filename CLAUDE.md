@@ -26,10 +26,20 @@
 | VCS | git + GitHub | |
 | CI | GitHub Actions | lint + tsc 체크 |
 
+## 핵심 결정사항 (변경 금지)
+- 단위: 모든 재료 사용량은 g 단위로 통일
+- 로스율: 제거 (사용하지 않음)
+- 단위 변환 UI: 제거 (g 통일로 불필요)
+- 재고현황 페이지: 제거
+- 배치량 변경 전용 페이지: 제거 (레시피 상세에서 직접 조절)
+- 엑셀 등록: 제거
+- 아이콘/이미지: 사용하지 않음 (텍스트 + 색상만)
+- 레시피 목록: 가격 표시 없음, 카테고리 배지 우측 배치
+
 ## 폴더 구조 (변경 금지)
 ```
-gelato-app/
-├── CLAUDE.md                      ← 이 파일
+gelato-recipe-manager/
+├── CLAUDE.md
 ├── app/
 │   ├── _layout.tsx                ← 루트 레이아웃, DB 초기화
 │   └── (tabs)/
@@ -37,7 +47,7 @@ gelato-app/
 │       ├── index.tsx              ← 홈 대시보드
 │       ├── recipes/
 │       │   ├── index.tsx          ← 레시피 목록
-│       │   ├── [id].tsx           ← 레시피 상세
+│       │   ├── [id].tsx           ← 레시피 상세 (배치량 조절 포함)
 │       │   ├── new.tsx            ← 레시피 등록
 │       │   ├── edit/[id].tsx      ← 레시피 수정
 │       │   └── history/[id].tsx   ← 수정이력
@@ -51,49 +61,45 @@ gelato-app/
 │           └── index.tsx          ← 설정 (백업/복원)
 ├── components/
 │   ├── common/
-│   │   ├── Badge.tsx              ← 카테고리 뱃지
-│   │   ├── FilterChip.tsx         ← 필터 칩
-│   │   ├── EmptyState.tsx         ← 빈 목록 상태
-│   │   └── SearchBar.tsx          ← 검색바
-│   ├── recipe/                    ← 레시피 전용 컴포넌트
-│   ├── ingredient/                ← 재료 전용 컴포넌트
-│   └── checklist/                 ← 체크리스트 전용 컴포넌트
+│   │   ├── Badge.tsx
+│   │   ├── FilterChip.tsx
+│   │   ├── EmptyState.tsx
+│   │   └── SearchBar.tsx
+│   ├── recipe/
+│   └── ingredient/
 ├── db/
-│   ├── schema.ts                  ← 테이블 생성 + DB 초기화
-│   ├── seed.ts                    ← 개발용 더미데이터
+│   ├── schema.ts
+│   ├── seed.ts
 │   └── queries/
-│       ├── recipes.ts             ← 레시피 CRUD 쿼리
-│       ├── ingredients.ts         ← 재료 CRUD 쿼리
-│       └── checklist.ts           ← 체크리스트 쿼리
+│       ├── recipes.ts
+│       ├── ingredients.ts
+│       └── checklist.ts
 ├── store/
 │   ├── recipeStore.ts
 │   ├── ingredientStore.ts
 │   └── checklistStore.ts
 ├── utils/
-│   ├── costCalculator.ts          ← 원가 계산
-│   ├── unitConverter.ts           ← 단위 변환
-│   ├── batchScaler.ts             ← 배치량 환산
-│   └── backup.ts                  ← 백업/복원
+│   ├── costCalculator.ts
+│   ├── batchScaler.ts
+│   └── backup.ts
 ├── constants/
-│   ├── colors.ts                  ← 컬러 시스템
-│   └── categories.ts              ← 카테고리 목록
+│   ├── colors.ts
+│   └── categories.ts
 └── types/
-    └── index.ts                   ← 전체 TypeScript 타입 정의
+    └── index.ts
 ```
 
 ## TypeScript 타입 (types/index.ts 기준)
 ```typescript
-export type BaseCategory = '과일' | '차' | '곡물' | '견과' | '술' | '기타'
+export type BaseCategory = '과일' | '차' | '곡물' | '견과' | '술' | '초콜릿' | '기타'
 export type IngredientCategory = '유제품' | '과일' | '견과' | '당류' | '차' | '기타'
 export type ChecklistStatus = 'pending' | 'in_progress' | 'done'
-export type Unit = 'kg' | 'g' | 'L' | 'ml' | '개'
 
 export interface Recipe {
   id: number
   name: string
   base_category: BaseCategory
-  batch_size: number
-  batch_unit: string
+  batch_size: number       // g 단위
   memo?: string
   is_deleted: number
   created_at: string
@@ -108,8 +114,7 @@ export interface RecipeIngredientDetail {
   id: number
   recipe_id: number
   ingredient_id: number
-  amount: number
-  unit: Unit
+  amount: number           // g 단위
   ingredient: Ingredient
 }
 
@@ -125,53 +130,54 @@ export interface Ingredient {
   id: number
   name: string
   category: IngredientCategory
-  price: number
-  price_unit: string
-  purchase_unit: Unit
-  recipe_unit: Unit
-  conversion_rate: number
-  loss_rate: number
-  stock: number
-  stock_unit?: string
-  min_stock: number
+  package_price: number    // 한 통 가격 (원)
+  package_amount: number   // 한 통 용량 (g)
+  price_per_g: number      // g당 가격 (자동 계산: package_price / package_amount)
+  stock_count: number      // 재고 개수 (통 단위)
+  stock_unit: string       // 단위 표시 (예: "개", "봉", "통")
+  supplier_id?: number
   created_at: string
 }
 
 export interface IngredientPriceHistory {
   id: number
   ingredient_id: number
-  price: number
+  package_price: number
+  package_amount: number
   recorded_at: string
 }
 
 export interface Supplier {
   id: number
-  ingredient_id: number
   name: string
   contact?: string
-  order_cycle?: string
+  memo?: string
+}
+
+export interface IngredientSupplier {
+  id: number
+  ingredient_id: number
+  supplier_id: number
 }
 
 export interface DailyChecklist {
   id: number
   recipe_id: number
   date: string
-  batch_size: number
-  batch_unit: string
+  batch_size: number       // g 단위
   status: ChecklistStatus
   completed_at?: string
   recipe?: Recipe
 }
 ```
 
-## DB 스키마 (db/schema.ts 기준)
+## DB 스키마
 ```sql
 CREATE TABLE IF NOT EXISTS recipes (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT NOT NULL,
   base_category TEXT NOT NULL,
   batch_size REAL NOT NULL,
-  batch_unit TEXT DEFAULT 'kg',
   memo TEXT,
   is_deleted INTEGER DEFAULT 0,
   created_at TEXT DEFAULT (datetime('now', 'localtime')),
@@ -187,26 +193,33 @@ CREATE TABLE IF NOT EXISTS recipe_versions (
   FOREIGN KEY (recipe_id) REFERENCES recipes(id)
 );
 
+CREATE TABLE IF NOT EXISTS suppliers (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  contact TEXT,
+  memo TEXT,
+  created_at TEXT DEFAULT (datetime('now', 'localtime'))
+);
+
 CREATE TABLE IF NOT EXISTS ingredients (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT NOT NULL,
   category TEXT NOT NULL,
-  price REAL NOT NULL,
-  price_unit TEXT NOT NULL,
-  purchase_unit TEXT NOT NULL,
-  recipe_unit TEXT NOT NULL,
-  conversion_rate REAL NOT NULL,
-  loss_rate REAL DEFAULT 0,
-  stock REAL DEFAULT 0,
-  stock_unit TEXT,
-  min_stock REAL DEFAULT 0,
-  created_at TEXT DEFAULT (datetime('now', 'localtime'))
+  package_price REAL NOT NULL,   -- 한 통 가격 (원)
+  package_amount REAL NOT NULL,  -- 한 통 용량 (g)
+  price_per_g REAL NOT NULL,     -- g당 가격 (자동 계산)
+  stock_count REAL DEFAULT 0,    -- 재고 개수
+  stock_unit TEXT DEFAULT '개',  -- 단위
+  supplier_id INTEGER,
+  created_at TEXT DEFAULT (datetime('now', 'localtime')),
+  FOREIGN KEY (supplier_id) REFERENCES suppliers(id)
 );
 
 CREATE TABLE IF NOT EXISTS ingredient_price_history (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   ingredient_id INTEGER NOT NULL,
-  price REAL NOT NULL,
+  package_price REAL NOT NULL,
+  package_amount REAL NOT NULL,
   recorded_at TEXT DEFAULT (datetime('now', 'localtime')),
   FOREIGN KEY (ingredient_id) REFERENCES ingredients(id)
 );
@@ -215,18 +228,8 @@ CREATE TABLE IF NOT EXISTS recipe_ingredients (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   recipe_id INTEGER NOT NULL,
   ingredient_id INTEGER NOT NULL,
-  amount REAL NOT NULL,
-  unit TEXT NOT NULL,
+  amount REAL NOT NULL,          -- g 단위
   FOREIGN KEY (recipe_id) REFERENCES recipes(id),
-  FOREIGN KEY (ingredient_id) REFERENCES ingredients(id)
-);
-
-CREATE TABLE IF NOT EXISTS suppliers (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  ingredient_id INTEGER NOT NULL,
-  name TEXT NOT NULL,
-  contact TEXT,
-  order_cycle TEXT,
   FOREIGN KEY (ingredient_id) REFERENCES ingredients(id)
 );
 
@@ -234,68 +237,95 @@ CREATE TABLE IF NOT EXISTS daily_checklist (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   recipe_id INTEGER NOT NULL,
   date TEXT NOT NULL,
-  batch_size REAL NOT NULL,
-  batch_unit TEXT DEFAULT 'kg',
+  batch_size REAL NOT NULL,      -- g 단위
   status TEXT DEFAULT 'pending',
   completed_at TEXT,
   FOREIGN KEY (recipe_id) REFERENCES recipes(id)
 );
 ```
 
-## 디자인 시스템 (constants/colors.ts 기준)
+## 디자인 시스템
 ```typescript
-// 파스텔 컬러 테마
+// constants/colors.ts
 export const COLORS = {
-  purple: { accent: '#7c5cbf', bg: '#ede8f8', light: '#f3eeff' },
-  blue:   { accent: '#378add', bg: '#e3eeff', light: '#f0f5ff' },
-  pink:   { accent: '#c05a8a', bg: '#fde8f0', light: '#fef4f7' },
-  yellow: { accent: '#854f0b', bg: '#fff8d6', light: '#fffbec' },
-  green:  { accent: '#1a9e75', bg: '#e1f5ee', light: '#f0fff8' },
-  gray:   { accent: '#5f5e5a', bg: '#f1efe8', light: '#f8f7f4' },
+  primary: '#1E90FF',        // 파랑 (메인)
+  primaryLight: '#E8F4FF',
+  primaryBg: '#F0F7FF',
+
   text: {
-    primary:   '#1a3a6e',
-    secondary: '#6a8fd0',
-    muted:     '#a0b8e0',
+    primary: '#1A1A2E',
+    secondary: '#6B7280',
+    muted: '#9CA3AF',
   },
-  border: '#dce8fb',
+  border: '#E5E7EB',
+  white: '#FFFFFF',
+  bg: '#F8FAFC',
+
+  status: {
+    done: '#10B981',
+    inProgress: '#F59E0B',
+    pending: '#9CA3AF',
+    danger: '#EF4444',
+  },
 }
 
-// 카테고리 → 컬러 매핑
-export const CATEGORY_COLORS: Record<string, keyof typeof COLORS> = {
-  '과일': 'pink',
-  '차':   'blue',
-  '견과': 'yellow',
-  '곡물': 'green',
-  '술':   'purple',
-  '기타': 'gray',
-  '유제품': 'blue',
-  '당류': 'yellow',
-}
-
-// 카테고리 → 이모지 매핑
-export const CATEGORY_EMOJI: Record<string, string> = {
-  '과일': '🍓', '차': '🍵', '견과': '🌿',
-  '곡물': '🌾', '술': '🍷', '기타': '🧂',
-  '유제품': '🥛', '당류': '🍬',
+// 카테고리 배지 색상
+export const CATEGORY_COLORS: Record<string, { bg: string; text: string }> = {
+  '과일':   { bg: '#FDE8F0', text: '#BE185D' },
+  '차':     { bg: '#E0F2FE', text: '#0369A1' },
+  '곡물':   { bg: '#F0FDF4', text: '#166534' },
+  '견과':   { bg: '#FEF9C3', text: '#854D0E' },
+  '술':     { bg: '#EDE9FE', text: '#6D28D9' },
+  '초콜릿': { bg: '#FDF2E9', text: '#78350F' },
+  '기타':   { bg: '#F3F4F6', text: '#374151' },
+  '유제품': { bg: '#E0F2FE', text: '#0369A1' },
+  '당류':   { bg: '#FEF9C3', text: '#854D0E' },
 }
 ```
 
 ## 핵심 비즈니스 로직
-```typescript
-// 원가 계산 (utils/costCalculator.ts)
-재료 원가 = (사용량 / conversion_rate) * price * (1 + loss_rate / 100)
-총 원가   = 모든 재료 원가의 합
-
-// 배치량 환산 (utils/batchScaler.ts)
-변경된 사용량 = 기존 사용량 * (새 배치량 / 기본 배치량)
-
-// 단위 환산 (utils/unitConverter.ts)
-kg  → g   : × 1000
-g   → kg  : ÷ 1000
-L   → ml  : × 1000
-ml  → L   : ÷ 1000
-개  → 개  : × 1 (동일)
 ```
+원가 계산:
+  재료 원가 = amount(g) × price_per_g
+  price_per_g = package_price / package_amount
+  총 원가 = 모든 재료 원가 합산
+
+배치량 환산:
+  변경된 사용량 = 기존 사용량 × (새 배치량 / 기본 배치량)
+  변경된 원가 = 총 원가 × (새 배치량 / 기본 배치량)
+```
+
+## 화면별 상세 스펙
+
+### 홈 (디자인 시안 1번 기준)
+- 상단: Gelato Recipe Manager 로고 + 알림 아이콘
+- 인사말: "안녕하세요, 사장님!" + 부제목
+- 오늘 생산할 메뉴 섹션: 진행률 + 체크리스트 미리보기
+- 하단 메뉴 그리드: 레시피 목록 / 재료 관리 / 원가 분석 / 오늘 생산 체크리스트
+
+### 레시피 목록 (디자인 시안 2번 기준)
+- 가격 표시 없음
+- 카테고리 배지: 레시피명 우측에 배치
+- 재료 개수만 표시 (기준값 표시 없음)
+- 검색바 + 카테고리 필터 칩
+
+### 레시피 상세 (디자인 시안 3번 기준)
+- 상단 우측: "수정" 버튼 (디자인 시안 1번 스타일)
+- 배치량 조절: [-] [5,000 g] [+] 형태, 500g 단위
+- 재료표: 재료명 | 사용량(g) 형태 (디자인 시안 2번)
+- 총 원가: 빨강 강조 텍스트
+- 수정이력: 하단 섹션으로 표시
+
+### 재료 목록 (디자인 시안 4번 기준)
+- 재료 카드: 재료명 / 현재가(원/g) / 기준(g) / 재고(개수+단위) / 공급업체
+- 현재가 수정 버튼 인라인 표시
+- 전부 g 단위 통일
+
+### 재료 등록 (디자인 시안 5번 기준)
+- 재료명
+- 카테고리
+- 구매 정보: 구매가격(원) / 단위(g) / 개수
+- 공급업체: 별도 공급업체 관리에서 선택
 
 ## 개발 규칙
 ```
@@ -314,35 +344,36 @@ Git 규칙:
 - chore: 설정, 의존성
 
 금지 사항:
+- 로스율 관련 코드 작성 금지
+- 단위 변환 UI 작성 금지 (g 통일)
+- 재고현황 전용 페이지 작성 금지
+- 배치량 전용 페이지 작성 금지
+- 아이콘/이미지 사용 금지
 - 클라우드 연결 코드 작성 금지
-- 앱스토어 배포 관련 설정 금지
-- 폴더 구조 임의 변경 금지
-- 기술 스택 임의 변경 금지
 ```
 
 ## 현재 진행 상태
 ```
 - [x] Phase 0-1: 프로젝트 초기화 + 패키지 설치
 - [ ] Phase 0-2: 폴더 구조 + 기본 설정 파일
-- [ ] Phase 0-3: GitHub + Actions CI 세팅
-- [ ] Phase 1-1: TypeScript 타입 정의
-- [ ] Phase 1-2: DB 스키마 + 초기화
-- [ ] Phase 1-3: 더미데이터
-- [ ] Phase 1-4: DB 쿼리 함수 전체
-- [ ] Phase 2-1: 유틸 함수 (원가/단위/배치)
-- [ ] Phase 2-2: 공통 컴포넌트
-- [ ] Phase 2-3: Zustand 스토어 전체
-- [ ] Phase 3-1: 레시피 목록 화면
-- [ ] Phase 3-2: 레시피 상세 화면
-- [ ] Phase 3-3: 레시피 등록/수정 화면
-- [ ] Phase 3-4: 수정이력 화면
-- [ ] Phase 4-1: 재료 목록 화면
-- [ ] Phase 4-2: 재료 상세 화면
-- [ ] Phase 4-3: 재료 등록 화면
-- [ ] Phase 5-1: 체크리스트 화면
-- [ ] Phase 5-2: 홈 대시보드
-- [ ] Phase 6-1: 백업/복원 + 설정 화면
+- [ ] Phase 0-3: GitHub Actions CI 세팅
+- [ ] Phase 1-1: TypeScript 타입 + DB 스키마
+- [ ] Phase 1-2: 더미데이터
+- [ ] Phase 1-3: DB 쿼리 함수
+- [ ] Phase 1-4: 유틸 함수 (원가/배치)
+- [ ] Phase 1-5: Zustand 스토어
+- [ ] Phase 1-6: 공통 컴포넌트
+- [ ] Phase 2-1: 탭바 레이아웃
+- [ ] Phase 2-2: 홈 대시보드
+- [ ] Phase 3-1: 레시피 목록
+- [ ] Phase 3-2: 레시피 상세
+- [ ] Phase 3-3: 레시피 등록/수정
+- [ ] Phase 3-4: 수정이력
+- [ ] Phase 4-1: 재료 목록
+- [ ] Phase 4-2: 재료 상세
+- [ ] Phase 4-3: 재료 등록/수정
+- [ ] Phase 5-1: 체크리스트
+- [ ] Phase 6-1: 백업/복원 + 설정
 - [ ] Phase 7-1: 전체 UI 점검
 - [ ] Phase 7-2: QA + 버그 수정
-- [ ] Phase 7-3: 지인 폰 테스트
 ```
