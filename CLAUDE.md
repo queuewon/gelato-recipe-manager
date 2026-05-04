@@ -357,7 +357,7 @@ Git 규칙:
 - [x] Phase 0-1: 프로젝트 초기화 + 패키지 설치
 - [x] Phase 0-2: 폴더 구조 + 기본 설정 파일
 - [x] Phase 0-3: GitHub Actions CI 세팅
-- [ ] Phase 1-1: TypeScript 타입 + DB 스키마
+- [x] Phase 1-1: TypeScript 타입 + DB 스키마
 - [ ] Phase 1-2: 더미데이터
 - [ ] Phase 1-3: DB 쿼리 함수
 - [ ] Phase 1-4: 유틸 함수 (원가/배치)
