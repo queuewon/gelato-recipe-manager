@@ -322,7 +322,7 @@ Git 규칙:
 
 ## 현재 진행 상태
 ```
-- [ ] Phase 0-1: 프로젝트 초기화 + 패키지 설치
+- [x] Phase 0-1: 프로젝트 초기화 + 패키지 설치
 - [ ] Phase 0-2: 폴더 구조 + 기본 설정 파일
 - [ ] Phase 0-3: GitHub + Actions CI 세팅
 - [ ] Phase 1-1: TypeScript 타입 정의
