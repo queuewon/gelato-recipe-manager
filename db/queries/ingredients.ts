@@ -189,6 +189,29 @@ export async function updateStock(
   }
 }
 
+export async function deleteIngredient(id: number): Promise<void> {
+  try {
+    const db = await getDB()
+    const used = await db.getFirstAsync<{ count: number }>(
+      'SELECT COUNT(*) AS count FROM recipe_ingredients WHERE ingredient_id = ?',
+      id,
+    )
+    if ((used?.count ?? 0) > 0) {
+      throw new Error('이 재료를 사용 중인 레시피가 있어 삭제할 수 없어요')
+    }
+    await db.withTransactionAsync(async () => {
+      await db.runAsync(
+        'DELETE FROM ingredient_price_history WHERE ingredient_id = ?',
+        id,
+      )
+      await db.runAsync('DELETE FROM ingredients WHERE id = ?', id)
+    })
+  } catch (e) {
+    console.error('[ingredients] deleteIngredient failed:', e)
+    throw e
+  }
+}
+
 export async function getAllSuppliers(): Promise<Supplier[]> {
   try {
     const db = await getDB()

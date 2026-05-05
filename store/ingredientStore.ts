@@ -28,6 +28,7 @@ interface IngredientState {
     id: number,
     data: Partial<Omit<Ingredient, 'price_per_g'>>,
   ) => Promise<void>
+  deleteIngredient: (id: number) => Promise<void>
   updateStock: (id: number, stock_count: number) => Promise<void>
   loadSuppliers: () => Promise<void>
   createSupplier: (data: Omit<Supplier, 'id' | 'created_at'>) => Promise<number>
@@ -88,6 +89,20 @@ export const useIngredientStore = create<IngredientState>()((set, get) => ({
         current && current.id === id
           ? await ingredientsDB.getIngredientById(id)
           : current
+      set({ ingredients, selectedIngredient, isLoading: false })
+    } catch (e) {
+      set({ error: toMessage(e), isLoading: false })
+      throw e
+    }
+  },
+
+  deleteIngredient: async (id) => {
+    set({ isLoading: true, error: null })
+    try {
+      await ingredientsDB.deleteIngredient(id)
+      const ingredients = await ingredientsDB.getAllIngredients()
+      const current = get().selectedIngredient
+      const selectedIngredient = current && current.id === id ? null : current
       set({ ingredients, selectedIngredient, isLoading: false })
     } catch (e) {
       set({ error: toMessage(e), isLoading: false })
