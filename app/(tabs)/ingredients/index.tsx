@@ -41,7 +41,7 @@ export default function IngredientsIndex(): JSX.Element {
   }, [ingredients, filter, search])
 
   return (
-    <View className="flex-1 bg-white">
+    <View className="flex-1 bg-[#F8FAFC]">
       <View className="flex-row items-center justify-between px-5 pb-2 pt-4">
         <Text className="text-2xl font-bold text-gray-900">재료 관리</Text>
         <Pressable
@@ -95,7 +95,7 @@ export default function IngredientsIndex(): JSX.Element {
           return (
             <Pressable
               onPress={() => router.push(`/ingredients/${item.id}`)}
-              className="flex-row items-center rounded-2xl border border-gray-200 bg-white p-4"
+              className="flex-row items-center rounded-xl border border-gray-200 bg-white p-4"
             >
               <View className="flex-1">
                 <Text className="text-base font-semibold text-gray-900">

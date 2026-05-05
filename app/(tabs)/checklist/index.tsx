@@ -121,7 +121,7 @@ export default function Checklist(): JSX.Element {
   }
 
   return (
-    <View className="flex-1 bg-white">
+    <View className="flex-1 bg-[#F8FAFC]">
       <View className="px-5 pb-4 pt-4">
         <Text className="text-2xl font-bold text-gray-900">
           오늘 생산할 메뉴
@@ -129,7 +129,7 @@ export default function Checklist(): JSX.Element {
         <Text className="mt-1 text-sm text-gray-500">{today}</Text>
       </View>
 
-      <View className="mx-5 mb-4 rounded-2xl border border-gray-200 p-4">
+      <View className="mx-5 mb-4 rounded-xl border border-gray-200 p-4">
         <View className="flex-row items-center justify-between">
           <Text className="text-sm font-medium text-gray-700">진행률</Text>
           <Text className="text-sm text-gray-500">
@@ -163,7 +163,7 @@ export default function Checklist(): JSX.Element {
                 void updateStatus(item.id, nextStatus(item.status))
               }}
               onLongPress={() => handleLongPress(item.id, item.recipe.name)}
-              className="flex-row items-center justify-between rounded-2xl border border-gray-200 bg-white p-4"
+              className="flex-row items-center justify-between rounded-xl border border-gray-200 bg-white p-4"
             >
               <View className="flex-1 flex-row items-center">
                 <View
@@ -223,7 +223,7 @@ export default function Checklist(): JSX.Element {
         onRequestClose={closeModal}
       >
         <KeyboardAvoidingView
-          className="flex-1 bg-white"
+          className="flex-1 bg-[#F8FAFC]"
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         >
           <View className="flex-row items-center justify-between border-b border-gray-200 px-5 py-4">

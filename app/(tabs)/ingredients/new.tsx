@@ -166,7 +166,7 @@ export default function IngredientForm(): JSX.Element {
 
   return (
     <KeyboardAvoidingView
-      className="flex-1 bg-white"
+      className="flex-1 bg-[#F8FAFC]"
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <View className="flex-row items-center justify-between px-5 pb-2 pt-4">

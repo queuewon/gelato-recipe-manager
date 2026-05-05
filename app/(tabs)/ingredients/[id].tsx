@@ -47,7 +47,7 @@ export default function IngredientDetail(): JSX.Element {
 
   if (!selectedIngredient || selectedIngredient.id !== ingredientId) {
     return (
-      <View className="flex-1 bg-white">
+      <View className="flex-1 bg-[#F8FAFC]">
         <View className="flex-row items-center px-5 pb-2 pt-4">
           <Pressable onPress={() => router.back()}>
             <Text className="text-base text-gray-700">← 뒤로</Text>
@@ -106,7 +106,7 @@ export default function IngredientDetail(): JSX.Element {
   }
 
   return (
-    <View className="flex-1 bg-white">
+    <View className="flex-1 bg-[#F8FAFC]">
       {/* Top Nav */}
       <View className="flex-row items-center justify-between px-5 pb-2 pt-4">
         <Pressable onPress={() => router.back()}>
@@ -135,7 +135,7 @@ export default function IngredientDetail(): JSX.Element {
         </View>
 
         {/* Current Info */}
-        <View className="mx-5 mb-5 rounded-2xl border border-gray-200">
+        <View className="mx-5 mb-5 rounded-xl border border-gray-200">
           <InfoRow
             label="현재가"
             value={`${Math.round(ing.package_price).toLocaleString()}원 / ${ing.package_amount.toLocaleString()}g`}
@@ -171,7 +171,7 @@ export default function IngredientDetail(): JSX.Element {
               </Text>
             </View>
           ) : (
-            <View className="overflow-hidden rounded-2xl border border-gray-200">
+            <View className="overflow-hidden rounded-xl border border-gray-200">
               {ing.priceHistory.map((h, i, arr) => {
                 const older = i + 1 < arr.length ? arr[i + 1] : null
                 const delta = older ? h.package_price - older.package_price : 0

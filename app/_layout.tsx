@@ -1,10 +1,11 @@
 import { Stack } from 'expo-router'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type JSX } from 'react'
 import { ActivityIndicator, Text, View } from 'react-native'
+import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { initDB } from '../db/schema'
 import '../global.css'
 
-export default function RootLayout() {
+export default function RootLayout(): JSX.Element {
   const [ready, setReady] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -25,7 +26,7 @@ export default function RootLayout() {
 
   if (error) {
     return (
-      <View className="flex-1 items-center justify-center bg-white px-6">
+      <View className="flex-1 items-center justify-center bg-[#F8FAFC] px-6">
         <Text className="text-base text-red-600">DB 초기화 실패: {error}</Text>
       </View>
     )
@@ -33,11 +34,15 @@ export default function RootLayout() {
 
   if (!ready) {
     return (
-      <View className="flex-1 items-center justify-center bg-white">
+      <View className="flex-1 items-center justify-center bg-[#F8FAFC]">
         <ActivityIndicator />
       </View>
     )
   }
 
-  return <Stack screenOptions={{ headerShown: false }} />
+  return (
+    <SafeAreaProvider>
+      <Stack screenOptions={{ headerShown: false }} />
+    </SafeAreaProvider>
+  )
 }

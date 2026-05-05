@@ -62,7 +62,7 @@ export default function RecipeDetail(): JSX.Element {
 
   if (!selectedRecipe || selectedRecipe.id !== recipeId) {
     return (
-      <View className="flex-1 bg-white">
+      <View className="flex-1 bg-[#F8FAFC]">
         <View className="flex-row items-center justify-between px-5 pb-2 pt-4">
           <Pressable onPress={() => router.back()}>
             <Text className="text-base text-gray-700">← 뒤로가기</Text>
@@ -80,7 +80,7 @@ export default function RecipeDetail(): JSX.Element {
 
   return (
     <ScrollView
-      className="flex-1 bg-white"
+      className="flex-1 bg-[#F8FAFC]"
       contentContainerStyle={{ paddingBottom: 32 }}
     >
       {/* Top Nav */}
@@ -113,7 +113,7 @@ export default function RecipeDetail(): JSX.Element {
       </View>
 
       {/* Batch Size Adjuster */}
-      <View className="mx-5 mb-5 rounded-2xl border border-gray-200 p-4">
+      <View className="mx-5 mb-5 rounded-xl border border-gray-200 p-4">
         <Text className="text-sm text-gray-500">배치량 조절 (g)</Text>
         <View className="mt-3 flex-row items-center justify-center">
           <Pressable
@@ -137,7 +137,7 @@ export default function RecipeDetail(): JSX.Element {
       </View>
 
       {/* Ingredients Table */}
-      <View className="mx-5 mb-5 overflow-hidden rounded-2xl border border-gray-200">
+      <View className="mx-5 mb-5 overflow-hidden rounded-xl border border-gray-200">
         <View className="flex-row border-b border-gray-200 bg-gray-50 px-4 py-3">
           <Text className="flex-1 text-xs font-semibold text-gray-500">
             재료명
@@ -166,7 +166,7 @@ export default function RecipeDetail(): JSX.Element {
       </View>
 
       {/* Total Cost */}
-      <View className="mx-5 mb-6 flex-row items-center justify-between rounded-2xl bg-gray-50 px-4 py-4">
+      <View className="mx-5 mb-6 flex-row items-center justify-between rounded-xl bg-gray-50 px-4 py-4">
         <Text className="text-sm font-medium text-gray-700">총 원가</Text>
         <Text className="text-lg font-bold text-[#EF4444]">
           {Math.round(scaledTotalCost).toLocaleString()}원
@@ -188,7 +188,7 @@ export default function RecipeDetail(): JSX.Element {
             기록된 이력이 없어요
           </Text>
         ) : (
-          <View className="mt-3 overflow-hidden rounded-2xl border border-gray-200">
+          <View className="mt-3 overflow-hidden rounded-xl border border-gray-200">
             {versions.slice(0, 3).map((v, i, arr) => {
               const isLast = i === arr.length - 1
               return (

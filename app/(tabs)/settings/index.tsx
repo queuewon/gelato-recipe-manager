@@ -163,7 +163,7 @@ export default function Settings(): JSX.Element {
 
   return (
     <KeyboardAvoidingView
-      className="flex-1 bg-white"
+      className="flex-1 bg-[#F8FAFC]"
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 40 }}>

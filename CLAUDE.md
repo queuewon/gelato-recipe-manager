@@ -374,6 +374,6 @@ Git 규칙:
 - [x] Phase 4-3: 재료 등록/수정
 - [x] Phase 5-1: 체크리스트
 - [x] Phase 6-1: 백업/복원 + 설정
-- [ ] Phase 7-1: 전체 UI 점검
+- [x] Phase 7-1: 전체 UI 점검
 - [ ] Phase 7-2: QA + 버그 수정
 ```

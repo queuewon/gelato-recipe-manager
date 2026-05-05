@@ -44,7 +44,7 @@ function MenuCard({
     <Pressable
       onPress={disabled ? undefined : onPress}
       disabled={disabled}
-      className={`rounded-2xl border border-gray-200 bg-white p-4 ${
+      className={`rounded-xl border border-gray-200 bg-white p-4 ${
         disabled ? 'opacity-50' : ''
       }`}
       style={{ width: '48%' }}
@@ -72,7 +72,7 @@ export default function Home(): JSX.Element {
 
   return (
     <ScrollView
-      className="flex-1 bg-white"
+      className="flex-1 bg-[#F8FAFC]"
       contentContainerStyle={{ paddingBottom: 32 }}
     >
       {/* Header */}
@@ -95,7 +95,7 @@ export default function Home(): JSX.Element {
       </View>
 
       {/* Today Production */}
-      <View className="mx-5 mb-6 rounded-2xl border border-gray-200 bg-white p-4">
+      <View className="mx-5 mb-6 rounded-xl border border-gray-200 bg-white p-4">
         <View className="flex-row items-center justify-between">
           <Text className="text-base font-semibold text-gray-900">
             오늘 생산할 메뉴
