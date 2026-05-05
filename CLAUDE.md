@@ -363,7 +363,7 @@ Git 규칙:
 - [x] Phase 1-4: 유틸 함수 (원가/배치)
 - [x] Phase 1-5: Zustand 스토어
 - [x] Phase 1-6: 공통 컴포넌트
-- [ ] Phase 2-1: 탭바 레이아웃
+- [x] Phase 2-1: 탭바 레이아웃
 - [ ] Phase 2-2: 홈 대시보드
 - [ ] Phase 3-1: 레시피 목록
 - [ ] Phase 3-2: 레시피 상세
