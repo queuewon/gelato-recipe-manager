@@ -113,7 +113,7 @@ export default function IngredientDetail(): JSX.Element {
           <Text className="text-base text-gray-700">← 뒤로</Text>
         </Pressable>
         <Pressable
-          onPress={() => router.push(`/ingredients/new?id=${ingredientId}`)}
+          onPress={() => router.push(`/ingredients/new?edit=${ingredientId}`)}
           className="rounded-full bg-[#E8F4FF] px-4 py-2"
         >
           <Text className="text-sm font-medium text-[#1E90FF]">수정</Text>
