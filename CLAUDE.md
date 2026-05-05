@@ -360,7 +360,7 @@ Git 규칙:
 - [x] Phase 1-1: TypeScript 타입 + DB 스키마
 - [x] Phase 1-2: 더미데이터
 - [x] Phase 1-3: DB 쿼리 함수
-- [ ] Phase 1-4: 유틸 함수 (원가/배치)
+- [x] Phase 1-4: 유틸 함수 (원가/배치)
 - [x] Phase 1-5: Zustand 스토어
 - [ ] Phase 1-6: 공통 컴포넌트
 - [ ] Phase 2-1: 탭바 레이아웃
