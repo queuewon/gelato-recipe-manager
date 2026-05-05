@@ -239,6 +239,23 @@ export async function softDeleteRecipe(id: number): Promise<void> {
   }
 }
 
+export async function getRecipeIngredientCounts(): Promise<
+  Record<number, number>
+> {
+  try {
+    const db = await getDB()
+    const rows = await db.getAllAsync<{ recipe_id: number; count: number }>(
+      'SELECT recipe_id, COUNT(*) AS count FROM recipe_ingredients GROUP BY recipe_id',
+    )
+    const map: Record<number, number> = {}
+    for (const r of rows) map[r.recipe_id] = r.count
+    return map
+  } catch (e) {
+    console.error('[recipes] getRecipeIngredientCounts failed:', e)
+    throw e
+  }
+}
+
 export async function getRecipeVersions(
   recipeId: number,
 ): Promise<RecipeVersion[]> {

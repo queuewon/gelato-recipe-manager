@@ -13,6 +13,7 @@ interface RecipeIngredientInput {
 
 interface RecipeState {
   recipes: Recipe[]
+  ingredientCounts: Record<number, number>
   selectedRecipe: RecipeWithIngredients | null
   versions: RecipeVersion[]
   isLoading: boolean
@@ -38,8 +39,20 @@ function toMessage(e: unknown): string {
   return e instanceof Error ? e.message : String(e)
 }
 
+async function fetchListData(): Promise<{
+  recipes: Recipe[]
+  ingredientCounts: Record<number, number>
+}> {
+  const [recipes, ingredientCounts] = await Promise.all([
+    recipesDB.getAllRecipes(),
+    recipesDB.getRecipeIngredientCounts(),
+  ])
+  return { recipes, ingredientCounts }
+}
+
 export const useRecipeStore = create<RecipeState>()((set, get) => ({
   recipes: [],
+  ingredientCounts: {},
   selectedRecipe: null,
   versions: [],
   isLoading: false,
@@ -48,8 +61,8 @@ export const useRecipeStore = create<RecipeState>()((set, get) => ({
   loadRecipes: async () => {
     set({ isLoading: true, error: null })
     try {
-      const recipes = await recipesDB.getAllRecipes()
-      set({ recipes, isLoading: false })
+      const { recipes, ingredientCounts } = await fetchListData()
+      set({ recipes, ingredientCounts, isLoading: false })
     } catch (e) {
       set({ error: toMessage(e), isLoading: false })
     }
@@ -69,8 +82,8 @@ export const useRecipeStore = create<RecipeState>()((set, get) => ({
     set({ isLoading: true, error: null })
     try {
       const newId = await recipesDB.createRecipe(data, ingredients)
-      const recipes = await recipesDB.getAllRecipes()
-      set({ recipes, isLoading: false })
+      const { recipes, ingredientCounts } = await fetchListData()
+      set({ recipes, ingredientCounts, isLoading: false })
       return newId
     } catch (e) {
       set({ error: toMessage(e), isLoading: false })
@@ -82,13 +95,13 @@ export const useRecipeStore = create<RecipeState>()((set, get) => ({
     set({ isLoading: true, error: null })
     try {
       await recipesDB.updateRecipe(id, data, ingredients)
-      const recipes = await recipesDB.getAllRecipes()
+      const { recipes, ingredientCounts } = await fetchListData()
       const current = get().selectedRecipe
       const selectedRecipe =
         current && current.id === id
           ? await recipesDB.getRecipeById(id)
           : current
-      set({ recipes, selectedRecipe, isLoading: false })
+      set({ recipes, ingredientCounts, selectedRecipe, isLoading: false })
     } catch (e) {
       set({ error: toMessage(e), isLoading: false })
       throw e
@@ -99,10 +112,10 @@ export const useRecipeStore = create<RecipeState>()((set, get) => ({
     set({ isLoading: true, error: null })
     try {
       await recipesDB.softDeleteRecipe(id)
-      const recipes = await recipesDB.getAllRecipes()
+      const { recipes, ingredientCounts } = await fetchListData()
       const current = get().selectedRecipe
       const selectedRecipe = current && current.id === id ? null : current
-      set({ recipes, selectedRecipe, isLoading: false })
+      set({ recipes, ingredientCounts, selectedRecipe, isLoading: false })
     } catch (e) {
       set({ error: toMessage(e), isLoading: false })
       throw e
@@ -123,12 +136,19 @@ export const useRecipeStore = create<RecipeState>()((set, get) => ({
     set({ isLoading: true, error: null })
     try {
       await recipesDB.restoreRecipeVersion(versionId)
-      const [recipes, selectedRecipe, versions] = await Promise.all([
-        recipesDB.getAllRecipes(),
-        recipesDB.getRecipeById(recipeId),
-        recipesDB.getRecipeVersions(recipeId),
-      ])
-      set({ recipes, selectedRecipe, versions, isLoading: false })
+      const [{ recipes, ingredientCounts }, selectedRecipe, versions] =
+        await Promise.all([
+          fetchListData(),
+          recipesDB.getRecipeById(recipeId),
+          recipesDB.getRecipeVersions(recipeId),
+        ])
+      set({
+        recipes,
+        ingredientCounts,
+        selectedRecipe,
+        versions,
+        isLoading: false,
+      })
     } catch (e) {
       set({ error: toMessage(e), isLoading: false })
       throw e
