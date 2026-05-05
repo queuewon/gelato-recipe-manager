@@ -1,5 +1,5 @@
-import { useLocalSearchParams, useRouter } from 'expo-router'
-import { useEffect, useMemo, useState, type JSX } from 'react'
+import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router'
+import { useCallback, useEffect, useMemo, useRef, useState, type JSX } from 'react'
 import {
   ActivityIndicator,
   Pressable,
@@ -28,18 +28,22 @@ export default function RecipeDetail(): JSX.Element {
   const loadVersions = useRecipeStore((s) => s.loadVersions)
 
   const [batchSize, setBatchSize] = useState<number>(0)
+  const initializedForIdRef = useRef<number | null>(null)
+
+  useFocusEffect(
+    useCallback(() => {
+      if (Number.isFinite(recipeId)) {
+        void loadRecipeById(recipeId)
+        void loadVersions(recipeId)
+      }
+    }, [recipeId, loadRecipeById, loadVersions]),
+  )
 
   useEffect(() => {
-    if (Number.isFinite(recipeId)) {
-      void loadRecipeById(recipeId)
-      void loadVersions(recipeId)
-    }
-  }, [recipeId, loadRecipeById, loadVersions])
-
-  useEffect(() => {
-    if (selectedRecipe && selectedRecipe.id === recipeId) {
-      setBatchSize(selectedRecipe.batch_size)
-    }
+    if (!selectedRecipe || selectedRecipe.id !== recipeId) return
+    if (initializedForIdRef.current === recipeId) return
+    setBatchSize(selectedRecipe.batch_size)
+    initializedForIdRef.current = recipeId
   }, [selectedRecipe, recipeId])
 
   const baseBatch = selectedRecipe?.batch_size ?? 0
@@ -52,15 +56,14 @@ export default function RecipeDetail(): JSX.Element {
     return calcBatchCost(baseTotalCost, baseBatch, batchSize)
   }, [baseTotalCost, baseBatch, batchSize, selectedRecipe])
 
-  if (isLoading && !selectedRecipe) {
-    return (
-      <View className="flex-1 items-center justify-center bg-white">
-        <ActivityIndicator />
-      </View>
-    )
-  }
-
   if (!selectedRecipe || selectedRecipe.id !== recipeId) {
+    if (isLoading) {
+      return (
+        <View className="flex-1 items-center justify-center bg-[#F8FAFC]">
+          <ActivityIndicator />
+        </View>
+      )
+    }
     return (
       <View className="flex-1 bg-[#F8FAFC]">
         <View className="flex-row items-center justify-between px-5 pb-2 pt-4">
