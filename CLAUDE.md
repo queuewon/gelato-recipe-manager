@@ -359,7 +359,7 @@ Git 규칙:
 - [x] Phase 0-3: GitHub Actions CI 세팅
 - [x] Phase 1-1: TypeScript 타입 + DB 스키마
 - [x] Phase 1-2: 더미데이터
-- [ ] Phase 1-3: DB 쿼리 함수
+- [x] Phase 1-3: DB 쿼리 함수
 - [ ] Phase 1-4: 유틸 함수 (원가/배치)
 - [ ] Phase 1-5: Zustand 스토어
 - [ ] Phase 1-6: 공통 컴포넌트
