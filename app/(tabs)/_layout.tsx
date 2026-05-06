@@ -9,7 +9,7 @@ export default function TabsLayout(): JSX.Element {
         screenOptions={{
           tabBarActiveTintColor: '#1E90FF',
           tabBarInactiveTintColor: '#9CA3AF',
-          tabBarIconStyle: { display: 'none' },
+          tabBarIcon: () => null,
           tabBarLabelStyle: { fontSize: 13 },
           headerShown: false,
         }}
