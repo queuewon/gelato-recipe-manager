@@ -1,5 +1,5 @@
 // scripts/check-deps.mjs
-// 동일 누락-의존성 에러 재발 방지용 정적 검사
+// 동일 누락-의존성 에러 재발 방지용 정적 + 동적 검사
 //
 // 검사 항목:
 //   1) babel.config.js에서 참조하는 preset/plugin 패키지가
@@ -7,10 +7,14 @@
 //   2) 모든 *.ts/*.tsx/*.js/*.jsx/*.mjs 소스의 외부 import 가
 //      package.json 에 선언돼 있는가
 //   3) 선언된 모든 의존성이 node_modules 에 실제로 설치돼 있는가
+//   4) babel.config.js 의 preset/plugin 체인을 실제로 로드해보고
+//      전이적으로 필요한 plugin (예: nativewind → react-native-css-interop →
+//      "react-native-worklets/plugin") 까지 모두 resolve 되는가
 //
 // 실패 시 exit 1 → npm/yarn 의 prestart/postinstall 같은 스크립트 체인을
 // 자동으로 끊어주므로 Metro 번들링 단계 전에 즉시 알림.
 
+import { createRequire } from 'node:module'
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -137,5 +141,47 @@ if (notInstalled.length > 0) {
   console.error('  npm install --legacy-peer-deps')
 }
 
+// ---------- 4) babel preset/plugin 체인 실제 resolve ----------
+// preset 이 내부에서 require/string-reference 로 끌어오는 plugin (예: nativewind →
+// react-native-css-interop → "react-native-worklets/plugin") 은 정적 grep 으로
+// 잡히지 않는다. @babel/core 로 실제 로드해서 MODULE_NOT_FOUND 를 잡는다.
+const babelMissing = new Set()
+if (existsSync(join(ROOT, 'node_modules', '@babel', 'core', 'package.json'))) {
+  try {
+    const requireFromRoot = createRequire(join(ROOT, 'package.json'))
+    const babel = requireFromRoot('@babel/core')
+    babel.transformSync('const __probe = 1', {
+      filename: join(ROOT, '__check-deps-probe__.ts'),
+      configFile: existsSync(babelPath) ? babelPath : false,
+      babelrc: false,
+      presets: [],
+      plugins: [],
+      // configFile 의 preset 만으로 resolve 검증
+    })
+  } catch (err) {
+    const code = err && err.code
+    const msg = (err && err.message) || String(err)
+    if (code === 'MODULE_NOT_FOUND' || /Cannot find module/.test(msg)) {
+      const m = msg.match(/Cannot find module ['"]([^'"]+)['"]/)
+      if (m) babelMissing.add(rootPkg(m[1]))
+      else babelMissing.add('(unknown)')
+    } else {
+      // 다른 babel 에러는 부수효과로 무시 (probe 파일 transform 실패 등)
+      // 단, 미설치 module 에러가 아니면 그대로 던져 알린다
+      throw err
+    }
+  }
+}
+if (babelMissing.size > 0) {
+  failed = true
+  console.error(c.red('\n[check-deps] babel preset/plugin 체인이 요구하는 미설치 패키지:'))
+  for (const m of [...babelMissing].sort()) {
+    console.error('  - ' + c.yel(m))
+    console.error(c.dim('    (preset/plugin 이 transitive 하게 require)'))
+  }
+  console.error('\n' + c.yel('해결:'))
+  console.error('  npx expo install ' + [...babelMissing].join(' '))
+}
+
 if (failed) process.exit(1)
-console.log(c.grn('[check-deps] OK') + c.dim(` (의존성 ${declared.size}개, source 참조 ${sourceRefs.size}개)`))
+console.log(c.grn('[check-deps] OK') + c.dim(` (의존성 ${declared.size}개, source 참조 ${sourceRefs.size}개, babel resolve OK)`))
