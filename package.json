@@ -4,10 +4,12 @@
   "main": "expo-router/entry",
   "scripts": {
     "check-deps": "node scripts/check-deps.mjs",
-    "start": "node scripts/check-deps.mjs && expo start",
-    "android": "node scripts/check-deps.mjs && expo start --android",
-    "ios": "node scripts/check-deps.mjs && expo start --ios",
-    "web": "node scripts/check-deps.mjs && expo start --web",
+    "check-routes": "node scripts/check-routes.mjs",
+    "check": "node scripts/check-deps.mjs && node scripts/check-routes.mjs",
+    "start": "npm run check && expo start",
+    "android": "npm run check && expo start --android",
+    "ios": "npm run check && expo start --ios",
+    "web": "npm run check && expo start --web",
     "lint": "eslint . --ext .ts,.tsx",
     "typecheck": "tsc --noEmit",
     "verify": "node scripts/verify.mjs"
