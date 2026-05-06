@@ -141,6 +141,30 @@ if (notInstalled.length > 0) {
   console.error('  npm install --legacy-peer-deps')
 }
 
+// ---------- 4-5) expo-router 필수 peer dependency 설치 검사 ----------
+// expo-router 의 peerDependencies 중 optional 이 아닌 것은 npm이 자동 설치하지 않으므로
+// package.json 에 명시적으로 선언 + node_modules 에 설치돼 있어야 한다.
+// (expo-linking 누락으로 Metro 500 에러가 발생했던 사례 재발 방지)
+const CRITICAL_PEER_HOSTS = ['expo-router']
+for (const hostPkg of CRITICAL_PEER_HOSTS) {
+  const hostPkgPath = join(ROOT, 'node_modules', hostPkg, 'package.json')
+  if (!existsSync(hostPkgPath)) continue
+  const hostMeta = JSON.parse(readFileSync(hostPkgPath, 'utf8'))
+  const peerDeps = hostMeta.peerDependencies ?? {}
+  const optionalMeta = (hostMeta.peerDependenciesMeta ?? {})
+  for (const [peer] of Object.entries(peerDeps)) {
+    if (optionalMeta[peer]?.optional) continue
+    if (!existsSync(join(ROOT, 'node_modules', peer.split('/').slice(0, peer.startsWith('@') ? 2 : 1).join('/'), 'package.json'))) {
+      failed = true
+      console.error(c.red(`\n[check-deps] ${hostPkg} 의 필수 peer dependency 가 미설치:`))
+      console.error('  - ' + c.yel(peer))
+      console.error(c.dim(`  (${hostPkg}/package.json peerDependencies 에 선언됨)`))
+      console.error('\n' + c.yel('해결:'))
+      console.error('  npx expo install ' + peer)
+    }
+  }
+}
+
 // ---------- 4) babel preset/plugin 체인 실제 resolve ----------
 // preset 이 내부에서 require/string-reference 로 끌어오는 plugin (예: nativewind →
 // react-native-css-interop → "react-native-worklets/plugin") 은 정적 grep 으로
