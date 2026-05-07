@@ -11,7 +11,7 @@ import {
   TextInput,
   View,
 } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { EmptyState } from '../../../components/common/EmptyState'
 import { useChecklistStore } from '../../../store/checklistStore'
 import { useRecipeStore } from '../../../store/recipeStore'
@@ -63,6 +63,7 @@ export default function Checklist(): JSX.Element {
   const [pickedRecipe, setPickedRecipe] = useState<Recipe | null>(null)
   const [batchSize, setBatchSize] = useState('')
   const [submitting, setSubmitting] = useState(false)
+  const insets = useSafeAreaInsets()
 
   const today = useMemo(() => formatToday(), [])
 
@@ -223,12 +224,14 @@ export default function Checklist(): JSX.Element {
         animationType="slide"
         onRequestClose={closeModal}
       >
-        <SafeAreaView edges={['top']} className="bg-[#F8FAFC]" />
         <KeyboardAvoidingView
           className="flex-1 bg-[#F8FAFC]"
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         >
-          <View className="flex-row items-center justify-between border-b border-gray-200 px-5 py-4">
+          <View
+            className="flex-row items-center justify-between border-b border-gray-200 px-5 py-4"
+            style={{ paddingTop: insets.top + 16 }}
+          >
             <Text className="text-lg font-semibold text-gray-900">
               {pickedRecipe ? '배치량 입력' : '레시피 선택'}
             </Text>
