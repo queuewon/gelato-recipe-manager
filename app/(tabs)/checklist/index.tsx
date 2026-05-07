@@ -11,6 +11,7 @@ import {
   TextInput,
   View,
 } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import { EmptyState } from '../../../components/common/EmptyState'
 import { useChecklistStore } from '../../../store/checklistStore'
 import { useRecipeStore } from '../../../store/recipeStore'
@@ -222,6 +223,7 @@ export default function Checklist(): JSX.Element {
         animationType="slide"
         onRequestClose={closeModal}
       >
+        <SafeAreaView edges={['top']} className="bg-[#F8FAFC]" />
         <KeyboardAvoidingView
           className="flex-1 bg-[#F8FAFC]"
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}
