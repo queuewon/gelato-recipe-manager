@@ -12,9 +12,8 @@ import {
   View,
 } from 'react-native'
 import { FilterChip } from '../../../components/common/FilterChip'
-import { INGREDIENT_CATEGORIES } from '../../../constants/categories'
+import { useCategoryStore } from '../../../store/categoryStore'
 import { useIngredientStore } from '../../../store/ingredientStore'
-import type { IngredientCategory } from '../../../types'
 
 const STOCK_UNITS = ['개', '봉', '통'] as const
 type StockUnit = (typeof STOCK_UNITS)[number]
@@ -34,8 +33,12 @@ export default function IngredientForm(): JSX.Element {
   const updateIngredient = useIngredientStore((s) => s.updateIngredient)
   const createSupplier = useIngredientStore((s) => s.createSupplier)
 
+  const ingredientCategories = useCategoryStore((s) => s.ingredientCategories)
+  const addIngredientCategory = useCategoryStore((s) => s.addIngredientCategory)
+  const loadCategories = useCategoryStore((s) => s.loadCategories)
+
   const [name, setName] = useState('')
-  const [category, setCategory] = useState<IngredientCategory>('과일')
+  const [category, setCategory] = useState('')
   const [purchasePrice, setPurchasePrice] = useState('')
   const [unitG, setUnitG] = useState('')
   const [unitCount, setUnitCount] = useState('1')
@@ -43,6 +46,10 @@ export default function IngredientForm(): JSX.Element {
   const [stockUnit, setStockUnit] = useState<StockUnit>('개')
   const [supplierId, setSupplierId] = useState<number | null>(null)
   const [submitting, setSubmitting] = useState(false)
+
+  const [addingCat, setAddingCat] = useState(false)
+  const [newCatText, setNewCatText] = useState('')
+  const [addingCatBusy, setAddingCatBusy] = useState(false)
 
   const [supplierModalOpen, setSupplierModalOpen] = useState(false)
   const [supplierName, setSupplierName] = useState('')
@@ -53,11 +60,18 @@ export default function IngredientForm(): JSX.Element {
   const initializedRef = useRef(false)
 
   useEffect(() => {
+    void loadCategories()
     void loadSuppliers()
     if (editId !== null) {
       void loadIngredientById(editId)
     }
-  }, [editId, loadSuppliers, loadIngredientById])
+  }, [editId, loadCategories, loadSuppliers, loadIngredientById])
+
+  useEffect(() => {
+    if (category === '' && ingredientCategories.length > 0) {
+      setCategory(ingredientCategories[0])
+    }
+  }, [ingredientCategories, category])
 
   useEffect(() => {
     if (initializedRef.current) return
@@ -88,6 +102,22 @@ export default function IngredientForm(): JSX.Element {
     if (p <= 0 || u <= 0 || c <= 0) return null
     return p / (u * c)
   }, [purchasePrice, unitG, unitCount])
+
+  const handleAddCategory = async (): Promise<void> => {
+    const trimmed = newCatText.trim()
+    if (!trimmed) return
+    setAddingCatBusy(true)
+    try {
+      await addIngredientCategory(trimmed)
+      setCategory(trimmed)
+      setNewCatText('')
+      setAddingCat(false)
+    } catch (e) {
+      Alert.alert('추가 실패', e instanceof Error ? e.message : String(e))
+    } finally {
+      setAddingCatBusy(false)
+    }
+  }
 
   const handleSubmit = async (): Promise<void> => {
     if (!name.trim()) {
@@ -201,7 +231,7 @@ export default function IngredientForm(): JSX.Element {
           contentContainerStyle={{ gap: 8, paddingVertical: 4 }}
           className="mb-5"
         >
-          {INGREDIENT_CATEGORIES.map((cat) => (
+          {ingredientCategories.map((cat) => (
             <FilterChip
               key={cat}
               label={cat}
@@ -209,6 +239,38 @@ export default function IngredientForm(): JSX.Element {
               onPress={() => setCategory(cat)}
             />
           ))}
+          {addingCat ? (
+            <View className="flex-row items-center" style={{ gap: 6 }}>
+              <TextInput
+                value={newCatText}
+                onChangeText={setNewCatText}
+                placeholder="카테고리명"
+                placeholderTextColor="#9CA3AF"
+                autoFocus
+                className="rounded-2xl border border-[#1E90FF] bg-white px-3 py-1.5 text-sm text-gray-900"
+                style={{ minWidth: 80 }}
+              />
+              <Pressable
+                onPress={handleAddCategory}
+                disabled={addingCatBusy || !newCatText.trim()}
+                className="rounded-2xl bg-[#1E90FF] px-3 py-1.5"
+              >
+                <Text className="text-sm font-medium text-white">확인</Text>
+              </Pressable>
+              <Pressable
+                onPress={() => { setAddingCat(false); setNewCatText('') }}
+                className="rounded-2xl border border-gray-300 bg-white px-3 py-1.5"
+              >
+                <Text className="text-sm text-gray-600">취소</Text>
+              </Pressable>
+            </View>
+          ) : (
+            <FilterChip
+              label="+ 추가"
+              isActive={false}
+              onPress={() => setAddingCat(true)}
+            />
+          )}
         </ScrollView>
 
         {/* Purchase Info */}

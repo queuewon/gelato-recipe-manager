@@ -5,13 +5,8 @@ import { Badge } from '../../../components/common/Badge'
 import { EmptyState } from '../../../components/common/EmptyState'
 import { FilterChip } from '../../../components/common/FilterChip'
 import { SearchBar } from '../../../components/common/SearchBar'
-import { BASE_CATEGORIES } from '../../../constants/categories'
+import { useCategoryStore } from '../../../store/categoryStore'
 import { useRecipeStore } from '../../../store/recipeStore'
-import type { BaseCategory } from '../../../types'
-
-type FilterValue = '전체' | BaseCategory
-
-const FILTERS: FilterValue[] = ['전체', ...BASE_CATEGORIES]
 
 export default function RecipesIndex(): JSX.Element {
   const router = useRouter()
@@ -19,12 +14,16 @@ export default function RecipesIndex(): JSX.Element {
   const ingredientCounts = useRecipeStore((s) => s.ingredientCounts)
   const loadRecipes = useRecipeStore((s) => s.loadRecipes)
 
+  const recipeCategories = useCategoryStore((s) => s.recipeCategories)
+  const loadCategories = useCategoryStore((s) => s.loadCategories)
+
   const [search, setSearch] = useState('')
-  const [filter, setFilter] = useState<FilterValue>('전체')
+  const [filter, setFilter] = useState('전체')
 
   useEffect(() => {
     void loadRecipes()
-  }, [loadRecipes])
+    void loadCategories()
+  }, [loadRecipes, loadCategories])
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase()
@@ -56,7 +55,7 @@ export default function RecipesIndex(): JSX.Element {
       </View>
 
       <FlatList
-        data={FILTERS}
+        data={['전체', ...recipeCategories]}
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ paddingHorizontal: 20, gap: 8 }}

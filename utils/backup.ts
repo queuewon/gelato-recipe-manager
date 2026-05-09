@@ -1,7 +1,7 @@
 import type { SQLiteBindValue } from 'expo-sqlite'
 import * as FileSystem from 'expo-file-system/legacy'
 import * as Sharing from 'expo-sharing'
-import { getDB } from '../db/schema'
+import { getDB, seedDefaultCategories } from '../db/schema'
 
 const TABLES = [
   'recipes',
@@ -11,7 +11,12 @@ const TABLES = [
   'ingredient_price_history',
   'recipe_ingredients',
   'daily_checklist',
+  'recipe_categories',
+  'ingredient_categories',
 ] as const
+
+// Tables allowed to be missing in older backups
+const OPTIONAL_TABLES = new Set<string>(['recipe_categories', 'ingredient_categories'])
 
 const DELETE_ORDER = [
   'recipe_versions',
@@ -21,9 +26,13 @@ const DELETE_ORDER = [
   'ingredients',
   'suppliers',
   'recipes',
+  'recipe_categories',
+  'ingredient_categories',
 ] as const
 
 const RESTORE_ORDER = [
+  'recipe_categories',
+  'ingredient_categories',
   'recipes',
   'suppliers',
   'ingredients',
@@ -98,7 +107,7 @@ export async function importBackup(fileUri: string): Promise<void> {
       throw new Error('지원하지 않는 백업 파일 형식이에요')
     }
     for (const t of TABLES) {
-      if (!Array.isArray(parsed.data[t])) {
+      if (!OPTIONAL_TABLES.has(t) && !Array.isArray(parsed.data[t])) {
         throw new Error(`백업 파일에 '${t}' 테이블이 없어요`)
       }
     }
@@ -124,6 +133,9 @@ export async function importBackup(fileUri: string): Promise<void> {
         }
       }
     })
+
+    // Re-seed default categories if backup had none (old backup format)
+    await seedDefaultCategories(db)
   } catch (e) {
     console.error('[backup] importBackup failed:', e)
     throw e
@@ -138,6 +150,7 @@ export async function clearAllData(): Promise<void> {
         await db.runAsync(`DELETE FROM ${t}`)
       }
     })
+    await seedDefaultCategories(db)
   } catch (e) {
     console.error('[backup] clearAllData failed:', e)
     throw e

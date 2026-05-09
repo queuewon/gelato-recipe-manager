@@ -1,4 +1,8 @@
 import * as SQLite from 'expo-sqlite'
+import {
+  DEFAULT_RECIPE_CATEGORIES,
+  DEFAULT_INGREDIENT_CATEGORIES,
+} from '../constants/categories'
 
 const DB_NAME = 'gelato.db'
 
@@ -84,9 +88,48 @@ CREATE TABLE IF NOT EXISTS daily_checklist (
   completed_at TEXT,
   FOREIGN KEY (recipe_id) REFERENCES recipes(id)
 );
+
+CREATE TABLE IF NOT EXISTS recipe_categories (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS ingredient_categories (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL UNIQUE
+);
 `
+
+export async function seedDefaultCategories(
+  conn: SQLite.SQLiteDatabase,
+): Promise<void> {
+  const rc = await conn.getFirstAsync<{ count: number }>(
+    'SELECT COUNT(*) AS count FROM recipe_categories',
+  )
+  if ((rc?.count ?? 0) === 0) {
+    for (const name of DEFAULT_RECIPE_CATEGORIES) {
+      await conn.runAsync(
+        'INSERT OR IGNORE INTO recipe_categories (name) VALUES (?)',
+        name,
+      )
+    }
+  }
+
+  const ic = await conn.getFirstAsync<{ count: number }>(
+    'SELECT COUNT(*) AS count FROM ingredient_categories',
+  )
+  if ((ic?.count ?? 0) === 0) {
+    for (const name of DEFAULT_INGREDIENT_CATEGORIES) {
+      await conn.runAsync(
+        'INSERT OR IGNORE INTO ingredient_categories (name) VALUES (?)',
+        name,
+      )
+    }
+  }
+}
 
 export async function initDB(): Promise<void> {
   const conn = await getDB()
   await conn.execAsync(SCHEMA_SQL)
+  await seedDefaultCategories(conn)
 }

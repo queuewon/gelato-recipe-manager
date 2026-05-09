@@ -4,12 +4,8 @@ import { FlatList, Pressable, Text, View } from 'react-native'
 import { EmptyState } from '../../../components/common/EmptyState'
 import { FilterChip } from '../../../components/common/FilterChip'
 import { SearchBar } from '../../../components/common/SearchBar'
-import { INGREDIENT_CATEGORIES } from '../../../constants/categories'
+import { useCategoryStore } from '../../../store/categoryStore'
 import { useIngredientStore } from '../../../store/ingredientStore'
-import type { IngredientCategory } from '../../../types'
-
-type FilterValue = '전체' | IngredientCategory
-const FILTERS: FilterValue[] = ['전체', ...INGREDIENT_CATEGORIES]
 
 export default function IngredientsIndex(): JSX.Element {
   const router = useRouter()
@@ -18,13 +14,17 @@ export default function IngredientsIndex(): JSX.Element {
   const loadIngredients = useIngredientStore((s) => s.loadIngredients)
   const loadSuppliers = useIngredientStore((s) => s.loadSuppliers)
 
+  const ingredientCategories = useCategoryStore((s) => s.ingredientCategories)
+  const loadCategories = useCategoryStore((s) => s.loadCategories)
+
   const [search, setSearch] = useState('')
-  const [filter, setFilter] = useState<FilterValue>('전체')
+  const [filter, setFilter] = useState('전체')
 
   useEffect(() => {
     void loadIngredients()
     void loadSuppliers()
-  }, [loadIngredients, loadSuppliers])
+    void loadCategories()
+  }, [loadIngredients, loadSuppliers, loadCategories])
 
   const supplierNameMap = useMemo(
     () => new Map<number, string>(suppliers.map((s) => [s.id, s.name])),
@@ -61,7 +61,7 @@ export default function IngredientsIndex(): JSX.Element {
       </View>
 
       <FlatList
-        data={FILTERS}
+        data={['전체', ...ingredientCategories]}
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ paddingHorizontal: 20, gap: 8 }}
