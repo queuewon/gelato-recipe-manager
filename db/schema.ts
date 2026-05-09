@@ -2,6 +2,7 @@ import * as SQLite from 'expo-sqlite'
 import {
   DEFAULT_RECIPE_CATEGORIES,
   DEFAULT_INGREDIENT_CATEGORIES,
+  DEFAULT_PACKAGE_UNITS,
 } from '../constants/categories'
 
 const DB_NAME = 'gelato.db'
@@ -98,6 +99,11 @@ CREATE TABLE IF NOT EXISTS ingredient_categories (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT NOT NULL UNIQUE
 );
+
+CREATE TABLE IF NOT EXISTS package_units (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL UNIQUE
+);
 `
 
 export async function seedDefaultCategories(
@@ -122,6 +128,18 @@ export async function seedDefaultCategories(
     for (const name of DEFAULT_INGREDIENT_CATEGORIES) {
       await conn.runAsync(
         'INSERT OR IGNORE INTO ingredient_categories (name) VALUES (?)',
+        name,
+      )
+    }
+  }
+
+  const pu = await conn.getFirstAsync<{ count: number }>(
+    'SELECT COUNT(*) AS count FROM package_units',
+  )
+  if ((pu?.count ?? 0) === 0) {
+    for (const name of DEFAULT_PACKAGE_UNITS) {
+      await conn.runAsync(
+        'INSERT OR IGNORE INTO package_units (name) VALUES (?)',
         name,
       )
     }

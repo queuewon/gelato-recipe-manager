@@ -15,9 +15,6 @@ import { FilterChip } from '../../../components/common/FilterChip'
 import { useCategoryStore } from '../../../store/categoryStore'
 import { useIngredientStore } from '../../../store/ingredientStore'
 
-const STOCK_UNITS = ['개', '봉', '통'] as const
-type StockUnit = (typeof STOCK_UNITS)[number]
-
 export default function IngredientForm(): JSX.Element {
   const router = useRouter()
   const { edit } = useLocalSearchParams<{ edit?: string }>()
@@ -34,7 +31,10 @@ export default function IngredientForm(): JSX.Element {
   const createSupplier = useIngredientStore((s) => s.createSupplier)
 
   const ingredientCategories = useCategoryStore((s) => s.ingredientCategories)
+  const packageUnits = useCategoryStore((s) => s.packageUnits)
   const addIngredientCategory = useCategoryStore((s) => s.addIngredientCategory)
+  const addPackageUnit = useCategoryStore((s) => s.addPackageUnit)
+  const deletePackageUnit = useCategoryStore((s) => s.deletePackageUnit)
   const loadCategories = useCategoryStore((s) => s.loadCategories)
 
   const [name, setName] = useState('')
@@ -43,13 +43,18 @@ export default function IngredientForm(): JSX.Element {
   const [unitG, setUnitG] = useState('')
   const [unitCount, setUnitCount] = useState('1')
   const [stockCount, setStockCount] = useState('')
-  const [stockUnit, setStockUnit] = useState<StockUnit>('개')
+  const [stockUnit, setStockUnit] = useState<string>('개')
   const [supplierId, setSupplierId] = useState<number | null>(null)
   const [submitting, setSubmitting] = useState(false)
 
   const [addingCat, setAddingCat] = useState(false)
   const [newCatText, setNewCatText] = useState('')
   const [addingCatBusy, setAddingCatBusy] = useState(false)
+
+  const [addingUnit, setAddingUnit] = useState(false)
+  const [newUnitText, setNewUnitText] = useState('')
+  const [addingUnitBusy, setAddingUnitBusy] = useState(false)
+  const [editingUnits, setEditingUnits] = useState(false)
 
   const [supplierModalOpen, setSupplierModalOpen] = useState(false)
   const [supplierName, setSupplierName] = useState('')
@@ -74,6 +79,14 @@ export default function IngredientForm(): JSX.Element {
   }, [ingredientCategories, category])
 
   useEffect(() => {
+    if (editId !== null) return
+    if (packageUnits.length === 0) return
+    if (!packageUnits.includes(stockUnit)) {
+      setStockUnit(packageUnits[0])
+    }
+  }, [packageUnits, stockUnit, editId])
+
+  useEffect(() => {
     if (initializedRef.current) return
     if (editId === null) {
       initializedRef.current = true
@@ -86,8 +99,8 @@ export default function IngredientForm(): JSX.Element {
     setUnitG(String(selectedIngredient.package_amount))
     setUnitCount('1')
     setStockCount(String(selectedIngredient.stock_count))
-    if ((STOCK_UNITS as readonly string[]).includes(selectedIngredient.stock_unit)) {
-      setStockUnit(selectedIngredient.stock_unit as StockUnit)
+    if (selectedIngredient.stock_unit) {
+      setStockUnit(selectedIngredient.stock_unit)
     }
     setSupplierId(selectedIngredient.supplier_id ?? null)
     initializedRef.current = true
@@ -117,6 +130,48 @@ export default function IngredientForm(): JSX.Element {
     } finally {
       setAddingCatBusy(false)
     }
+  }
+
+  const handleAddUnit = async (): Promise<void> => {
+    const trimmed = newUnitText.trim()
+    if (!trimmed) return
+    setAddingUnitBusy(true)
+    try {
+      await addPackageUnit(trimmed)
+      setStockUnit(trimmed)
+      setNewUnitText('')
+      setAddingUnit(false)
+    } catch (e) {
+      Alert.alert('추가 실패', e instanceof Error ? e.message : String(e))
+    } finally {
+      setAddingUnitBusy(false)
+    }
+  }
+
+  const handleDeleteUnit = (unit: string): void => {
+    Alert.alert('단위 삭제', `'${unit}' 단위를 삭제할까요?`, [
+      { text: '취소', style: 'cancel' },
+      {
+        text: '삭제',
+        style: 'destructive',
+        onPress: () => {
+          void (async () => {
+            try {
+              await deletePackageUnit(unit)
+              if (stockUnit === unit) {
+                const remaining = packageUnits.filter((u) => u !== unit)
+                setStockUnit(remaining[0] ?? '')
+              }
+            } catch (e) {
+              Alert.alert(
+                '삭제 실패',
+                e instanceof Error ? e.message : String(e),
+              )
+            }
+          })()
+        },
+      },
+    ])
   }
 
   const handleSubmit = async (): Promise<void> => {
@@ -310,9 +365,80 @@ export default function IngredientForm(): JSX.Element {
               keyboardType="numeric"
               className="flex-1 text-right text-base text-gray-900"
             />
-            <Text className="ml-1 text-sm text-gray-500">개</Text>
+            <Text className="ml-1 text-sm text-gray-500">{stockUnit}</Text>
           </View>
         </View>
+        <View className="mt-2 flex-row items-center justify-between">
+          <Text className="text-xs text-gray-500">세는 단위</Text>
+          <Pressable
+            onPress={() => setEditingUnits((v) => !v)}
+            hitSlop={8}
+          >
+            <Text className="text-xs font-medium text-[#1E90FF]">
+              {editingUnits ? '완료' : '편집'}
+            </Text>
+          </Pressable>
+        </View>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ gap: 8, paddingVertical: 4 }}
+          className="mt-1"
+        >
+          {packageUnits.map((u) => (
+            <View key={u} className="flex-row items-center" style={{ gap: 4 }}>
+              <FilterChip
+                label={u}
+                isActive={stockUnit === u}
+                onPress={() => setStockUnit(u)}
+              />
+              {editingUnits ? (
+                <Pressable
+                  onPress={() => handleDeleteUnit(u)}
+                  hitSlop={6}
+                  className="h-5 w-5 items-center justify-center rounded-full bg-red-100"
+                >
+                  <Text className="text-xs font-bold text-red-500">×</Text>
+                </Pressable>
+              ) : null}
+            </View>
+          ))}
+          {addingUnit ? (
+            <View className="flex-row items-center" style={{ gap: 6 }}>
+              <TextInput
+                value={newUnitText}
+                onChangeText={setNewUnitText}
+                placeholder="단위명"
+                placeholderTextColor="#9CA3AF"
+                autoFocus
+                className="rounded-2xl border border-[#1E90FF] bg-white px-3 py-1.5 text-sm text-gray-900"
+                style={{ minWidth: 70 }}
+              />
+              <Pressable
+                onPress={handleAddUnit}
+                disabled={addingUnitBusy || !newUnitText.trim()}
+                className="rounded-2xl bg-[#1E90FF] px-3 py-1.5"
+              >
+                <Text className="text-sm font-medium text-white">확인</Text>
+              </Pressable>
+              <Pressable
+                onPress={() => {
+                  setAddingUnit(false)
+                  setNewUnitText('')
+                }}
+                className="rounded-2xl border border-gray-300 bg-white px-3 py-1.5"
+              >
+                <Text className="text-sm text-gray-600">취소</Text>
+              </Pressable>
+            </View>
+          ) : (
+            <FilterChip
+              label="+ 추가"
+              isActive={false}
+              onPress={() => setAddingUnit(true)}
+            />
+          )}
+        </ScrollView>
         <View className="mb-5 mt-1.5">
           {pricePerG !== null ? (
             <Text className="text-xs text-[#1E90FF]">
@@ -327,23 +453,16 @@ export default function IngredientForm(): JSX.Element {
 
         {/* Stock */}
         <Text className="mb-2 text-sm font-medium text-gray-700">재고</Text>
-        <TextInput
-          value={stockCount}
-          onChangeText={setStockCount}
-          placeholder="0"
-          placeholderTextColor="#9CA3AF"
-          keyboardType="numeric"
-          className="mb-2 rounded-xl border border-gray-200 bg-white px-4 py-3 text-base text-gray-900"
-        />
-        <View className="mb-5 flex-row" style={{ gap: 8 }}>
-          {STOCK_UNITS.map((u) => (
-            <FilterChip
-              key={u}
-              label={u}
-              isActive={stockUnit === u}
-              onPress={() => setStockUnit(u)}
-            />
-          ))}
+        <View className="mb-5 flex-row items-center rounded-xl border border-gray-200 bg-white px-4 py-3">
+          <TextInput
+            value={stockCount}
+            onChangeText={setStockCount}
+            placeholder="0"
+            placeholderTextColor="#9CA3AF"
+            keyboardType="numeric"
+            className="flex-1 text-base text-gray-900"
+          />
+          <Text className="ml-1 text-sm text-gray-500">{stockUnit}</Text>
         </View>
 
         {/* Supplier */}

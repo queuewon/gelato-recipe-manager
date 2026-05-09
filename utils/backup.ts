@@ -13,10 +13,15 @@ const TABLES = [
   'daily_checklist',
   'recipe_categories',
   'ingredient_categories',
+  'package_units',
 ] as const
 
 // Tables allowed to be missing in older backups
-const OPTIONAL_TABLES = new Set<string>(['recipe_categories', 'ingredient_categories'])
+const OPTIONAL_TABLES = new Set<string>([
+  'recipe_categories',
+  'ingredient_categories',
+  'package_units',
+])
 
 const DELETE_ORDER = [
   'recipe_versions',
@@ -28,11 +33,13 @@ const DELETE_ORDER = [
   'recipes',
   'recipe_categories',
   'ingredient_categories',
+  'package_units',
 ] as const
 
 const RESTORE_ORDER = [
   'recipe_categories',
   'ingredient_categories',
+  'package_units',
   'recipes',
   'suppliers',
   'ingredients',

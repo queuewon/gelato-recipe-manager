@@ -1,6 +1,7 @@
 import { useRouter } from 'expo-router'
 import { useEffect, useMemo, useState, type JSX } from 'react'
 import { FlatList, Pressable, Text, View } from 'react-native'
+import { Badge } from '../../../components/common/Badge'
 import { EmptyState } from '../../../components/common/EmptyState'
 import { FilterChip } from '../../../components/common/FilterChip'
 import { SearchBar } from '../../../components/common/SearchBar'
@@ -95,9 +96,9 @@ export default function IngredientsIndex(): JSX.Element {
           return (
             <Pressable
               onPress={() => router.push(`/ingredients/${item.id}`)}
-              className="flex-row items-center rounded-xl border border-gray-200 bg-white p-4"
+              className="flex-row items-start justify-between rounded-xl border border-gray-200 bg-white p-4"
             >
-              <View className="flex-1">
+              <View className="flex-1 pr-3">
                 <Text className="text-base font-semibold text-gray-900">
                   {item.name}
                 </Text>
@@ -125,7 +126,7 @@ export default function IngredientsIndex(): JSX.Element {
                   </Text>
                 ) : null}
               </View>
-              <Text className="ml-2 text-xl text-gray-400">›</Text>
+              <Badge label={item.category} category={item.category} />
             </Pressable>
           )
         }}

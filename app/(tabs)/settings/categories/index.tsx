@@ -31,6 +31,14 @@ export default function CategoriesIndex(): JSX.Element {
           <Text className="text-base text-gray-900">재료 카테고리</Text>
           <Text className="text-lg text-gray-400">›</Text>
         </Pressable>
+
+        <Pressable
+          onPress={() => router.push('/settings/categories/units')}
+          className="flex-row items-center justify-between rounded-xl border border-gray-200 bg-white px-4 py-3"
+        >
+          <Text className="text-base text-gray-900">포장 단위</Text>
+          <Text className="text-lg text-gray-400">›</Text>
+        </Pressable>
       </View>
     </View>
   )

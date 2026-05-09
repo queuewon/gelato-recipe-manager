@@ -74,3 +74,39 @@ export async function deleteIngredientCategory(name: string): Promise<void> {
     throw e
   }
 }
+
+export async function getAllPackageUnits(): Promise<string[]> {
+  try {
+    const db = await getDB()
+    const rows = await db.getAllAsync<{ name: string }>(
+      'SELECT name FROM package_units ORDER BY name',
+    )
+    return rows.map((r) => r.name)
+  } catch (e) {
+    console.error('[categories] getAllPackageUnits failed:', e)
+    throw e
+  }
+}
+
+export async function addPackageUnit(name: string): Promise<void> {
+  try {
+    const db = await getDB()
+    await db.runAsync(
+      'INSERT OR IGNORE INTO package_units (name) VALUES (?)',
+      name.trim(),
+    )
+  } catch (e) {
+    console.error('[categories] addPackageUnit failed:', e)
+    throw e
+  }
+}
+
+export async function deletePackageUnit(name: string): Promise<void> {
+  try {
+    const db = await getDB()
+    await db.runAsync('DELETE FROM package_units WHERE name = ?', name)
+  } catch (e) {
+    console.error('[categories] deletePackageUnit failed:', e)
+    throw e
+  }
+}

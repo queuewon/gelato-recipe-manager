@@ -5,3 +5,7 @@ export const DEFAULT_RECIPE_CATEGORIES: string[] = [
 export const DEFAULT_INGREDIENT_CATEGORIES: string[] = [
   '유제품', '과일', '견과', '당류', '차', '기타',
 ]
+
+export const DEFAULT_PACKAGE_UNITS: string[] = [
+  '개', '봉', '통',
+]
