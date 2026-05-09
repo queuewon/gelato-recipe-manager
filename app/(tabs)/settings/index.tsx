@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Constants from 'expo-constants'
 import * as DocumentPicker from 'expo-document-picker'
+import { useRouter } from 'expo-router'
 import { useEffect, useState, type JSX } from 'react'
 import {
   Alert,
@@ -13,6 +14,7 @@ import {
   View,
 } from 'react-native'
 import { useCategoryStore } from '../../../store/categoryStore'
+
 import { useChecklistStore } from '../../../store/checklistStore'
 import { useIngredientStore } from '../../../store/ingredientStore'
 import { useRecipeStore } from '../../../store/recipeStore'
@@ -36,20 +38,12 @@ async function reloadAllStores(): Promise<void> {
 }
 
 export default function Settings(): JSX.Element {
+  const router = useRouter()
   const [storeName, setStoreName] = useState('')
   const [storeNameSaved, setStoreNameSaved] = useState('')
   const [busy, setBusy] = useState(false)
 
-  const recipeCategories = useCategoryStore((s) => s.recipeCategories)
-  const ingredientCategories = useCategoryStore((s) => s.ingredientCategories)
   const loadCategories = useCategoryStore((s) => s.loadCategories)
-  const addRecipeCategory = useCategoryStore((s) => s.addRecipeCategory)
-  const addIngredientCategory = useCategoryStore((s) => s.addIngredientCategory)
-  const deleteRecipeCategory = useCategoryStore((s) => s.deleteRecipeCategory)
-  const deleteIngredientCategory = useCategoryStore((s) => s.deleteIngredientCategory)
-
-  const [newRecipeCat, setNewRecipeCat] = useState('')
-  const [newIngCat, setNewIngCat] = useState('')
 
   useEffect(() => {
     void loadCategories()
@@ -74,58 +68,6 @@ export default function Settings(): JSX.Element {
     } catch (e) {
       Alert.alert('저장 실패', e instanceof Error ? e.message : String(e))
     }
-  }
-
-  const handleAddRecipeCat = async (): Promise<void> => {
-    const trimmed = newRecipeCat.trim()
-    if (!trimmed) return
-    try {
-      await addRecipeCategory(trimmed)
-      setNewRecipeCat('')
-    } catch (e) {
-      Alert.alert('추가 실패', e instanceof Error ? e.message : String(e))
-    }
-  }
-
-  const handleAddIngCat = async (): Promise<void> => {
-    const trimmed = newIngCat.trim()
-    if (!trimmed) return
-    try {
-      await addIngredientCategory(trimmed)
-      setNewIngCat('')
-    } catch (e) {
-      Alert.alert('추가 실패', e instanceof Error ? e.message : String(e))
-    }
-  }
-
-  const handleDeleteRecipeCat = (name: string): void => {
-    Alert.alert('카테고리 삭제', `'${name}' 카테고리를 삭제할까요?`, [
-      { text: '취소', style: 'cancel' },
-      {
-        text: '삭제',
-        style: 'destructive',
-        onPress: () => {
-          void deleteRecipeCategory(name).catch((e) => {
-            Alert.alert('삭제 실패', e instanceof Error ? e.message : String(e))
-          })
-        },
-      },
-    ])
-  }
-
-  const handleDeleteIngCat = (name: string): void => {
-    Alert.alert('카테고리 삭제', `'${name}' 카테고리를 삭제할까요?`, [
-      { text: '취소', style: 'cancel' },
-      {
-        text: '삭제',
-        style: 'destructive',
-        onPress: () => {
-          void deleteIngredientCategory(name).catch((e) => {
-            Alert.alert('삭제 실패', e instanceof Error ? e.message : String(e))
-          })
-        },
-      },
-    ])
   }
 
   const handleExport = async (): Promise<void> => {
@@ -267,101 +209,13 @@ export default function Settings(): JSX.Element {
 
         {/* Category Management */}
         <Section title="카테고리 관리">
-          <Text className="mb-2 text-sm font-medium text-gray-700">레시피 카테고리</Text>
-          <View className="mb-3 rounded-xl border border-gray-200 bg-white">
-            {recipeCategories.map((cat, idx) => (
-              <View
-                key={cat}
-                className={`flex-row items-center justify-between px-4 py-3 ${
-                  idx < recipeCategories.length - 1 ? 'border-b border-gray-100' : ''
-                }`}
-              >
-                <Text className="text-base text-gray-900">{cat}</Text>
-                <Pressable onPress={() => handleDeleteRecipeCat(cat)} hitSlop={8}>
-                  <Text className="text-base text-red-400">×</Text>
-                </Pressable>
-              </View>
-            ))}
-            {recipeCategories.length === 0 && (
-              <View className="px-4 py-3">
-                <Text className="text-sm text-gray-400">카테고리가 없어요</Text>
-              </View>
-            )}
-          </View>
-          <View className="flex-row" style={{ gap: 8 }}>
-            <TextInput
-              value={newRecipeCat}
-              onChangeText={setNewRecipeCat}
-              placeholder="새 카테고리"
-              placeholderTextColor="#9CA3AF"
-              returnKeyType="done"
-              onSubmitEditing={handleAddRecipeCat}
-              className="flex-1 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-base text-gray-900"
-            />
-            <Pressable
-              onPress={handleAddRecipeCat}
-              disabled={!newRecipeCat.trim()}
-              className={`items-center justify-center rounded-xl px-4 py-2.5 ${
-                newRecipeCat.trim() ? 'bg-[#1E90FF]' : 'bg-gray-200'
-              }`}
-            >
-              <Text
-                className={`text-sm font-semibold ${
-                  newRecipeCat.trim() ? 'text-white' : 'text-gray-400'
-                }`}
-              >
-                추가
-              </Text>
-            </Pressable>
-          </View>
-
-          <Text className="mb-2 mt-5 text-sm font-medium text-gray-700">재료 카테고리</Text>
-          <View className="mb-3 rounded-xl border border-gray-200 bg-white">
-            {ingredientCategories.map((cat, idx) => (
-              <View
-                key={cat}
-                className={`flex-row items-center justify-between px-4 py-3 ${
-                  idx < ingredientCategories.length - 1 ? 'border-b border-gray-100' : ''
-                }`}
-              >
-                <Text className="text-base text-gray-900">{cat}</Text>
-                <Pressable onPress={() => handleDeleteIngCat(cat)} hitSlop={8}>
-                  <Text className="text-base text-red-400">×</Text>
-                </Pressable>
-              </View>
-            ))}
-            {ingredientCategories.length === 0 && (
-              <View className="px-4 py-3">
-                <Text className="text-sm text-gray-400">카테고리가 없어요</Text>
-              </View>
-            )}
-          </View>
-          <View className="flex-row" style={{ gap: 8 }}>
-            <TextInput
-              value={newIngCat}
-              onChangeText={setNewIngCat}
-              placeholder="새 카테고리"
-              placeholderTextColor="#9CA3AF"
-              returnKeyType="done"
-              onSubmitEditing={handleAddIngCat}
-              className="flex-1 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-base text-gray-900"
-            />
-            <Pressable
-              onPress={handleAddIngCat}
-              disabled={!newIngCat.trim()}
-              className={`items-center justify-center rounded-xl px-4 py-2.5 ${
-                newIngCat.trim() ? 'bg-[#1E90FF]' : 'bg-gray-200'
-              }`}
-            >
-              <Text
-                className={`text-sm font-semibold ${
-                  newIngCat.trim() ? 'text-white' : 'text-gray-400'
-                }`}
-              >
-                추가
-              </Text>
-            </Pressable>
-          </View>
+          <Pressable
+            onPress={() => router.push('/settings/categories')}
+            className="flex-row items-center justify-between rounded-xl border border-gray-200 bg-white px-4 py-3"
+          >
+            <Text className="text-base text-gray-900">카테고리 관리</Text>
+            <Text className="text-lg text-gray-400">›</Text>
+          </Pressable>
         </Section>
 
         {/* Data Management */}
