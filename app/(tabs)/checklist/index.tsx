@@ -17,7 +17,7 @@ import { useChecklistStore } from '../../../store/checklistStore'
 import { useRecipeStore } from '../../../store/recipeStore'
 import type { ChecklistStatus, Recipe } from '../../../types'
 
-const PRIMARY = '#FF85A1'
+const PRIMARY = '#85BBFF'
 
 function statusMeta(s: ChecklistStatus): {
   label: string
@@ -26,7 +26,7 @@ function statusMeta(s: ChecklistStatus): {
 } {
   switch (s) {
     case 'done':
-      return { label: '완료', bg: '#E0F9EE', text: '#1B7A52' }
+      return { label: '완료', bg: '#E0EFFF', text: '#3B7FD4' }
     case 'in_progress':
       return { label: '진행중', bg: '#FFF3CC', text: '#B37A00' }
     case 'pending':
@@ -138,7 +138,7 @@ export default function Checklist(): JSX.Element {
             {done} / {total} 완료
           </Text>
         </View>
-        <View className="mt-3 h-2 w-full overflow-hidden rounded-full bg-[#FFE8F0]">
+        <View className="mt-3 h-2 w-full overflow-hidden rounded-full bg-[#E0EFFF]">
           <View
             className="h-full rounded-full"
             style={{ width: `${progressPct}%`, backgroundColor: PRIMARY }}
@@ -171,7 +171,7 @@ export default function Checklist(): JSX.Element {
                 <View
                   className={`mr-3 h-5 w-5 items-center justify-center rounded border ${
                     checked
-                      ? 'border-[#FF85A1] bg-[#FF85A1]'
+                      ? 'border-[#85BBFF] bg-[#85BBFF]'
                       : 'border-[#EFE0E8] bg-white'
                   }`}
                 >

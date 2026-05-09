@@ -17,14 +17,14 @@ export function FilterChip({
       onPress={onPress}
       className={
         isActive
-          ? 'rounded-full border border-[#FF85A1] bg-[#FFE8F0] px-4 py-2'
+          ? 'rounded-full border border-[#85BBFF] bg-[#E0EFFF] px-4 py-2'
           : 'rounded-full border border-[#EFE0E8] bg-white px-4 py-2'
       }
     >
       <Text
         className={
           isActive
-            ? 'text-sm font-medium text-[#FF85A1]'
+            ? 'text-sm font-medium text-[#85BBFF]'
             : 'text-sm text-gray-600'
         }
       >
