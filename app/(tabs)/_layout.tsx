@@ -7,7 +7,7 @@ export default function TabsLayout(): JSX.Element {
     <SafeAreaView edges={['top']} className="flex-1 bg-[#FFF9FB]">
       <Tabs
         screenOptions={{
-          tabBarActiveTintColor: '#85BBFF',
+          tabBarActiveTintColor: '#FF85A1',
           tabBarInactiveTintColor: '#B0BAC5',
           tabBarIcon: () => null,
           tabBarLabelStyle: { fontSize: 13 },
