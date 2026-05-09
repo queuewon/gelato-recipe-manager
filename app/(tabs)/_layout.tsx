@@ -4,11 +4,11 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 
 export default function TabsLayout(): JSX.Element {
   return (
-    <SafeAreaView edges={['top']} className="flex-1 bg-[#F8FAFC]">
+    <SafeAreaView edges={['top']} className="flex-1 bg-[#FFF9FB]">
       <Tabs
         screenOptions={{
-          tabBarActiveTintColor: '#1E90FF',
-          tabBarInactiveTintColor: '#9CA3AF',
+          tabBarActiveTintColor: '#FF85A1',
+          tabBarInactiveTintColor: '#B0BAC5',
           tabBarIcon: () => null,
           tabBarLabelStyle: { fontSize: 13 },
           headerShown: false,

@@ -13,13 +13,13 @@ export function SearchBar({
   onChangeText,
 }: SearchBarProps): JSX.Element {
   return (
-    <View className="rounded-xl border border-gray-200 bg-white px-4 py-3">
+    <View className="rounded-xl border border-[#EFE0E8] bg-white px-4 py-3">
       <TextInput
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
-        placeholderTextColor="#9CA3AF"
-        className="text-base text-gray-800"
+        placeholderTextColor="#A0A8B3"
+        className="text-base text-[#2D2040]"
       />
     </View>
   )

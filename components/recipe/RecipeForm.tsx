@@ -159,8 +159,8 @@ export function RecipeForm({
           value={name}
           onChangeText={setName}
           placeholder="예: 피스타치오 젤라또"
-          placeholderTextColor="#9CA3AF"
-          className="mb-5 rounded-xl border border-gray-200 bg-white px-4 py-3 text-base text-gray-900"
+          placeholderTextColor="#A0A8B3"
+          className="mb-5 rounded-xl border border-[#EFE0E8] bg-white px-4 py-3 text-base text-[#2D2040]"
         />
 
         {/* Category */}
@@ -189,9 +189,9 @@ export function RecipeForm({
           value={batchSize}
           onChangeText={setBatchSize}
           placeholder="5000"
-          placeholderTextColor="#9CA3AF"
+          placeholderTextColor="#A0A8B3"
           keyboardType="numeric"
-          className="mb-5 rounded-xl border border-gray-200 bg-white px-4 py-3 text-base text-gray-900"
+          className="mb-5 rounded-xl border border-[#EFE0E8] bg-white px-4 py-3 text-base text-[#2D2040]"
         />
 
         {/* Memo */}
@@ -202,25 +202,25 @@ export function RecipeForm({
           value={memo}
           onChangeText={setMemo}
           placeholder="메모를 입력하세요"
-          placeholderTextColor="#9CA3AF"
+          placeholderTextColor="#A0A8B3"
           multiline
           textAlignVertical="top"
-          className="mb-6 min-h-[80px] rounded-xl border border-gray-200 bg-white px-4 py-3 text-base text-gray-900"
+          className="mb-6 min-h-[80px] rounded-xl border border-[#EFE0E8] bg-white px-4 py-3 text-base text-[#2D2040]"
         />
 
         {/* Ingredients */}
         <View className="mb-3 flex-row items-center justify-between">
-          <Text className="text-base font-semibold text-gray-900">재료</Text>
+          <Text className="text-base font-semibold text-[#2D2040]">재료</Text>
           <Pressable
             onPress={() => setModalOpen(true)}
-            className="rounded-full bg-[#E8F4FF] px-3 py-1.5"
+            className="rounded-full bg-[#E0EFFF] px-3 py-1.5"
           >
-            <Text className="text-sm font-medium text-[#1E90FF]">재료 추가</Text>
+            <Text className="text-sm font-medium text-[#85BBFF]">재료 추가</Text>
           </Pressable>
         </View>
 
         {rows.length === 0 ? (
-          <View className="mb-2 rounded-xl border border-dashed border-gray-200 p-6">
+          <View className="mb-2 rounded-xl border border-dashed border-[#EFE0E8] p-6">
             <Text className="text-center text-sm text-gray-500">
               재료를 추가해주세요
             </Text>
@@ -229,25 +229,25 @@ export function RecipeForm({
           rows.map((row, i) => (
             <View
               key={row.ingredient.id}
-              className="mb-2 flex-row items-center rounded-xl border border-gray-200 bg-white px-3 py-2.5"
+              className="mb-2 flex-row items-center rounded-xl border border-[#EFE0E8] bg-white px-3 py-2.5"
             >
-              <Text className="flex-1 text-base text-gray-900">
+              <Text className="flex-1 text-base text-[#2D2040]">
                 {row.ingredient.name}
               </Text>
               <TextInput
                 value={row.amount}
                 onChangeText={(text) => updateRow(i, { amount: text })}
                 placeholder="0"
-                placeholderTextColor="#9CA3AF"
+                placeholderTextColor="#A0A8B3"
                 keyboardType="numeric"
-                className="w-20 rounded-md border border-gray-200 bg-white px-2 py-1 text-right text-base text-gray-900"
+                className="w-20 rounded-md border border-[#EFE0E8] bg-white px-2 py-1 text-right text-base text-[#2D2040]"
               />
               <Text className="ml-1 text-sm text-gray-500">g</Text>
               <Pressable
                 onPress={() => removeRow(i)}
                 className="ml-3 px-2 py-1"
               >
-                <Text className="text-sm text-red-500">삭제</Text>
+                <Text className="text-sm text-[#FF6B6B]">삭제</Text>
               </Pressable>
             </View>
           ))
@@ -255,10 +255,10 @@ export function RecipeForm({
       </ScrollView>
 
       {/* Bottom: Total + Submit */}
-      <View className="border-t border-gray-200 bg-white px-5 pb-4 pt-3">
+      <View className="border-t border-[#EFE0E8] bg-white px-5 pb-4 pt-3">
         <View className="mb-3 flex-row items-center justify-between">
           <Text className="text-sm text-gray-700">총 원가</Text>
-          <Text className="text-lg font-bold text-[#EF4444]">
+          <Text className="text-lg font-bold text-[#FF6B6B]">
             {Math.round(totalCost).toLocaleString()}원
           </Text>
         </View>
@@ -266,7 +266,7 @@ export function RecipeForm({
           onPress={handleSubmit}
           disabled={submitting}
           className={`items-center rounded-xl py-3 ${
-            submitting ? 'bg-gray-300' : 'bg-[#1E90FF]'
+            submitting ? 'bg-gray-200' : 'bg-[#FF85A1]'
           }`}
         >
           <Text className="text-base font-semibold text-white">
@@ -282,8 +282,8 @@ export function RecipeForm({
         onRequestClose={() => setModalOpen(false)}
       >
         <View className="flex-1 bg-white">
-          <View className="flex-row items-center justify-between border-b border-gray-200 px-5 py-4">
-            <Text className="text-lg font-semibold text-gray-900">
+          <View className="flex-row items-center justify-between border-b border-[#EFE0E8] px-5 py-4">
+            <Text className="text-lg font-semibold text-[#2D2040]">
               재료 선택
             </Text>
             <Pressable onPress={() => setModalOpen(false)}>
@@ -309,9 +309,9 @@ export function RecipeForm({
                   ])
                   setModalOpen(false)
                 }}
-                className="flex-row items-center justify-between rounded-xl border border-gray-200 bg-white px-4 py-3"
+                className="flex-row items-center justify-between rounded-xl border border-[#EFE0E8] bg-white px-4 py-3"
               >
-                <Text className="text-base font-medium text-gray-900">
+                <Text className="text-base font-medium text-[#2D2040]">
                   {item.name}
                 </Text>
                 <Text className="text-xs text-gray-500">

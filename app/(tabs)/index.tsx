@@ -4,7 +4,7 @@ import { Pressable, ScrollView, Text, View } from 'react-native'
 import { useChecklistStore } from '../../store/checklistStore'
 import type { ChecklistStatus } from '../../types'
 
-const PRIMARY = '#1E90FF'
+const PRIMARY = '#FF85A1'
 
 function statusMeta(s: ChecklistStatus): {
   label: string
@@ -13,11 +13,11 @@ function statusMeta(s: ChecklistStatus): {
 } {
   switch (s) {
     case 'done':
-      return { label: '완료', bg: '#D1FAE5', text: '#065F46' }
+      return { label: '완료', bg: '#E0F9EE', text: '#1B7A52' }
     case 'in_progress':
-      return { label: '진행중', bg: '#FEF3C7', text: '#92400E' }
+      return { label: '진행중', bg: '#FFF3CC', text: '#B37A00' }
     case 'pending':
-      return { label: '대기', bg: '#F3F4F6', text: '#374151' }
+      return { label: '대기', bg: '#F3F4F6', text: '#6B7280' }
   }
 }
 
@@ -32,6 +32,7 @@ interface MenuCardProps {
   subtitle: string
   onPress?: () => void
   disabled?: boolean
+  cardBg?: string
 }
 
 function MenuCard({
@@ -39,17 +40,18 @@ function MenuCard({
   subtitle,
   onPress,
   disabled,
+  cardBg = '#FFFFFF',
 }: MenuCardProps): JSX.Element {
   return (
     <Pressable
       onPress={disabled ? undefined : onPress}
       disabled={disabled}
-      className={`rounded-xl border border-gray-200 bg-white p-4 ${
+      className={`rounded-xl border border-[#EFE0E8] p-4 ${
         disabled ? 'opacity-50' : ''
       }`}
-      style={{ width: '48%' }}
+      style={{ width: '48%', backgroundColor: cardBg }}
     >
-      <Text className="text-base font-semibold text-gray-900">{title}</Text>
+      <Text className="text-base font-semibold text-[#2D2040]">{title}</Text>
       <Text className="mt-1 text-xs text-gray-500">{subtitle}</Text>
     </Pressable>
   )
@@ -72,32 +74,32 @@ export default function Home(): JSX.Element {
 
   return (
     <ScrollView
-      className="flex-1 bg-[#F8FAFC]"
+      className="flex-1 bg-[#FFF9FB]"
       contentContainerStyle={{ paddingBottom: 32 }}
     >
       {/* Header */}
       <View className="flex-row items-center justify-between px-5 pb-2 pt-4">
         <View>
-          <Text className="text-2xl font-bold text-gray-900">Gelato</Text>
+          <Text className="text-2xl font-bold text-[#2D2040]">Gelato</Text>
           <Text className="text-sm text-gray-500">Recipe Manager</Text>
         </View>
-        <Pressable className="rounded-full border border-gray-200 px-3 py-1.5">
+        <Pressable className="rounded-full border border-[#EFE0E8] px-3 py-1.5 bg-white">
           <Text className="text-sm text-gray-700">알림</Text>
         </Pressable>
       </View>
 
       {/* Greeting */}
       <View className="px-5 py-5">
-        <Text className="text-2xl font-bold text-gray-900">안녕, 누나! 👋</Text>
+        <Text className="text-2xl font-bold text-[#2D2040]">안녕, 누나! 👋</Text>
         <Text className="mt-1 text-base text-gray-600">
           오늘도 맛있는 젤라또 만들자!
         </Text>
       </View>
 
       {/* Today Production */}
-      <View className="mx-5 mb-6 rounded-xl border border-gray-200 bg-white p-4">
+      <View className="mx-5 mb-6 rounded-xl border border-[#EFE0E8] bg-white p-4">
         <View className="flex-row items-center justify-between">
-          <Text className="text-base font-semibold text-gray-900">
+          <Text className="text-base font-semibold text-[#2D2040]">
             오늘 생산할 메뉴
           </Text>
           <Text className="text-sm text-gray-500">
@@ -105,7 +107,7 @@ export default function Home(): JSX.Element {
           </Text>
         </View>
 
-        <View className="mt-3 h-2 w-full overflow-hidden rounded-full bg-gray-100">
+        <View className="mt-3 h-2 w-full overflow-hidden rounded-full bg-[#FFE8F0]">
           <View
             className="h-full rounded-full"
             style={{ width: `${progressPct}%`, backgroundColor: PRIMARY }}
@@ -119,9 +121,9 @@ export default function Home(): JSX.Element {
             </Text>
             <Pressable
               onPress={() => router.push('/checklist')}
-              className="mt-3 rounded-full bg-[#E8F4FF] px-4 py-2"
+              className="mt-3 rounded-full bg-[#FFE8F0] px-4 py-2"
             >
-              <Text className="text-sm font-medium text-[#1E90FF]">
+              <Text className="text-sm font-medium text-[#FF85A1]">
                 메뉴 추가하기
               </Text>
             </Pressable>
@@ -137,14 +139,14 @@ export default function Home(): JSX.Element {
                   onPress={() => {
                     void updateStatus(item.id, nextStatus(item.status))
                   }}
-                  className="flex-row items-center justify-between border-t border-gray-100 py-3"
+                  className="flex-row items-center justify-between border-t border-[#EFE0E8] py-3"
                 >
                   <View className="flex-1 flex-row items-center">
                     <View
                       className={`mr-3 h-5 w-5 items-center justify-center rounded border ${
                         checked
-                          ? 'border-[#1E90FF] bg-[#1E90FF]'
-                          : 'border-gray-300 bg-white'
+                          ? 'border-[#FF85A1] bg-[#FF85A1]'
+                          : 'border-[#EFE0E8] bg-white'
                       }`}
                     >
                       {checked ? (
@@ -156,7 +158,7 @@ export default function Home(): JSX.Element {
                         className={`text-base ${
                           checked
                             ? 'text-gray-400 line-through'
-                            : 'text-gray-900'
+                            : 'text-[#2D2040]'
                         }`}
                       >
                         {item.recipe.name}
@@ -186,7 +188,7 @@ export default function Home(): JSX.Element {
 
       {/* Menu Grid */}
       <View className="px-5">
-        <Text className="mb-3 text-base font-semibold text-gray-900">
+        <Text className="mb-3 text-base font-semibold text-[#2D2040]">
           바로가기
         </Text>
         <View className="flex-row flex-wrap" style={{ gap: 12 }}>
@@ -194,17 +196,25 @@ export default function Home(): JSX.Element {
             title="레시피 목록"
             subtitle="등록된 젤라또"
             onPress={() => router.push('/recipes')}
+            cardBg="#FFF0F5"
           />
           <MenuCard
             title="재료 관리"
             subtitle="가격 & 재고"
             onPress={() => router.push('/ingredients')}
+            cardBg="#EDF7FF"
           />
-          <MenuCard title="원가 분석" subtitle="추후 지원" disabled />
+          <MenuCard
+            title="원가 분석"
+            subtitle="추후 지원"
+            disabled
+            cardBg="#FFFBEF"
+          />
           <MenuCard
             title="오늘 생산"
             subtitle="체크리스트"
             onPress={() => router.push('/checklist')}
+            cardBg="#E8F8EE"
           />
         </View>
       </View>

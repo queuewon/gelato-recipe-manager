@@ -17,7 +17,7 @@ import { useChecklistStore } from '../../../store/checklistStore'
 import { useRecipeStore } from '../../../store/recipeStore'
 import type { ChecklistStatus, Recipe } from '../../../types'
 
-const PRIMARY = '#1E90FF'
+const PRIMARY = '#FF85A1'
 
 function statusMeta(s: ChecklistStatus): {
   label: string
@@ -26,11 +26,11 @@ function statusMeta(s: ChecklistStatus): {
 } {
   switch (s) {
     case 'done':
-      return { label: '완료', bg: '#D1FAE5', text: '#065F46' }
+      return { label: '완료', bg: '#E0F9EE', text: '#1B7A52' }
     case 'in_progress':
-      return { label: '진행중', bg: '#FEF3C7', text: '#92400E' }
+      return { label: '진행중', bg: '#FFF3CC', text: '#B37A00' }
     case 'pending':
-      return { label: '대기', bg: '#F3F4F6', text: '#374151' }
+      return { label: '대기', bg: '#F3F4F6', text: '#6B7280' }
   }
 }
 
@@ -123,22 +123,22 @@ export default function Checklist(): JSX.Element {
   }
 
   return (
-    <View className="flex-1 bg-[#F8FAFC]">
+    <View className="flex-1 bg-[#FFF9FB]">
       <View className="px-5 pb-4 pt-4">
-        <Text className="text-2xl font-bold text-gray-900">
+        <Text className="text-2xl font-bold text-[#2D2040]">
           오늘 생산할 메뉴
         </Text>
         <Text className="mt-1 text-sm text-gray-500">{today}</Text>
       </View>
 
-      <View className="mx-5 mb-4 rounded-xl border border-gray-200 p-4">
+      <View className="mx-5 mb-4 rounded-xl border border-[#EFE0E8] bg-white p-4">
         <View className="flex-row items-center justify-between">
           <Text className="text-sm font-medium text-gray-700">진행률</Text>
           <Text className="text-sm text-gray-500">
             {done} / {total} 완료
           </Text>
         </View>
-        <View className="mt-3 h-2 w-full overflow-hidden rounded-full bg-gray-100">
+        <View className="mt-3 h-2 w-full overflow-hidden rounded-full bg-[#FFE8F0]">
           <View
             className="h-full rounded-full"
             style={{ width: `${progressPct}%`, backgroundColor: PRIMARY }}
@@ -165,14 +165,14 @@ export default function Checklist(): JSX.Element {
                 void updateStatus(item.id, nextStatus(item.status))
               }}
               onLongPress={() => handleLongPress(item.id, item.recipe.name)}
-              className="flex-row items-center justify-between rounded-xl border border-gray-200 bg-white p-4"
+              className="flex-row items-center justify-between rounded-xl border border-[#EFE0E8] bg-white p-4"
             >
               <View className="flex-1 flex-row items-center">
                 <View
                   className={`mr-3 h-5 w-5 items-center justify-center rounded border ${
                     checked
-                      ? 'border-[#1E90FF] bg-[#1E90FF]'
-                      : 'border-gray-300 bg-white'
+                      ? 'border-[#FF85A1] bg-[#FF85A1]'
+                      : 'border-[#EFE0E8] bg-white'
                   }`}
                 >
                   {checked ? (
@@ -184,7 +184,7 @@ export default function Checklist(): JSX.Element {
                     className={`text-base ${
                       checked
                         ? 'text-gray-400 line-through'
-                        : 'text-gray-900'
+                        : 'text-[#2D2040]'
                     }`}
                   >
                     {item.recipe.name}
@@ -210,10 +210,10 @@ export default function Checklist(): JSX.Element {
         }}
       />
 
-      <View className="border-t border-gray-200 bg-white px-5 pb-4 pt-3">
+      <View className="border-t border-[#EFE0E8] bg-white px-5 pb-4 pt-3">
         <Pressable
           onPress={() => setModalOpen(true)}
-          className="items-center rounded-xl bg-[#1E90FF] py-3"
+          className="items-center rounded-xl bg-[#FF85A1] py-3"
         >
           <Text className="text-base font-semibold text-white">+ 메뉴 추가</Text>
         </Pressable>
@@ -225,14 +225,14 @@ export default function Checklist(): JSX.Element {
         onRequestClose={closeModal}
       >
         <KeyboardAvoidingView
-          className="flex-1 bg-[#F8FAFC]"
+          className="flex-1 bg-[#FFF9FB]"
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         >
           <View
-            className="flex-row items-center justify-between border-b border-gray-200 px-5 py-4"
+            className="flex-row items-center justify-between border-b border-[#EFE0E8] px-5 py-4"
             style={{ paddingTop: insets.top + 16 }}
           >
-            <Text className="text-lg font-semibold text-gray-900">
+            <Text className="text-lg font-semibold text-[#2D2040]">
               {pickedRecipe ? '배치량 입력' : '레시피 선택'}
             </Text>
             <Pressable onPress={closeModal}>
@@ -257,9 +257,9 @@ export default function Checklist(): JSX.Element {
                     setPickedRecipe(item)
                     setBatchSize(String(item.batch_size))
                   }}
-                  className="rounded-xl border border-gray-200 bg-white px-4 py-3"
+                  className="rounded-xl border border-[#EFE0E8] bg-white px-4 py-3"
                 >
-                  <Text className="text-base font-medium text-gray-900">
+                  <Text className="text-base font-medium text-[#2D2040]">
                     {item.name}
                   </Text>
                   <Text className="mt-0.5 text-xs text-gray-500">
@@ -271,8 +271,8 @@ export default function Checklist(): JSX.Element {
           ) : (
             <ScrollView contentContainerStyle={{ padding: 20 }}>
               <Text className="mb-2 text-sm text-gray-500">선택된 레시피</Text>
-              <View className="mb-5 rounded-xl border border-[#1E90FF] bg-[#F0F7FF] px-4 py-3">
-                <Text className="text-base font-semibold text-[#1E90FF]">
+              <View className="mb-5 rounded-xl border border-[#FFD166] bg-[#FFF5DC] px-4 py-3">
+                <Text className="text-base font-semibold text-[#C97A10]">
                   {pickedRecipe.name}
                 </Text>
                 <Text className="mt-0.5 text-xs text-gray-500">
@@ -287,9 +287,9 @@ export default function Checklist(): JSX.Element {
                 value={batchSize}
                 onChangeText={setBatchSize}
                 placeholder="5000"
-                placeholderTextColor="#9CA3AF"
+                placeholderTextColor="#A0A8B3"
                 keyboardType="numeric"
-                className="rounded-xl border border-gray-200 bg-white px-4 py-3 text-base text-gray-900"
+                className="rounded-xl border border-[#EFE0E8] bg-white px-4 py-3 text-base text-[#2D2040]"
               />
 
               <View className="mt-5 flex-row" style={{ gap: 12 }}>
@@ -298,7 +298,7 @@ export default function Checklist(): JSX.Element {
                     setPickedRecipe(null)
                     setBatchSize('')
                   }}
-                  className="flex-1 items-center rounded-xl border border-gray-200 py-3"
+                  className="flex-1 items-center rounded-xl border border-[#EFE0E8] py-3"
                 >
                   <Text className="text-base text-gray-700">다시 선택</Text>
                 </Pressable>
@@ -306,7 +306,7 @@ export default function Checklist(): JSX.Element {
                   onPress={handleAdd}
                   disabled={submitting}
                   className={`flex-1 items-center rounded-xl py-3 ${
-                    submitting ? 'bg-gray-300' : 'bg-[#1E90FF]'
+                    submitting ? 'bg-gray-200' : 'bg-[#FF85A1]'
                   }`}
                 >
                   <Text className="text-base font-semibold text-white">

@@ -59,13 +59,13 @@ export default function RecipeDetail(): JSX.Element {
   if (!selectedRecipe || selectedRecipe.id !== recipeId) {
     if (isLoading) {
       return (
-        <View className="flex-1 items-center justify-center bg-[#F8FAFC]">
-          <ActivityIndicator />
+        <View className="flex-1 items-center justify-center bg-[#FFF9FB]">
+          <ActivityIndicator color="#FF85A1" />
         </View>
       )
     }
     return (
-      <View className="flex-1 bg-[#F8FAFC]">
+      <View className="flex-1 bg-[#FFF9FB]">
         <View className="flex-row items-center justify-between px-5 pb-2 pt-4">
           <Pressable onPress={() => router.back()}>
             <Text className="text-base text-gray-700">← 뒤로가기</Text>
@@ -83,7 +83,7 @@ export default function RecipeDetail(): JSX.Element {
 
   return (
     <ScrollView
-      className="flex-1 bg-[#F8FAFC]"
+      className="flex-1 bg-[#FFF9FB]"
       contentContainerStyle={{ paddingBottom: 32 }}
     >
       {/* Top Nav */}
@@ -93,16 +93,16 @@ export default function RecipeDetail(): JSX.Element {
         </Pressable>
         <Pressable
           onPress={() => router.push(`/recipes/edit/${recipeId}`)}
-          className="rounded-full bg-[#E8F4FF] px-4 py-2"
+          className="rounded-full bg-[#E0EFFF] px-4 py-2"
         >
-          <Text className="text-sm font-medium text-[#1E90FF]">수정</Text>
+          <Text className="text-sm font-medium text-[#85BBFF]">수정</Text>
         </Pressable>
       </View>
 
       {/* Recipe Header */}
       <View className="px-5 py-5">
         <View className="flex-row items-start justify-between">
-          <Text className="flex-1 pr-3 text-2xl font-bold text-gray-900">
+          <Text className="flex-1 pr-3 text-2xl font-bold text-[#2D2040]">
             {selectedRecipe.name}
           </Text>
           <Badge
@@ -116,36 +116,36 @@ export default function RecipeDetail(): JSX.Element {
       </View>
 
       {/* Batch Size Adjuster */}
-      <View className="mx-5 mb-5 rounded-xl border border-gray-200 p-4">
+      <View className="mx-5 mb-5 rounded-xl border border-[#EFE0E8] bg-white p-4">
         <Text className="text-sm text-gray-500">배치량 조절 (g)</Text>
         <View className="mt-3 flex-row items-center justify-center">
           <Pressable
             onPress={() =>
               setBatchSize((p) => Math.max(MIN_BATCH, p - STEP))
             }
-            className="h-10 w-10 items-center justify-center rounded-full bg-[#E8F4FF]"
+            className="h-10 w-10 items-center justify-center rounded-full bg-[#E0EFFF]"
           >
-            <Text className="text-xl font-bold text-[#1E90FF]">−</Text>
+            <Text className="text-xl font-bold text-[#85BBFF]">−</Text>
           </Pressable>
-          <Text className="mx-6 text-2xl font-bold text-gray-900">
+          <Text className="mx-6 text-2xl font-bold text-[#2D2040]">
             {batchSize.toLocaleString()}
           </Text>
           <Pressable
             onPress={() => setBatchSize((p) => p + STEP)}
-            className="h-10 w-10 items-center justify-center rounded-full bg-[#E8F4FF]"
+            className="h-10 w-10 items-center justify-center rounded-full bg-[#E0EFFF]"
           >
-            <Text className="text-xl font-bold text-[#1E90FF]">＋</Text>
+            <Text className="text-xl font-bold text-[#85BBFF]">＋</Text>
           </Pressable>
         </View>
       </View>
 
       {/* Ingredients Table */}
-      <View className="mx-5 mb-5 overflow-hidden rounded-xl border border-gray-200">
-        <View className="flex-row border-b border-gray-200 bg-gray-50 px-4 py-3">
-          <Text className="flex-1 text-xs font-semibold text-gray-500">
+      <View className="mx-5 mb-5 overflow-hidden rounded-xl border border-[#EFE0E8]">
+        <View className="flex-row border-b border-[#EFE0E8] bg-[#FFF0F5] px-4 py-3">
+          <Text className="flex-1 text-xs font-semibold text-[#D94F7F]">
             재료명
           </Text>
-          <Text className="text-xs font-semibold text-gray-500">사용량(g)</Text>
+          <Text className="text-xs font-semibold text-[#D94F7F]">사용량(g)</Text>
         </View>
         {selectedRecipe.ingredients.map((ri, i, arr) => {
           const scaled = scaleAmount(ri.amount, baseBatch, batchSize)
@@ -153,14 +153,14 @@ export default function RecipeDetail(): JSX.Element {
           return (
             <View
               key={ri.id}
-              className={`flex-row items-center px-4 py-3 ${
-                isLast ? '' : 'border-b border-gray-100'
+              className={`flex-row items-center px-4 py-3 bg-white ${
+                isLast ? '' : 'border-b border-[#EFE0E8]'
               }`}
             >
               <Text className="flex-1 text-sm text-gray-800">
                 {ri.ingredient.name}
               </Text>
-              <Text className="text-sm font-medium text-gray-900">
+              <Text className="text-sm font-medium text-[#2D2040]">
                 {Math.round(scaled).toLocaleString()}
               </Text>
             </View>
@@ -169,9 +169,9 @@ export default function RecipeDetail(): JSX.Element {
       </View>
 
       {/* Total Cost */}
-      <View className="mx-5 mb-6 flex-row items-center justify-between rounded-xl bg-gray-50 px-4 py-4">
+      <View className="mx-5 mb-6 flex-row items-center justify-between rounded-xl bg-[#FFF0F5] px-4 py-4">
         <Text className="text-sm font-medium text-gray-700">총 원가</Text>
-        <Text className="text-lg font-bold text-[#EF4444]">
+        <Text className="text-lg font-bold text-[#FF6B6B]">
           {Math.round(scaledTotalCost).toLocaleString()}원
         </Text>
       </View>
@@ -179,11 +179,11 @@ export default function RecipeDetail(): JSX.Element {
       {/* Versions Preview */}
       <View className="mx-5">
         <View className="flex-row items-center justify-between">
-          <Text className="text-base font-semibold text-gray-900">수정이력</Text>
+          <Text className="text-base font-semibold text-[#2D2040]">수정이력</Text>
           <Pressable
             onPress={() => router.push(`/recipes/history/${recipeId}`)}
           >
-            <Text className="text-sm text-[#1E90FF]">전체 보기</Text>
+            <Text className="text-sm text-[#85BBFF]">전체 보기</Text>
           </Pressable>
         </View>
         {versions.length === 0 ? (
@@ -191,14 +191,14 @@ export default function RecipeDetail(): JSX.Element {
             기록된 이력이 없어요
           </Text>
         ) : (
-          <View className="mt-3 overflow-hidden rounded-xl border border-gray-200">
+          <View className="mt-3 overflow-hidden rounded-xl border border-[#EFE0E8]">
             {versions.slice(0, 3).map((v, i, arr) => {
               const isLast = i === arr.length - 1
               return (
                 <View
                   key={v.id}
-                  className={`flex-row items-center justify-between px-4 py-3 ${
-                    isLast ? '' : 'border-b border-gray-100'
+                  className={`flex-row items-center justify-between bg-white px-4 py-3 ${
+                    isLast ? '' : 'border-b border-[#EFE0E8]'
                   }`}
                 >
                   <Text className="text-sm font-medium text-gray-800">

@@ -163,11 +163,11 @@ export default function Settings(): JSX.Element {
 
   return (
     <KeyboardAvoidingView
-      className="flex-1 bg-[#F8FAFC]"
+      className="flex-1 bg-[#FFF9FB]"
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 40 }}>
-        <Text className="mb-5 text-2xl font-bold text-gray-900">설정</Text>
+        <Text className="mb-5 text-2xl font-bold text-[#2D2040]">설정</Text>
 
         {/* Store Info */}
         <Section title="매장 정보">
@@ -176,14 +176,14 @@ export default function Settings(): JSX.Element {
             value={storeName}
             onChangeText={setStoreName}
             placeholder="예: 누나네 젤라또"
-            placeholderTextColor="#9CA3AF"
-            className="rounded-xl border border-gray-200 bg-white px-4 py-3 text-base text-gray-900"
+            placeholderTextColor="#A0A8B3"
+            className="rounded-xl border border-[#EFE0E8] bg-white px-4 py-3 text-base text-[#2D2040]"
           />
           <Pressable
             onPress={handleSaveStoreName}
             disabled={!storeNameDirty}
             className={`mt-3 items-center rounded-xl py-3 ${
-              storeNameDirty ? 'bg-[#1E90FF]' : 'bg-gray-200'
+              storeNameDirty ? 'bg-[#FF85A1]' : 'bg-gray-200'
             }`}
           >
             <Text
@@ -202,7 +202,7 @@ export default function Settings(): JSX.Element {
             onPress={handleExport}
             disabled={busy}
             className={`mb-2 items-center rounded-xl py-3 ${
-              busy ? 'bg-gray-300' : 'bg-[#1E90FF]'
+              busy ? 'bg-gray-200' : 'bg-[#FF85A1]'
             }`}
           >
             <Text className="text-sm font-semibold text-white">백업하기</Text>
@@ -211,12 +211,12 @@ export default function Settings(): JSX.Element {
             onPress={handleImport}
             disabled={busy}
             className={`items-center rounded-xl border py-3 ${
-              busy ? 'border-gray-200' : 'border-[#1E90FF]'
+              busy ? 'border-gray-200' : 'border-[#FF85A1]'
             }`}
           >
             <Text
               className={`text-sm font-semibold ${
-                busy ? 'text-gray-400' : 'text-[#1E90FF]'
+                busy ? 'text-gray-400' : 'text-[#FF85A1]'
               }`}
             >
               백업에서 복원
@@ -226,8 +226,8 @@ export default function Settings(): JSX.Element {
 
         {/* Unit Setting */}
         <Section title="단위 설정">
-          <View className="rounded-xl border border-gray-200 bg-white px-4 py-3">
-            <Text className="text-base text-gray-900">기본 단위: g</Text>
+          <View className="rounded-xl border border-[#EFE0E8] bg-white px-4 py-3">
+            <Text className="text-base text-[#2D2040]">기본 단위: g</Text>
             <Text className="mt-1 text-xs text-gray-500">
               현재는 그램(g)만 지원해요. 추후 확장 예정.
             </Text>
@@ -240,12 +240,12 @@ export default function Settings(): JSX.Element {
             onPress={handleReset}
             disabled={busy}
             className={`items-center rounded-xl border py-3 ${
-              busy ? 'border-gray-200' : 'border-red-300'
+              busy ? 'border-gray-200' : 'border-[#FFD6D6]'
             }`}
           >
             <Text
               className={`text-sm font-semibold ${
-                busy ? 'text-gray-400' : 'text-red-500'
+                busy ? 'text-gray-400' : 'text-[#FF6B6B]'
               }`}
             >
               모든 데이터 삭제
@@ -270,7 +270,7 @@ interface SectionProps {
 function Section({ title, children }: SectionProps): JSX.Element {
   return (
     <View className="mb-6">
-      <Text className="mb-2 text-base font-semibold text-gray-900">
+      <Text className="mb-2 text-base font-semibold text-[#2D2040]">
         {title}
       </Text>
       {children}

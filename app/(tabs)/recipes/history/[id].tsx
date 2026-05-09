@@ -152,7 +152,7 @@ export default function RecipeHistory(): JSX.Element {
   }
 
   return (
-    <View className="flex-1 bg-[#F8FAFC]">
+    <View className="flex-1 bg-[#FFF9FB]">
       <View className="flex-row items-center justify-between px-5 pb-2 pt-4">
         <Pressable onPress={() => router.back()}>
           <Text className="text-base text-gray-700">← 뒤로가기</Text>
@@ -196,8 +196,8 @@ export default function RecipeHistory(): JSX.Element {
                         v{v.version_no}
                       </Text>
                       {isCurrent ? (
-                        <View className="ml-2 rounded-full bg-[#E8F4FF] px-2 py-0.5">
-                          <Text className="text-xs font-medium text-[#1E90FF]">
+                        <View className="ml-2 rounded-full bg-[#E0EFFF] px-2 py-0.5">
+                          <Text className="text-xs font-medium text-[#85BBFF]">
                             현재
                           </Text>
                         </View>
@@ -210,9 +210,9 @@ export default function RecipeHistory(): JSX.Element {
                   {!isCurrent ? (
                     <Pressable
                       onPress={() => handleRestore(v.id)}
-                      className="mr-3 rounded-full border border-[#1E90FF] px-3 py-1.5"
+                      className="mr-3 rounded-full border border-[#85BBFF] px-3 py-1.5"
                     >
-                      <Text className="text-sm font-medium text-[#1E90FF]">
+                      <Text className="text-sm font-medium text-[#85BBFF]">
                         복원
                       </Text>
                     </Pressable>
