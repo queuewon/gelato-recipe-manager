@@ -1,41 +1,33 @@
 export const COLORS = {
-  primary: '#FF85A1',        // 파스텔 핑크 (메인)
-  primaryLight: '#FFE8F0',   // 핑크 라이트
-  primaryBg: '#FFF0F5',      // 핑크 배경
-
-  secondary: '#85BBFF',      // 파스텔 블루
-  secondaryLight: '#E0EFFF', // 블루 라이트
-  secondaryBg: '#EDF7FF',    // 블루 배경
-
-  accent: '#FFD166',         // 파스텔 옐로
-  accentLight: '#FFF5DC',    // 옐로 라이트
-  accentBg: '#FFFBEF',       // 옐로 배경
+  primary: '#1E90FF',
+  primaryLight: '#E8F4FF',
+  primaryBg: '#F0F7FF',
 
   text: {
-    primary: '#2D2040',
+    primary: '#1A1A2E',
     secondary: '#6B7280',
-    muted: '#A0A8B3',
+    muted: '#9CA3AF',
   },
-  border: '#EFE0E8',
+  border: '#E5E7EB',
   white: '#FFFFFF',
-  bg: '#FFF9FB',
+  bg: '#F8FAFC',
 
   status: {
-    done: '#5BC99A',
-    inProgress: '#FFD166',
-    pending: '#B0BAC5',
-    danger: '#FF6B6B',
+    done: '#10B981',
+    inProgress: '#F59E0B',
+    pending: '#9CA3AF',
+    danger: '#EF4444',
   },
 } as const
 
 export const CATEGORY_COLORS: Record<string, { bg: string; text: string }> = {
-  '과일': { bg: '#FFE0EC', text: '#D94F7F' },
-  '차': { bg: '#E0EFFF', text: '#3B7FD4' },
-  '곡물': { bg: '#E8F8EE', text: '#2E7D50' },
-  '견과': { bg: '#FFF4DC', text: '#C97A10' },
-  '술': { bg: '#EDE8FF', text: '#6B3FB5' },
-  '초콜릿': { bg: '#FDE8DC', text: '#A04025' },
-  '기타': { bg: '#F5F5F8', text: '#4A5568' },
-  '유제품': { bg: '#E0EFFF', text: '#3B7FD4' },
-  '당류': { bg: '#FFF4DC', text: '#C97A10' },
+  과일: { bg: '#FDE8F0', text: '#BE185D' },
+  차: { bg: '#E0F2FE', text: '#0369A1' },
+  곡물: { bg: '#F0FDF4', text: '#166534' },
+  견과: { bg: '#FEF9C3', text: '#854D0E' },
+  술: { bg: '#EDE9FE', text: '#6D28D9' },
+  초콜릿: { bg: '#FDF2E9', text: '#78350F' },
+  기타: { bg: '#F3F4F6', text: '#374151' },
+  유제품: { bg: '#E0F2FE', text: '#0369A1' },
+  당류: { bg: '#FEF9C3', text: '#854D0E' },
 }

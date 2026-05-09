@@ -166,14 +166,14 @@ export default function IngredientForm(): JSX.Element {
 
   return (
     <KeyboardAvoidingView
-      className="flex-1 bg-[#FFF9FB]"
+      className="flex-1 bg-[#F8FAFC]"
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <View className="flex-row items-center justify-between px-5 pb-2 pt-4">
         <Pressable onPress={() => router.back()}>
           <Text className="text-base text-gray-700">← 뒤로가기</Text>
         </Pressable>
-        <Text className="text-lg font-semibold text-[#2D2040]">
+        <Text className="text-lg font-semibold text-gray-900">
           {editId !== null ? '재료 수정' : '재료 등록'}
         </Text>
         <View style={{ width: 60 }} />
@@ -189,8 +189,8 @@ export default function IngredientForm(): JSX.Element {
           value={name}
           onChangeText={setName}
           placeholder="예: 우유"
-          placeholderTextColor="#A0A8B3"
-          className="mb-5 rounded-xl border border-[#EFE0E8] bg-white px-4 py-3 text-base text-[#2D2040]"
+          placeholderTextColor="#9CA3AF"
+          className="mb-5 rounded-xl border border-gray-200 bg-white px-4 py-3 text-base text-gray-900"
         />
 
         {/* Category */}
@@ -213,16 +213,16 @@ export default function IngredientForm(): JSX.Element {
 
         {/* Purchase Info */}
         <Text className="mb-2 text-sm font-medium text-gray-700">구매 정보</Text>
-        <View className="rounded-xl border border-[#EFE0E8] bg-white p-3">
+        <View className="rounded-xl border border-gray-200 p-3">
           <View className="mb-2 flex-row items-center">
             <Text className="w-20 text-sm text-gray-600">구매가격</Text>
             <TextInput
               value={purchasePrice}
               onChangeText={setPurchasePrice}
               placeholder="2800"
-              placeholderTextColor="#A0A8B3"
+              placeholderTextColor="#9CA3AF"
               keyboardType="numeric"
-              className="flex-1 text-right text-base text-[#2D2040]"
+              className="flex-1 text-right text-base text-gray-900"
             />
             <Text className="ml-1 text-sm text-gray-500">원</Text>
           </View>
@@ -232,9 +232,9 @@ export default function IngredientForm(): JSX.Element {
               value={unitG}
               onChangeText={setUnitG}
               placeholder="1000"
-              placeholderTextColor="#A0A8B3"
+              placeholderTextColor="#9CA3AF"
               keyboardType="numeric"
-              className="flex-1 text-right text-base text-[#2D2040]"
+              className="flex-1 text-right text-base text-gray-900"
             />
             <Text className="ml-1 text-sm text-gray-500">g</Text>
           </View>
@@ -244,16 +244,16 @@ export default function IngredientForm(): JSX.Element {
               value={unitCount}
               onChangeText={setUnitCount}
               placeholder="1"
-              placeholderTextColor="#A0A8B3"
+              placeholderTextColor="#9CA3AF"
               keyboardType="numeric"
-              className="flex-1 text-right text-base text-[#2D2040]"
+              className="flex-1 text-right text-base text-gray-900"
             />
             <Text className="ml-1 text-sm text-gray-500">개</Text>
           </View>
         </View>
         <View className="mb-5 mt-1.5">
           {pricePerG !== null ? (
-            <Text className="text-xs text-[#FF85A1]">
+            <Text className="text-xs text-[#1E90FF]">
               1g당 {(Math.round(pricePerG * 100) / 100).toLocaleString()}원
             </Text>
           ) : (
@@ -269,9 +269,9 @@ export default function IngredientForm(): JSX.Element {
           value={stockCount}
           onChangeText={setStockCount}
           placeholder="0"
-          placeholderTextColor="#A0A8B3"
+          placeholderTextColor="#9CA3AF"
           keyboardType="numeric"
-          className="mb-2 rounded-xl border border-[#EFE0E8] bg-white px-4 py-3 text-base text-[#2D2040]"
+          className="mb-2 rounded-xl border border-gray-200 bg-white px-4 py-3 text-base text-gray-900"
         />
         <View className="mb-5 flex-row" style={{ gap: 8 }}>
           {STOCK_UNITS.map((u) => (
@@ -289,15 +289,15 @@ export default function IngredientForm(): JSX.Element {
           <Text className="text-sm font-medium text-gray-700">공급업체</Text>
           <Pressable
             onPress={() => setSupplierModalOpen(true)}
-            className="rounded-full bg-[#E0EFFF] px-3 py-1.5"
+            className="rounded-full bg-[#E8F4FF] px-3 py-1.5"
           >
-            <Text className="text-sm font-medium text-[#85BBFF]">
+            <Text className="text-sm font-medium text-[#1E90FF]">
               + 새 공급업체
             </Text>
           </Pressable>
         </View>
         {suppliers.length === 0 ? (
-          <View className="rounded-xl border border-dashed border-[#EFE0E8] p-4">
+          <View className="rounded-xl border border-dashed border-gray-200 p-4">
             <Text className="text-center text-sm text-gray-500">
               등록된 공급업체가 없어요
             </Text>
@@ -310,15 +310,15 @@ export default function IngredientForm(): JSX.Element {
                 onPress={() => setSupplierId(s.id)}
                 className={`rounded-xl border px-4 py-3 ${
                   supplierId === s.id
-                    ? 'border-[#FF85A1] bg-[#FFE8F0]'
-                    : 'border-[#EFE0E8] bg-white'
+                    ? 'border-[#1E90FF] bg-[#E8F4FF]'
+                    : 'border-gray-200 bg-white'
                 }`}
               >
                 <Text
                   className={`text-base ${
                     supplierId === s.id
-                      ? 'font-medium text-[#FF85A1]'
-                      : 'text-[#2D2040]'
+                      ? 'font-medium text-[#1E90FF]'
+                      : 'text-gray-900'
                   }`}
                 >
                   {s.name}
@@ -335,12 +335,12 @@ export default function IngredientForm(): JSX.Element {
       </ScrollView>
 
       {/* Bottom Submit */}
-      <View className="border-t border-[#EFE0E8] bg-white px-5 pb-4 pt-3">
+      <View className="border-t border-gray-200 bg-white px-5 pb-4 pt-3">
         <Pressable
           onPress={handleSubmit}
           disabled={submitting}
           className={`items-center rounded-xl py-3 ${
-            submitting ? 'bg-gray-200' : 'bg-[#FF85A1]'
+            submitting ? 'bg-gray-300' : 'bg-[#1E90FF]'
           }`}
         >
           <Text className="text-base font-semibold text-white">
@@ -365,7 +365,7 @@ export default function IngredientForm(): JSX.Element {
             onPress={() => setSupplierModalOpen(false)}
           />
           <View className="rounded-t-3xl bg-white p-6">
-            <Text className="mb-4 text-lg font-semibold text-[#2D2040]">
+            <Text className="mb-4 text-lg font-semibold text-gray-900">
               새 공급업체
             </Text>
 
@@ -374,8 +374,8 @@ export default function IngredientForm(): JSX.Element {
               value={supplierName}
               onChangeText={setSupplierName}
               placeholder="예: 한국유제품"
-              placeholderTextColor="#A0A8B3"
-              className="mb-3 rounded-xl border border-[#EFE0E8] px-4 py-3 text-base text-[#2D2040]"
+              placeholderTextColor="#9CA3AF"
+              className="mb-3 rounded-xl border border-gray-200 px-4 py-3 text-base text-gray-900"
             />
 
             <Text className="mb-1 text-sm text-gray-500">연락처 (선택)</Text>
@@ -383,8 +383,8 @@ export default function IngredientForm(): JSX.Element {
               value={supplierContact}
               onChangeText={setSupplierContact}
               placeholder="010-0000-0000"
-              placeholderTextColor="#A0A8B3"
-              className="mb-3 rounded-xl border border-[#EFE0E8] px-4 py-3 text-base text-[#2D2040]"
+              placeholderTextColor="#9CA3AF"
+              className="mb-3 rounded-xl border border-gray-200 px-4 py-3 text-base text-gray-900"
             />
 
             <Text className="mb-1 text-sm text-gray-500">메모 (선택)</Text>
@@ -392,16 +392,16 @@ export default function IngredientForm(): JSX.Element {
               value={supplierMemo}
               onChangeText={setSupplierMemo}
               placeholder="메모"
-              placeholderTextColor="#A0A8B3"
+              placeholderTextColor="#9CA3AF"
               multiline
               textAlignVertical="top"
-              className="mb-5 min-h-[60px] rounded-xl border border-[#EFE0E8] px-4 py-3 text-base text-[#2D2040]"
+              className="mb-5 min-h-[60px] rounded-xl border border-gray-200 px-4 py-3 text-base text-gray-900"
             />
 
             <View className="flex-row" style={{ gap: 12 }}>
               <Pressable
                 onPress={() => setSupplierModalOpen(false)}
-                className="flex-1 items-center rounded-xl border border-[#EFE0E8] py-3"
+                className="flex-1 items-center rounded-xl border border-gray-200 py-3"
               >
                 <Text className="text-base text-gray-700">취소</Text>
               </Pressable>
@@ -409,7 +409,7 @@ export default function IngredientForm(): JSX.Element {
                 onPress={handleCreateSupplier}
                 disabled={supplierSubmitting}
                 className={`flex-1 items-center rounded-xl py-3 ${
-                  supplierSubmitting ? 'bg-gray-200' : 'bg-[#FF85A1]'
+                  supplierSubmitting ? 'bg-gray-300' : 'bg-[#1E90FF]'
                 }`}
               >
                 <Text className="text-base font-semibold text-white">

@@ -41,12 +41,12 @@ export default function IngredientsIndex(): JSX.Element {
   }, [ingredients, filter, search])
 
   return (
-    <View className="flex-1 bg-[#FFF9FB]">
+    <View className="flex-1 bg-[#F8FAFC]">
       <View className="flex-row items-center justify-between px-5 pb-2 pt-4">
-        <Text className="text-2xl font-bold text-[#2D2040]">재료 관리</Text>
+        <Text className="text-2xl font-bold text-gray-900">재료 관리</Text>
         <Pressable
           onPress={() => router.push('/ingredients/new')}
-          className="rounded-full bg-[#FF85A1] px-3 py-2"
+          className="rounded-full bg-[#1E90FF] px-3 py-2"
         >
           <Text className="text-sm font-semibold text-white">재료 등록</Text>
         </Pressable>
@@ -95,10 +95,10 @@ export default function IngredientsIndex(): JSX.Element {
           return (
             <Pressable
               onPress={() => router.push(`/ingredients/${item.id}`)}
-              className="flex-row items-center rounded-xl border border-[#EFE0E8] bg-white p-4"
+              className="flex-row items-center rounded-xl border border-gray-200 bg-white p-4"
             >
               <View className="flex-1">
-                <Text className="text-base font-semibold text-[#2D2040]">
+                <Text className="text-base font-semibold text-gray-900">
                   {item.name}
                 </Text>
                 <View className="mt-1 flex-row items-center">
@@ -107,9 +107,9 @@ export default function IngredientsIndex(): JSX.Element {
                   </Text>
                   <Pressable
                     onPress={() => router.push(`/ingredients/${item.id}`)}
-                    className="ml-2 rounded-full bg-[#E0EFFF] px-2 py-0.5"
+                    className="ml-2 rounded-full bg-[#E8F4FF] px-2 py-0.5"
                   >
-                    <Text className="text-xs font-medium text-[#85BBFF]">
+                    <Text className="text-xs font-medium text-[#1E90FF]">
                       수정
                     </Text>
                   </Pressable>
@@ -125,7 +125,7 @@ export default function IngredientsIndex(): JSX.Element {
                   </Text>
                 ) : null}
               </View>
-              <Text className="ml-2 text-xl text-[#EFE0E8]">›</Text>
+              <Text className="ml-2 text-xl text-gray-400">›</Text>
             </Pressable>
           )
         }}

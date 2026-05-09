@@ -40,14 +40,14 @@ export default function IngredientDetail(): JSX.Element {
   if (isLoading && !selectedIngredient) {
     return (
       <View className="flex-1 items-center justify-center bg-white">
-        <ActivityIndicator color="#FF85A1" />
+        <ActivityIndicator />
       </View>
     )
   }
 
   if (!selectedIngredient || selectedIngredient.id !== ingredientId) {
     return (
-      <View className="flex-1 bg-[#FFF9FB]">
+      <View className="flex-1 bg-[#F8FAFC]">
         <View className="flex-row items-center px-5 pb-2 pt-4">
           <Pressable onPress={() => router.back()}>
             <Text className="text-base text-gray-700">← 뒤로</Text>
@@ -106,7 +106,7 @@ export default function IngredientDetail(): JSX.Element {
   }
 
   return (
-    <View className="flex-1 bg-[#FFF9FB]">
+    <View className="flex-1 bg-[#F8FAFC]">
       {/* Top Nav */}
       <View className="flex-row items-center justify-between px-5 pb-2 pt-4">
         <Pressable onPress={() => router.back()}>
@@ -114,9 +114,9 @@ export default function IngredientDetail(): JSX.Element {
         </Pressable>
         <Pressable
           onPress={() => router.push(`/ingredients/new?edit=${ingredientId}`)}
-          className="rounded-full bg-[#E0EFFF] px-4 py-2"
+          className="rounded-full bg-[#E8F4FF] px-4 py-2"
         >
-          <Text className="text-sm font-medium text-[#85BBFF]">수정</Text>
+          <Text className="text-sm font-medium text-[#1E90FF]">수정</Text>
         </Pressable>
       </View>
 
@@ -127,7 +127,7 @@ export default function IngredientDetail(): JSX.Element {
         {/* Header */}
         <View className="px-5 py-5">
           <View className="flex-row items-start justify-between">
-            <Text className="flex-1 pr-3 text-2xl font-bold text-[#2D2040]">
+            <Text className="flex-1 pr-3 text-2xl font-bold text-gray-900">
               {ing.name}
             </Text>
             <Badge label={ing.category} category={ing.category} />
@@ -135,7 +135,7 @@ export default function IngredientDetail(): JSX.Element {
         </View>
 
         {/* Current Info */}
-        <View className="mx-5 mb-5 rounded-xl border border-[#EFE0E8] overflow-hidden">
+        <View className="mx-5 mb-5 rounded-xl border border-gray-200">
           <InfoRow
             label="현재가"
             value={`${Math.round(ing.package_price).toLocaleString()}원 / ${ing.package_amount.toLocaleString()}g`}
@@ -152,26 +152,26 @@ export default function IngredientDetail(): JSX.Element {
         {/* Price History */}
         <View className="mx-5 mb-5">
           <View className="mb-3 flex-row items-center justify-between">
-            <Text className="text-base font-semibold text-[#2D2040]">
+            <Text className="text-base font-semibold text-gray-900">
               가격 변동 이력
             </Text>
             <Pressable
               onPress={() => setPriceModalOpen(true)}
-              className="rounded-full bg-[#E0EFFF] px-3 py-1.5"
+              className="rounded-full bg-[#E8F4FF] px-3 py-1.5"
             >
-              <Text className="text-sm font-medium text-[#85BBFF]">
+              <Text className="text-sm font-medium text-[#1E90FF]">
                 + 가격 등록
               </Text>
             </Pressable>
           </View>
           {ing.priceHistory.length === 0 ? (
-            <View className="rounded-xl border border-dashed border-[#EFE0E8] p-6">
+            <View className="rounded-xl border border-dashed border-gray-200 p-6">
               <Text className="text-center text-sm text-gray-500">
                 기록된 이력이 없어요
               </Text>
             </View>
           ) : (
-            <View className="overflow-hidden rounded-xl border border-[#EFE0E8]">
+            <View className="overflow-hidden rounded-xl border border-gray-200">
               {ing.priceHistory.map((h, i, arr) => {
                 const older = i + 1 < arr.length ? arr[i + 1] : null
                 const delta = older ? h.package_price - older.package_price : 0
@@ -179,15 +179,15 @@ export default function IngredientDetail(): JSX.Element {
                 return (
                   <View
                     key={h.id}
-                    className={`flex-row items-center justify-between bg-white px-4 py-3 ${
-                      isLast ? '' : 'border-b border-[#EFE0E8]'
+                    className={`flex-row items-center justify-between px-4 py-3 ${
+                      isLast ? '' : 'border-b border-gray-100'
                     }`}
                   >
                     <View className="flex-1">
                       <Text className="text-xs text-gray-500">
                         {h.recorded_at}
                       </Text>
-                      <Text className="mt-0.5 text-sm font-medium text-[#2D2040]">
+                      <Text className="mt-0.5 text-sm font-medium text-gray-900">
                         {Math.round(h.package_price).toLocaleString()}원 /{' '}
                         {h.package_amount.toLocaleString()}g
                       </Text>
@@ -198,7 +198,7 @@ export default function IngredientDetail(): JSX.Element {
                       ) : (
                         <Text
                           className={`text-xs font-medium ${
-                            delta > 0 ? 'text-[#FF6B6B]' : 'text-[#5BC99A]'
+                            delta > 0 ? 'text-red-500' : 'text-green-600'
                           }`}
                         >
                           {delta > 0 ? '▲' : '▼'}{' '}
@@ -219,9 +219,9 @@ export default function IngredientDetail(): JSX.Element {
         <View className="mx-5 mb-2">
           <Pressable
             onPress={handleDelete}
-            className="items-center rounded-xl border border-[#FFD6D6] bg-white py-3"
+            className="items-center rounded-xl border border-red-200 bg-white py-3"
           >
-            <Text className="text-base font-semibold text-[#FF6B6B]">
+            <Text className="text-base font-semibold text-red-500">
               재료 삭제
             </Text>
           </Pressable>
@@ -244,7 +244,7 @@ export default function IngredientDetail(): JSX.Element {
             onPress={() => setPriceModalOpen(false)}
           />
           <View className="rounded-t-3xl bg-white p-6">
-            <Text className="mb-4 text-lg font-semibold text-[#2D2040]">
+            <Text className="mb-4 text-lg font-semibold text-gray-900">
               새 가격 등록
             </Text>
             <Text className="mb-2 text-sm text-gray-500">
@@ -255,13 +255,13 @@ export default function IngredientDetail(): JSX.Element {
               value={newPrice}
               onChangeText={setNewPrice}
               placeholder={String(Math.round(ing.package_price))}
-              placeholderTextColor="#A0A8B3"
-              className="rounded-xl border border-[#EFE0E8] px-4 py-3 text-base text-[#2D2040]"
+              placeholderTextColor="#9CA3AF"
+              className="rounded-xl border border-gray-200 px-4 py-3 text-base text-gray-900"
             />
             <View className="mt-5 flex-row" style={{ gap: 12 }}>
               <Pressable
                 onPress={() => setPriceModalOpen(false)}
-                className="flex-1 items-center rounded-xl border border-[#EFE0E8] py-3"
+                className="flex-1 items-center rounded-xl border border-gray-200 py-3"
               >
                 <Text className="text-base text-gray-700">취소</Text>
               </Pressable>
@@ -269,7 +269,7 @@ export default function IngredientDetail(): JSX.Element {
                 onPress={handleNewPriceSubmit}
                 disabled={submitting}
                 className={`flex-1 items-center rounded-xl py-3 ${
-                  submitting ? 'bg-gray-200' : 'bg-[#FF85A1]'
+                  submitting ? 'bg-gray-300' : 'bg-[#1E90FF]'
                 }`}
               >
                 <Text className="text-base font-semibold text-white">
@@ -293,12 +293,12 @@ interface InfoRowProps {
 function InfoRow({ label, value, isFirst }: InfoRowProps): JSX.Element {
   return (
     <View
-      className={`flex-row items-center justify-between bg-white px-4 py-3 ${
-        isFirst ? '' : 'border-t border-[#EFE0E8]'
+      className={`flex-row items-center justify-between px-4 py-3 ${
+        isFirst ? '' : 'border-t border-gray-100'
       }`}
     >
       <Text className="text-sm text-gray-500">{label}</Text>
-      <Text className="text-sm font-medium text-[#2D2040]">{value}</Text>
+      <Text className="text-sm font-medium text-gray-900">{value}</Text>
     </View>
   )
 }
