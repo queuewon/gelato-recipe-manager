@@ -2,6 +2,7 @@ import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router'
 import { useCallback, useEffect, useMemo, useRef, useState, type JSX } from 'react'
 import {
   ActivityIndicator,
+  Alert,
   Pressable,
   ScrollView,
   Text,
@@ -26,6 +27,27 @@ export default function RecipeDetail(): JSX.Element {
   const isLoading = useRecipeStore((s) => s.isLoading)
   const loadRecipeById = useRecipeStore((s) => s.loadRecipeById)
   const loadVersions = useRecipeStore((s) => s.loadVersions)
+  const deleteRecipe = useRecipeStore((s) => s.deleteRecipe)
+
+  const handleDelete = (): void => {
+    Alert.alert('레시피 삭제', '이 레시피를 삭제할까요?', [
+      { text: '취소', style: 'cancel' },
+      {
+        text: '삭제',
+        style: 'destructive',
+        onPress: () => {
+          void (async () => {
+            try {
+              await deleteRecipe(recipeId)
+              router.replace('/recipes')
+            } catch (e) {
+              Alert.alert('삭제 실패', e instanceof Error ? e.message : String(e))
+            }
+          })()
+        },
+      },
+    ])
+  }
 
   const [batchSize, setBatchSize] = useState<number>(0)
   const initializedForIdRef = useRef<number | null>(null)
@@ -91,12 +113,20 @@ export default function RecipeDetail(): JSX.Element {
         <Pressable onPress={() => router.back()}>
           <Text className="text-base text-gray-700">← 뒤로가기</Text>
         </Pressable>
-        <Pressable
-          onPress={() => router.push(`/recipes/edit/${recipeId}`)}
-          className="rounded-full bg-[#E8F4FF] px-4 py-2"
-        >
-          <Text className="text-sm font-medium text-[#1E90FF]">수정</Text>
-        </Pressable>
+        <View className="flex-row" style={{ gap: 8 }}>
+          <Pressable
+            onPress={handleDelete}
+            className="rounded-full border border-red-200 px-4 py-2"
+          >
+            <Text className="text-sm font-medium text-red-500">삭제</Text>
+          </Pressable>
+          <Pressable
+            onPress={() => router.push(`/recipes/edit/${recipeId}`)}
+            className="rounded-full bg-[#E8F4FF] px-4 py-2"
+          >
+            <Text className="text-sm font-medium text-[#1E90FF]">수정</Text>
+          </Pressable>
+        </View>
       </View>
 
       {/* Recipe Header */}
