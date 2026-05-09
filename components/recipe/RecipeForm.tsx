@@ -11,7 +11,7 @@ import {
   TextInput,
   View,
 } from 'react-native'
-import { BASE_CATEGORIES } from '../../constants/categories'
+import { useCategoryStore } from '../../store/categoryStore'
 import { useIngredientStore } from '../../store/ingredientStore'
 import type { BaseCategory, Ingredient } from '../../types'
 import { EmptyState } from '../common/EmptyState'
@@ -49,9 +49,13 @@ export function RecipeForm({
   const ingredients = useIngredientStore((s) => s.ingredients)
   const loadIngredients = useIngredientStore((s) => s.loadIngredients)
 
+  const recipeCategories = useCategoryStore((s) => s.recipeCategories)
+  const loadCategories = useCategoryStore((s) => s.loadCategories)
+  const addRecipeCategory = useCategoryStore((s) => s.addRecipeCategory)
+
   const [name, setName] = useState(initial?.name ?? '')
-  const [category, setCategory] = useState<BaseCategory>(
-    initial?.base_category ?? '과일',
+  const [category, setCategory] = useState<string>(
+    initial?.base_category ?? '',
   )
   const [batchSize, setBatchSize] = useState(
     initial ? String(initial.batch_size) : '',
@@ -61,11 +65,22 @@ export function RecipeForm({
   const [modalOpen, setModalOpen] = useState(false)
   const [submitting, setSubmitting] = useState(false)
 
+  const [addingCat, setAddingCat] = useState(false)
+  const [newCatText, setNewCatText] = useState('')
+  const [addingCatBusy, setAddingCatBusy] = useState(false)
+
   const initializedRef = useRef(false)
 
   useEffect(() => {
     void loadIngredients()
-  }, [loadIngredients])
+    void loadCategories()
+  }, [loadIngredients, loadCategories])
+
+  useEffect(() => {
+    if (category === '' && recipeCategories.length > 0) {
+      setCategory(recipeCategories[0])
+    }
+  }, [recipeCategories, category])
 
   useEffect(() => {
     if (initializedRef.current) return
@@ -100,9 +115,29 @@ export function RecipeForm({
     setRows((prev) => prev.filter((_, i) => i !== idx))
   }
 
+  const handleAddCategory = async (): Promise<void> => {
+    const trimmed = newCatText.trim()
+    if (!trimmed) return
+    setAddingCatBusy(true)
+    try {
+      await addRecipeCategory(trimmed)
+      setCategory(trimmed)
+      setNewCatText('')
+      setAddingCat(false)
+    } catch (e) {
+      Alert.alert('추가 실패', e instanceof Error ? e.message : String(e))
+    } finally {
+      setAddingCatBusy(false)
+    }
+  }
+
   const handleSubmit = async (): Promise<void> => {
     if (!name.trim()) {
       Alert.alert('레시피명을 입력해주세요')
+      return
+    }
+    if (!category) {
+      Alert.alert('카테고리를 선택해주세요')
       return
     }
     const parsedBatch = Number(batchSize)
@@ -169,17 +204,57 @@ export function RecipeForm({
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{ gap: 8, paddingVertical: 4 }}
-          className="mb-5"
+          className="mb-2"
         >
-          {BASE_CATEGORIES.map((cat) => (
+          {recipeCategories.map((cat) => (
             <FilterChip
               key={cat}
               label={cat}
               isActive={category === cat}
-              onPress={() => setCategory(cat)}
+              onPress={() => {
+                setCategory(cat)
+                setAddingCat(false)
+              }}
             />
           ))}
+          <Pressable
+            onPress={() => setAddingCat((v) => !v)}
+            className="rounded-full border border-gray-200 bg-white px-4 py-2"
+          >
+            <Text className="text-sm text-gray-500">+ 추가</Text>
+          </Pressable>
         </ScrollView>
+
+        {addingCat && (
+          <View className="mb-4 flex-row items-center" style={{ gap: 8 }}>
+            <TextInput
+              value={newCatText}
+              onChangeText={setNewCatText}
+              placeholder="새 카테고리명"
+              placeholderTextColor="#9CA3AF"
+              className="flex-1 rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900"
+              autoFocus
+            />
+            <Pressable
+              onPress={handleAddCategory}
+              disabled={addingCatBusy || !newCatText.trim()}
+              className="rounded-xl bg-[#1E90FF] px-3 py-2"
+            >
+              <Text className="text-sm font-medium text-white">확인</Text>
+            </Pressable>
+            <Pressable
+              onPress={() => {
+                setAddingCat(false)
+                setNewCatText('')
+              }}
+              className="rounded-xl border border-gray-200 px-3 py-2"
+            >
+              <Text className="text-sm text-gray-600">취소</Text>
+            </Pressable>
+          </View>
+        )}
+
+        <View className="mb-5" />
 
         {/* Batch Size */}
         <Text className="mb-2 text-sm font-medium text-gray-700">

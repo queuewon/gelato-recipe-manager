@@ -1,19 +1,5 @@
-export type BaseCategory =
-  | '과일'
-  | '차'
-  | '곡물'
-  | '견과'
-  | '술'
-  | '초콜릿'
-  | '기타'
-
-export type IngredientCategory =
-  | '유제품'
-  | '과일'
-  | '견과'
-  | '당류'
-  | '차'
-  | '기타'
+export type BaseCategory = string
+export type IngredientCategory = string
 
 export type ChecklistStatus = 'pending' | 'in_progress' | 'done'
 
@@ -21,7 +7,7 @@ export interface Recipe {
   id: number
   name: string
   base_category: BaseCategory
-  batch_size: number
+  batch_size: number       // g 단위
   memo?: string
   is_deleted: number
   created_at: string
@@ -36,7 +22,7 @@ export interface RecipeIngredientDetail {
   id: number
   recipe_id: number
   ingredient_id: number
-  amount: number
+  amount: number           // g 단위
   ingredient: Ingredient
 }
 
@@ -52,11 +38,11 @@ export interface Ingredient {
   id: number
   name: string
   category: IngredientCategory
-  package_price: number
-  package_amount: number
-  price_per_g: number
-  stock_count: number
-  stock_unit: string
+  package_price: number    // 한 통 가격 (원)
+  package_amount: number   // 한 통 용량 (g)
+  price_per_g: number      // g당 가격 (자동 계산)
+  stock_count: number      // 재고 개수
+  stock_unit: string       // 단위 표시
   supplier_id?: number
   created_at: string
 }
@@ -86,7 +72,7 @@ export interface DailyChecklist {
   id: number
   recipe_id: number
   date: string
-  batch_size: number
+  batch_size: number       // g 단위
   status: ChecklistStatus
   completed_at?: string
   recipe?: Recipe

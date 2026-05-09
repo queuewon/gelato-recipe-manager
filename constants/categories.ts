@@ -1,20 +1,7 @@
-import type { BaseCategory, IngredientCategory } from '../types'
+export const DEFAULT_RECIPE_CATEGORIES: string[] = [
+  '과일', '차', '곡물', '견과', '술', '초콜릿', '기타',
+]
 
-export const BASE_CATEGORIES: readonly BaseCategory[] = [
-  '과일',
-  '차',
-  '곡물',
-  '견과',
-  '술',
-  '초콜릿',
-  '기타',
-] as const
-
-export const INGREDIENT_CATEGORIES: readonly IngredientCategory[] = [
-  '유제품',
-  '과일',
-  '견과',
-  '당류',
-  '차',
-  '기타',
-] as const
+export const DEFAULT_INGREDIENT_CATEGORIES: string[] = [
+  '유제품', '과일', '견과', '당류', '차', '기타',
+]
