@@ -13,9 +13,12 @@ import {
 import { ColorPicker } from '../../../../components/common/ColorPicker'
 import {
   DEFAULT_LABEL_COLOR_KEY,
+  PASTEL_THEMES,
   getLabelColor,
 } from '../../../../constants/colors'
 import { useCategoryStore } from '../../../../store/categoryStore'
+
+const THEME = PASTEL_THEMES.blue
 
 export default function PackageUnitsScreen(): JSX.Element {
   const router = useRouter()
@@ -76,14 +79,42 @@ export default function PackageUnitsScreen(): JSX.Element {
 
   return (
     <KeyboardAvoidingView
-      className="flex-1 bg-[#F8FAFC]"
+      className="flex-1"
+      style={{ backgroundColor: THEME.softer }}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
+      <View
+        style={{
+          position: 'absolute',
+          top: -60,
+          right: -60,
+          width: 200,
+          height: 200,
+          borderRadius: 100,
+          backgroundColor: THEME.soft,
+          opacity: 0.7,
+        }}
+      />
+      <View
+        style={{
+          position: 'absolute',
+          top: 80,
+          left: -50,
+          width: 130,
+          height: 130,
+          borderRadius: 65,
+          backgroundColor: THEME.accent,
+          opacity: 0.18,
+        }}
+      />
+
       <View className="flex-row items-center justify-between px-5 pb-2 pt-4">
         <Pressable onPress={() => router.back()}>
           <Text className="text-base text-gray-700">← 뒤로가기</Text>
         </Pressable>
-        <Text className="text-lg font-semibold text-gray-900">포장 단위</Text>
+        <Text style={{ color: THEME.deep, fontSize: 17, fontWeight: '700' }}>
+          포장 단위
+        </Text>
         <View style={{ width: 72 }} />
       </View>
 
@@ -91,102 +122,223 @@ export default function PackageUnitsScreen(): JSX.Element {
         contentContainerStyle={{ padding: 20, paddingBottom: 40 }}
         keyboardShouldPersistTaps="handled"
       >
-        <View className="mb-4 rounded-xl border border-gray-200 bg-white">
+        <View
+          style={{
+            backgroundColor: '#FFFFFF',
+            borderRadius: 20,
+            padding: 18,
+            marginBottom: 16,
+            borderWidth: 1,
+            borderColor: THEME.ring,
+            shadowColor: THEME.deep,
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.06,
+            shadowRadius: 10,
+            elevation: 2,
+          }}
+        >
+          <View className="mb-3 flex-row items-center" style={{ gap: 8 }}>
+            <View
+              style={{
+                width: 8,
+                height: 8,
+                borderRadius: 4,
+                backgroundColor: THEME.deep,
+              }}
+            />
+            <Text
+              style={{ color: THEME.deep, fontSize: 13, fontWeight: '700' }}
+            >
+              등록된 단위
+            </Text>
+          </View>
+
           {packageUnitLabels.length === 0 ? (
-            <View className="px-4 py-4">
-              <Text className="text-sm text-gray-400">
+            <View
+              style={{
+                paddingVertical: 14,
+                paddingHorizontal: 12,
+                backgroundColor: THEME.softer,
+                borderRadius: 14,
+              }}
+            >
+              <Text style={{ color: THEME.deep, opacity: 0.6, fontSize: 13 }}>
                 단위가 없어요. 아래에서 추가해보세요.
               </Text>
             </View>
           ) : (
-            packageUnitLabels.map((u, idx) => {
-              const color = getLabelColor(u.color)
-              const isEditing = editingName === u.name
-              return (
-                <View
-                  key={u.name}
-                  className={
-                    idx < packageUnitLabels.length - 1
-                      ? 'border-b border-gray-100'
-                      : ''
-                  }
-                >
-                  <View className="flex-row items-center justify-between px-4 py-3">
-                    <Pressable
-                      className="flex-1 flex-row items-center"
-                      onPress={() => setEditingName(isEditing ? null : u.name)}
-                    >
-                      <View
+            <View style={{ gap: 8 }}>
+              {packageUnitLabels.map((u) => {
+                const color = getLabelColor(u.color)
+                const isEditing = editingName === u.name
+                return (
+                  <View
+                    key={u.name}
+                    style={{
+                      backgroundColor: THEME.softer,
+                      borderRadius: 16,
+                      borderWidth: 1,
+                      borderColor: isEditing ? THEME.accent : 'transparent',
+                    }}
+                  >
+                    <View className="flex-row items-center justify-between px-3 py-3">
+                      <Pressable
+                        className="flex-1 flex-row items-center"
+                        onPress={() =>
+                          setEditingName(isEditing ? null : u.name)
+                        }
+                        style={{ gap: 10 }}
+                      >
+                        <View
+                          style={{
+                            backgroundColor: color.bg,
+                            paddingHorizontal: 12,
+                            paddingVertical: 5,
+                            borderRadius: 999,
+                          }}
+                        >
+                          <Text
+                            style={{
+                              color: color.text,
+                              fontSize: 13,
+                              fontWeight: '700',
+                            }}
+                          >
+                            {u.name}
+                          </Text>
+                        </View>
+                        <Text
+                          style={{
+                            color: THEME.deep,
+                            opacity: 0.6,
+                            fontSize: 12,
+                          }}
+                        >
+                          {isEditing ? '닫기' : '색상 변경'}
+                        </Text>
+                      </Pressable>
+                      <Pressable
+                        onPress={() => handleDelete(u.name)}
+                        hitSlop={12}
                         style={{
-                          backgroundColor: color.bg,
-                          paddingHorizontal: 10,
-                          paddingVertical: 4,
+                          backgroundColor: '#FFE4E6',
+                          paddingHorizontal: 12,
+                          paddingVertical: 5,
                           borderRadius: 999,
-                          marginRight: 8,
                         }}
                       >
                         <Text
-                          style={{ color: color.text, fontSize: 12, fontWeight: '600' }}
+                          style={{
+                            color: '#BE123C',
+                            fontSize: 12,
+                            fontWeight: '600',
+                          }}
                         >
-                          {u.name}
+                          삭제
                         </Text>
-                      </View>
-                      <Text className="text-xs text-gray-400">
-                        {isEditing ? '닫기' : '색상 변경'}
-                      </Text>
-                    </Pressable>
-                    <Pressable
-                      onPress={() => handleDelete(u.name)}
-                      hitSlop={12}
-                      className="rounded-full bg-red-50 px-3 py-1"
-                    >
-                      <Text className="text-sm text-red-400">삭제</Text>
-                    </Pressable>
-                  </View>
-                  {isEditing && (
-                    <View className="px-4 pb-3">
-                      <ColorPicker
-                        value={u.color}
-                        onChange={(c) => {
-                          void handleColorChange(u.name, c)
-                        }}
-                      />
+                      </Pressable>
                     </View>
-                  )}
-                </View>
-              )
-            })
+                    {isEditing && (
+                      <View className="px-3 pb-3">
+                        <ColorPicker
+                          value={u.color}
+                          onChange={(c) => {
+                            void handleColorChange(u.name, c)
+                          }}
+                        />
+                      </View>
+                    )}
+                  </View>
+                )
+              })}
+            </View>
           )}
         </View>
 
-        <View className="mb-3 rounded-xl border border-gray-200 bg-white p-4">
-          <Text className="mb-2 text-sm font-medium text-gray-700">
-            새 단위
-          </Text>
+        <View
+          style={{
+            backgroundColor: '#FFFFFF',
+            borderRadius: 20,
+            padding: 18,
+            borderWidth: 1,
+            borderColor: THEME.ring,
+            shadowColor: THEME.deep,
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.06,
+            shadowRadius: 10,
+            elevation: 2,
+          }}
+        >
+          <View className="mb-3 flex-row items-center" style={{ gap: 8 }}>
+            <View
+              style={{
+                width: 8,
+                height: 8,
+                borderRadius: 4,
+                backgroundColor: THEME.accent,
+              }}
+            />
+            <Text
+              style={{ color: THEME.deep, fontSize: 13, fontWeight: '700' }}
+            >
+              새 단위
+            </Text>
+          </View>
           <TextInput
             value={newUnit}
             onChangeText={setNewUnit}
             placeholder="단위 이름 (예: 박스)"
-            placeholderTextColor="#9CA3AF"
+            placeholderTextColor="#9DB7DA"
             returnKeyType="done"
             onSubmitEditing={handleAdd}
-            className="rounded-xl border border-gray-200 bg-white px-4 py-3 text-base text-gray-900"
+            style={{
+              backgroundColor: THEME.softer,
+              borderRadius: 14,
+              paddingHorizontal: 16,
+              paddingVertical: 12,
+              fontSize: 15,
+              color: '#1A1A2E',
+              borderWidth: 1,
+              borderColor: THEME.ring,
+            }}
           />
-          <Text className="mb-2 mt-3 text-xs text-gray-500">색상</Text>
+          <Text
+            style={{
+              color: THEME.deep,
+              opacity: 0.7,
+              fontSize: 12,
+              marginTop: 14,
+              marginBottom: 10,
+              fontWeight: '600',
+            }}
+          >
+            라벨 색상
+          </Text>
           <ColorPicker value={newColor} onChange={setNewColor} />
           <Pressable
             onPress={handleAdd}
             disabled={!newUnit.trim()}
-            className={`mt-4 items-center justify-center rounded-xl py-3 ${
-              newUnit.trim() ? 'bg-[#1E90FF]' : 'bg-gray-200'
-            }`}
+            style={{
+              marginTop: 18,
+              borderRadius: 14,
+              paddingVertical: 14,
+              alignItems: 'center',
+              backgroundColor: newUnit.trim() ? THEME.deep : THEME.ring,
+              shadowColor: THEME.deep,
+              shadowOffset: { width: 0, height: 3 },
+              shadowOpacity: newUnit.trim() ? 0.25 : 0,
+              shadowRadius: 6,
+              elevation: newUnit.trim() ? 2 : 0,
+            }}
           >
             <Text
-              className={`text-sm font-semibold ${
-                newUnit.trim() ? 'text-white' : 'text-gray-400'
-              }`}
+              style={{
+                color: '#FFFFFF',
+                fontWeight: '700',
+                fontSize: 15,
+              }}
             >
-              추가
+              추가하기
             </Text>
           </Pressable>
         </View>

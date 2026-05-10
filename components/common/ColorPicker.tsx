@@ -9,7 +9,7 @@ interface ColorPickerProps {
 
 export function ColorPicker({ value, onChange }: ColorPickerProps): JSX.Element {
   return (
-    <View className="flex-row flex-wrap" style={{ gap: 10 }}>
+    <View className="flex-row flex-wrap" style={{ gap: 12 }}>
       {LABEL_PALETTE.map((c) => {
         const selected = c.key === value
         return (
@@ -18,21 +18,26 @@ export function ColorPicker({ value, onChange }: ColorPickerProps): JSX.Element 
             onPress={() => onChange(c.key)}
             hitSlop={6}
             style={{
-              width: 32,
-              height: 32,
-              borderRadius: 16,
+              width: 40,
+              height: 40,
+              borderRadius: 20,
               backgroundColor: c.bg,
-              borderWidth: selected ? 2 : 1,
+              borderWidth: selected ? 2.5 : 1,
               borderColor: selected ? c.text : '#E5E7EB',
               alignItems: 'center',
               justifyContent: 'center',
+              shadowColor: c.text,
+              shadowOffset: { width: 0, height: selected ? 3 : 1 },
+              shadowOpacity: selected ? 0.25 : 0.08,
+              shadowRadius: selected ? 6 : 2,
+              elevation: selected ? 3 : 1,
             }}
           >
             <View
               style={{
-                width: 14,
-                height: 14,
-                borderRadius: 7,
+                width: selected ? 18 : 14,
+                height: selected ? 18 : 14,
+                borderRadius: selected ? 9 : 7,
                 backgroundColor: c.text,
               }}
             />

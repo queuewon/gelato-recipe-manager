@@ -41,6 +41,38 @@ export const LABEL_PALETTE: readonly LabelColor[] = [
 
 export const DEFAULT_LABEL_COLOR_KEY = 'gray'
 
+export interface PastelTheme {
+  soft: string
+  softer: string
+  accent: string
+  deep: string
+  ring: string
+}
+
+export const PASTEL_THEMES = {
+  pink: {
+    soft: '#FFE4EC',
+    softer: '#FFF5F8',
+    accent: '#F9A8C4',
+    deep: '#BE185D',
+    ring: '#FBCFE0',
+  },
+  yellow: {
+    soft: '#FEF3C7',
+    softer: '#FFFBEB',
+    accent: '#FCD34D',
+    deep: '#92400E',
+    ring: '#FDE68A',
+  },
+  blue: {
+    soft: '#DBEAFE',
+    softer: '#F0F7FF',
+    accent: '#93C5FD',
+    deep: '#1D4ED8',
+    ring: '#BFDBFE',
+  },
+} as const satisfies Record<string, PastelTheme>
+
 const PALETTE_MAP: Record<string, LabelColor> = LABEL_PALETTE.reduce(
   (acc, c) => {
     acc[c.key] = c
