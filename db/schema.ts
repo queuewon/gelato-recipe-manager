@@ -4,6 +4,7 @@ import {
   DEFAULT_INGREDIENT_CATEGORIES,
   DEFAULT_PACKAGE_UNITS,
 } from '../constants/categories'
+import { DEFAULT_LABEL_COLOR_KEY } from '../constants/colors'
 
 const DB_NAME = 'gelato.db'
 
@@ -92,19 +93,43 @@ CREATE TABLE IF NOT EXISTS daily_checklist (
 
 CREATE TABLE IF NOT EXISTS recipe_categories (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT NOT NULL UNIQUE
+  name TEXT NOT NULL UNIQUE,
+  color TEXT NOT NULL DEFAULT '${DEFAULT_LABEL_COLOR_KEY}'
 );
 
 CREATE TABLE IF NOT EXISTS ingredient_categories (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT NOT NULL UNIQUE
+  name TEXT NOT NULL UNIQUE,
+  color TEXT NOT NULL DEFAULT '${DEFAULT_LABEL_COLOR_KEY}'
 );
 
 CREATE TABLE IF NOT EXISTS package_units (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT NOT NULL UNIQUE
+  name TEXT NOT NULL UNIQUE,
+  color TEXT NOT NULL DEFAULT '${DEFAULT_LABEL_COLOR_KEY}'
 );
 `
+
+const LABEL_TABLES = [
+  'recipe_categories',
+  'ingredient_categories',
+  'package_units',
+] as const
+
+async function ensureColorColumns(
+  conn: SQLite.SQLiteDatabase,
+): Promise<void> {
+  for (const table of LABEL_TABLES) {
+    const cols = await conn.getAllAsync<{ name: string }>(
+      `PRAGMA table_info(${table})`,
+    )
+    if (!cols.some((c) => c.name === 'color')) {
+      await conn.execAsync(
+        `ALTER TABLE ${table} ADD COLUMN color TEXT NOT NULL DEFAULT '${DEFAULT_LABEL_COLOR_KEY}'`,
+      )
+    }
+  }
+}
 
 export async function seedDefaultCategories(
   conn: SQLite.SQLiteDatabase,
@@ -113,10 +138,11 @@ export async function seedDefaultCategories(
     'SELECT COUNT(*) AS count FROM recipe_categories',
   )
   if ((rc?.count ?? 0) === 0) {
-    for (const name of DEFAULT_RECIPE_CATEGORIES) {
+    for (const { name, color } of DEFAULT_RECIPE_CATEGORIES) {
       await conn.runAsync(
-        'INSERT OR IGNORE INTO recipe_categories (name) VALUES (?)',
+        'INSERT OR IGNORE INTO recipe_categories (name, color) VALUES (?, ?)',
         name,
+        color,
       )
     }
   }
@@ -125,10 +151,11 @@ export async function seedDefaultCategories(
     'SELECT COUNT(*) AS count FROM ingredient_categories',
   )
   if ((ic?.count ?? 0) === 0) {
-    for (const name of DEFAULT_INGREDIENT_CATEGORIES) {
+    for (const { name, color } of DEFAULT_INGREDIENT_CATEGORIES) {
       await conn.runAsync(
-        'INSERT OR IGNORE INTO ingredient_categories (name) VALUES (?)',
+        'INSERT OR IGNORE INTO ingredient_categories (name, color) VALUES (?, ?)',
         name,
+        color,
       )
     }
   }
@@ -137,10 +164,31 @@ export async function seedDefaultCategories(
     'SELECT COUNT(*) AS count FROM package_units',
   )
   if ((pu?.count ?? 0) === 0) {
-    for (const name of DEFAULT_PACKAGE_UNITS) {
+    for (const { name, color } of DEFAULT_PACKAGE_UNITS) {
       await conn.runAsync(
-        'INSERT OR IGNORE INTO package_units (name) VALUES (?)',
+        'INSERT OR IGNORE INTO package_units (name, color) VALUES (?, ?)',
         name,
+        color,
+      )
+    }
+  }
+}
+
+async function backfillExistingLabelColors(
+  conn: SQLite.SQLiteDatabase,
+): Promise<void> {
+  const map: Array<{ table: string; defaults: { name: string; color: string }[] }> = [
+    { table: 'recipe_categories', defaults: DEFAULT_RECIPE_CATEGORIES },
+    { table: 'ingredient_categories', defaults: DEFAULT_INGREDIENT_CATEGORIES },
+    { table: 'package_units', defaults: DEFAULT_PACKAGE_UNITS },
+  ]
+  for (const { table, defaults } of map) {
+    for (const { name, color } of defaults) {
+      await conn.runAsync(
+        `UPDATE ${table} SET color = ? WHERE name = ? AND color = ?`,
+        color,
+        name,
+        DEFAULT_LABEL_COLOR_KEY,
       )
     }
   }
@@ -149,5 +197,7 @@ export async function seedDefaultCategories(
 export async function initDB(): Promise<void> {
   const conn = await getDB()
   await conn.execAsync(SCHEMA_SQL)
+  await ensureColorColumns(conn)
   await seedDefaultCategories(conn)
+  await backfillExistingLabelColors(conn)
 }

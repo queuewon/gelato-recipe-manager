@@ -3,6 +3,11 @@ export type IngredientCategory = string
 
 export type ChecklistStatus = 'pending' | 'in_progress' | 'done'
 
+export interface Label {
+  name: string
+  color: string
+}
+
 export interface Recipe {
   id: number
   name: string

@@ -20,14 +20,36 @@ export const COLORS = {
   },
 } as const
 
-export const CATEGORY_COLORS: Record<string, { bg: string; text: string }> = {
-  과일: { bg: '#FDE8F0', text: '#BE185D' },
-  차: { bg: '#E0F2FE', text: '#0369A1' },
-  곡물: { bg: '#F0FDF4', text: '#166534' },
-  견과: { bg: '#FEF9C3', text: '#854D0E' },
-  술: { bg: '#EDE9FE', text: '#6D28D9' },
-  초콜릿: { bg: '#FDF2E9', text: '#78350F' },
-  기타: { bg: '#F3F4F6', text: '#374151' },
-  유제품: { bg: '#E0F2FE', text: '#0369A1' },
-  당류: { bg: '#FEF9C3', text: '#854D0E' },
+export interface LabelColor {
+  key: string
+  bg: string
+  text: string
+}
+
+export const LABEL_PALETTE: readonly LabelColor[] = [
+  { key: 'pink', bg: '#FDE8F0', text: '#BE185D' },
+  { key: 'blue', bg: '#E0F2FE', text: '#0369A1' },
+  { key: 'green', bg: '#F0FDF4', text: '#166534' },
+  { key: 'yellow', bg: '#FEF9C3', text: '#854D0E' },
+  { key: 'purple', bg: '#EDE9FE', text: '#6D28D9' },
+  { key: 'brown', bg: '#FDF2E9', text: '#78350F' },
+  { key: 'red', bg: '#FEE2E2', text: '#991B1B' },
+  { key: 'teal', bg: '#CCFBF1', text: '#115E59' },
+  { key: 'indigo', bg: '#E0E7FF', text: '#3730A3' },
+  { key: 'gray', bg: '#F3F4F6', text: '#374151' },
+] as const
+
+export const DEFAULT_LABEL_COLOR_KEY = 'gray'
+
+const PALETTE_MAP: Record<string, LabelColor> = LABEL_PALETTE.reduce(
+  (acc, c) => {
+    acc[c.key] = c
+    return acc
+  },
+  {} as Record<string, LabelColor>,
+)
+
+export function getLabelColor(key: string | undefined | null): LabelColor {
+  if (!key) return PALETTE_MAP[DEFAULT_LABEL_COLOR_KEY]
+  return PALETTE_MAP[key] ?? PALETTE_MAP[DEFAULT_LABEL_COLOR_KEY]
 }

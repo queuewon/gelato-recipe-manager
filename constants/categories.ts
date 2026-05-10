@@ -1,11 +1,29 @@
-export const DEFAULT_RECIPE_CATEGORIES: string[] = [
-  '과일', '차', '곡물', '견과', '술', '초콜릿', '기타',
+export interface DefaultLabel {
+  name: string
+  color: string
+}
+
+export const DEFAULT_RECIPE_CATEGORIES: DefaultLabel[] = [
+  { name: '과일', color: 'pink' },
+  { name: '차', color: 'blue' },
+  { name: '곡물', color: 'green' },
+  { name: '견과', color: 'yellow' },
+  { name: '술', color: 'purple' },
+  { name: '초콜릿', color: 'brown' },
+  { name: '기타', color: 'gray' },
 ]
 
-export const DEFAULT_INGREDIENT_CATEGORIES: string[] = [
-  '유제품', '과일', '견과', '당류', '차', '기타',
+export const DEFAULT_INGREDIENT_CATEGORIES: DefaultLabel[] = [
+  { name: '유제품', color: 'blue' },
+  { name: '과일', color: 'pink' },
+  { name: '견과', color: 'yellow' },
+  { name: '당류', color: 'yellow' },
+  { name: '차', color: 'blue' },
+  { name: '기타', color: 'gray' },
 ]
 
-export const DEFAULT_PACKAGE_UNITS: string[] = [
-  '개', '봉', '통',
+export const DEFAULT_PACKAGE_UNITS: DefaultLabel[] = [
+  { name: '개', color: 'gray' },
+  { name: '봉', color: 'gray' },
+  { name: '통', color: 'gray' },
 ]
