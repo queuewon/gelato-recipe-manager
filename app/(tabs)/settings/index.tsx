@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import Constants from 'expo-constants'
 import * as DocumentPicker from 'expo-document-picker'
 import { useRouter } from 'expo-router'
@@ -10,7 +9,6 @@ import {
   Pressable,
   ScrollView,
   Text,
-  TextInput,
   View,
 } from 'react-native'
 import { useCategoryStore } from '../../../store/categoryStore'
@@ -24,7 +22,6 @@ import {
   importBackup,
 } from '../../../utils/backup'
 
-const STORE_NAME_KEY = 'gelato.storeName'
 const APP_VERSION = Constants.expoConfig?.version ?? '1.0.0'
 
 async function reloadAllStores(): Promise<void> {
@@ -39,36 +36,13 @@ async function reloadAllStores(): Promise<void> {
 
 export default function Settings(): JSX.Element {
   const router = useRouter()
-  const [storeName, setStoreName] = useState('')
-  const [storeNameSaved, setStoreNameSaved] = useState('')
   const [busy, setBusy] = useState(false)
 
   const loadCategories = useCategoryStore((s) => s.loadCategories)
 
   useEffect(() => {
     void loadCategories()
-    void (async () => {
-      try {
-        const v = await AsyncStorage.getItem(STORE_NAME_KEY)
-        if (v) {
-          setStoreName(v)
-          setStoreNameSaved(v)
-        }
-      } catch (e) {
-        console.error('[settings] load store name failed:', e)
-      }
-    })()
   }, [loadCategories])
-
-  const handleSaveStoreName = async (): Promise<void> => {
-    try {
-      await AsyncStorage.setItem(STORE_NAME_KEY, storeName.trim())
-      setStoreNameSaved(storeName.trim())
-      Alert.alert('저장됨', '매장 정보가 저장되었어요')
-    } catch (e) {
-      Alert.alert('저장 실패', e instanceof Error ? e.message : String(e))
-    }
-  }
 
   const handleExport = async (): Promise<void> => {
     setBusy(true)
@@ -167,8 +141,6 @@ export default function Settings(): JSX.Element {
     )
   }
 
-  const storeNameDirty = storeName.trim() !== storeNameSaved.trim()
-
   return (
     <KeyboardAvoidingView
       className="flex-1 bg-[#F8FAFC]"
@@ -179,33 +151,6 @@ export default function Settings(): JSX.Element {
         keyboardShouldPersistTaps="handled"
       >
         <Text className="mb-5 text-2xl font-bold text-gray-900">설정</Text>
-
-        {/* Store Info */}
-        <Section title="매장 정보">
-          <Text className="mb-2 text-sm text-gray-500">매장명</Text>
-          <TextInput
-            value={storeName}
-            onChangeText={setStoreName}
-            placeholder="예: 누나네 젤라또"
-            placeholderTextColor="#9CA3AF"
-            className="rounded-xl border border-gray-200 bg-white px-4 py-3 text-base text-gray-900"
-          />
-          <Pressable
-            onPress={handleSaveStoreName}
-            disabled={!storeNameDirty}
-            className={`mt-3 items-center rounded-xl py-3 ${
-              storeNameDirty ? 'bg-[#1E90FF]' : 'bg-gray-200'
-            }`}
-          >
-            <Text
-              className={`text-sm font-semibold ${
-                storeNameDirty ? 'text-white' : 'text-gray-500'
-              }`}
-            >
-              저장
-            </Text>
-          </Pressable>
-        </Section>
 
         {/* Category Management */}
         <Section title="카테고리 관리">
