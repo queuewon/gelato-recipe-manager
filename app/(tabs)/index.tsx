@@ -186,7 +186,7 @@ export default function Home(): JSX.Element {
         {preview.length === 0 ? (
           <View className="mt-4 items-center py-6">
             <Text className="text-sm text-gray-500">
-              오늘 생산할 메뉴가 없네... 까먹은거 아니지?
+              오늘 만들 메뉴가 없네... 까먹은거 아니지?
             </Text>
             <Pressable
               onPress={() => router.push('/checklist')}

@@ -161,6 +161,36 @@ export default function RecipeDetail(): JSX.Element {
         </Text>
       </View>
 
+      {/* Memo */}
+      {selectedRecipe.memo && selectedRecipe.memo.trim().length > 0 ? (
+        <View
+          style={{
+            marginHorizontal: 20,
+            marginBottom: 20,
+            backgroundColor: '#FFFFFF',
+            borderRadius: 20,
+            padding: 16,
+            borderWidth: 1,
+            borderColor: THEME.ring,
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 12,
+              fontWeight: '700',
+              color: THEME.deep,
+              letterSpacing: 0.4,
+              marginBottom: 6,
+            }}
+          >
+            메모
+          </Text>
+          <Text className="text-sm leading-5 text-gray-700">
+            {selectedRecipe.memo}
+          </Text>
+        </View>
+      ) : null}
+
       {/* Batch Size Adjuster */}
       <View
         style={{

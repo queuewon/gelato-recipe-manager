@@ -195,8 +195,8 @@ export default function Checklist(): JSX.Element {
         contentContainerStyle={{ padding: 20, gap: 10, flexGrow: 1 }}
         ListEmptyComponent={
           <EmptyState
-            title="비어있네...? 일해"
-            subtitle="오늘 생산할 메뉴를 추가해보도록"
+            title="비어있네. 일해"
+            subtitle="오늘 만들 메뉴를 추가해보도록"
           />
         }
         renderItem={({ item }) => {

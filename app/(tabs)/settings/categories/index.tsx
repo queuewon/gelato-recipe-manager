@@ -99,7 +99,7 @@ export default function CategoriesIndex(): JSX.Element {
           }}
         >
           <Text className="text-base font-semibold text-gray-900">
-            라벨을 예쁘게 정리해볼까..?
+            라벨을 예쁘게 정리
           </Text>
           <Text className="mt-1 text-xs text-gray-500">
             레시피·재료·단위 라벨에 색상을 입혀 한눈에 구분할 수 있게 해봤음.
