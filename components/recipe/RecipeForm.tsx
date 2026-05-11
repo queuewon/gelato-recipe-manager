@@ -16,8 +16,10 @@ import { PASTEL_THEMES } from '../../constants/colors'
 import { useCategoryStore } from '../../store/categoryStore'
 import { useIngredientStore } from '../../store/ingredientStore'
 import type { BaseCategory, Ingredient } from '../../types'
+import { Badge } from '../common/Badge'
 import { EmptyState } from '../common/EmptyState'
 import { FilterChip } from '../common/FilterChip'
+import { SearchBar } from '../common/SearchBar'
 
 const THEME = PASTEL_THEMES.pink
 
@@ -95,6 +97,7 @@ export function RecipeForm({
   const [memo, setMemo] = useState(initial?.memo ?? '')
   const [rows, setRows] = useState<IngredientRow[]>([])
   const [modalOpen, setModalOpen] = useState(false)
+  const [modalSearch, setModalSearch] = useState('')
   const [submitting, setSubmitting] = useState(false)
 
   const [addingCat, setAddingCat] = useState(false)
@@ -206,9 +209,16 @@ export function RecipeForm({
     }
   }
 
-  const availableForModal = ingredients.filter(
-    (ing) => !rows.some((r) => r.ingredient.id === ing.id),
-  )
+  const availableForModal = ingredients
+    .filter((ing) => !rows.some((r) => r.ingredient.id === ing.id))
+    .filter((ing) => {
+      const q = modalSearch.trim().toLowerCase()
+      if (!q) return true
+      return (
+        ing.name.toLowerCase().includes(q) ||
+        ing.category.toLowerCase().includes(q)
+      )
+    })
 
   return (
     <KeyboardAvoidingView
@@ -458,7 +468,10 @@ export function RecipeForm({
       <Modal
         visible={modalOpen}
         animationType="slide"
-        onRequestClose={() => setModalOpen(false)}
+        onRequestClose={() => {
+          setModalOpen(false)
+          setModalSearch('')
+        }}
       >
         <View className="flex-1 bg-white">
           <View
@@ -476,18 +489,40 @@ export function RecipeForm({
             <Text style={{ fontSize: 17, fontWeight: '700', color: THEME.deep }}>
               재료 선택
             </Text>
-            <Pressable onPress={() => setModalOpen(false)} hitSlop={12}>
+            <Pressable
+              onPress={() => {
+                setModalOpen(false)
+                setModalSearch('')
+              }}
+              hitSlop={12}
+            >
               <Text className="text-base text-gray-700">닫기</Text>
             </Pressable>
+          </View>
+          <View className="px-5 pt-3">
+            <SearchBar
+              placeholder="재료명 또는 카테고리 검색"
+              value={modalSearch}
+              onChangeText={setModalSearch}
+            />
           </View>
           <FlatList
             data={availableForModal}
             keyExtractor={(item) => String(item.id)}
             contentContainerStyle={{ padding: 20, gap: 8, flexGrow: 1 }}
+            keyboardShouldPersistTaps="handled"
             ListEmptyComponent={
               <EmptyState
-                title="추가할 재료가 없어요"
-                subtitle="재료 탭에서 먼저 등록해주세요"
+                title={
+                  modalSearch.trim()
+                    ? '검색 결과가 없어요'
+                    : '추가할 재료가 없어요'
+                }
+                subtitle={
+                  modalSearch.trim()
+                    ? '다른 키워드로 검색해보세요'
+                    : '재료 탭에서 먼저 등록해주세요'
+                }
               />
             }
             renderItem={({ item }) => (
@@ -495,6 +530,7 @@ export function RecipeForm({
                 onPress={() => {
                   setRows((prev) => [...prev, { ingredient: item, amount: '' }])
                   setModalOpen(false)
+                  setModalSearch('')
                 }}
                 style={{
                   flexDirection: 'row',
@@ -508,12 +544,15 @@ export function RecipeForm({
                   borderColor: THEME.ring,
                 }}
               >
-                <Text className="text-base font-medium text-gray-900">
-                  {item.name}
-                </Text>
-                <Text className="text-xs text-gray-500">
-                  {Math.round(item.price_per_g * 100) / 100}원/g
-                </Text>
+                <View style={{ flex: 1, paddingRight: 12 }}>
+                  <Text className="text-base font-medium text-gray-900">
+                    {item.name}
+                  </Text>
+                  <Text className="mt-0.5 text-xs text-gray-500">
+                    {Math.round(item.price_per_g * 100) / 100}원/g
+                  </Text>
+                </View>
+                <Badge label={item.category} category={item.category} />
               </Pressable>
             )}
           />
