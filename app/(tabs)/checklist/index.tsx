@@ -125,31 +125,6 @@ export default function Checklist(): JSX.Element {
 
   return (
     <View className="flex-1 bg-white">
-      <View
-        style={{
-          position: 'absolute',
-          top: -50,
-          right: -50,
-          width: 180,
-          height: 180,
-          borderRadius: 90,
-          backgroundColor: THEME.soft,
-          opacity: 0.55,
-        }}
-      />
-      <View
-        style={{
-          position: 'absolute',
-          top: 60,
-          left: -40,
-          width: 110,
-          height: 110,
-          borderRadius: 55,
-          backgroundColor: PASTEL_THEMES.pink.soft,
-          opacity: 0.4,
-        }}
-      />
-
       <View className="px-5 pb-4 pt-4">
         <Text style={{ fontSize: 24, fontWeight: '800', color: THEME.deep }}>
           오늘 생산할 메뉴
@@ -220,8 +195,8 @@ export default function Checklist(): JSX.Element {
         contentContainerStyle={{ padding: 20, gap: 10, flexGrow: 1 }}
         ListEmptyComponent={
           <EmptyState
-            title="비어있어요"
-            subtitle="오늘 생산할 메뉴를 추가해보세요"
+            title="비어있네...? 일해"
+            subtitle="오늘 생산할 메뉴를 추가해보도록"
           />
         }
         renderItem={({ item }) => {

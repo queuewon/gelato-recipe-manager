@@ -106,19 +106,6 @@ export default function IngredientDetail(): JSX.Element {
 
   return (
     <View className="flex-1 bg-white">
-      <View
-        style={{
-          position: 'absolute',
-          top: -50,
-          right: -50,
-          width: 180,
-          height: 180,
-          borderRadius: 90,
-          backgroundColor: THEME.soft,
-          opacity: 0.5,
-        }}
-      />
-
       {/* Top Nav */}
       <View className="flex-row items-center justify-between px-5 pb-2 pt-4">
         <Pressable onPress={() => router.back()}>

@@ -146,31 +146,6 @@ export default function Settings(): JSX.Element {
       className="flex-1 bg-white"
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <View
-        style={{
-          position: 'absolute',
-          top: -50,
-          right: -50,
-          width: 180,
-          height: 180,
-          borderRadius: 90,
-          backgroundColor: PASTEL_THEMES.pink.soft,
-          opacity: 0.5,
-        }}
-      />
-      <View
-        style={{
-          position: 'absolute',
-          top: 100,
-          left: -50,
-          width: 130,
-          height: 130,
-          borderRadius: 65,
-          backgroundColor: PASTEL_THEMES.yellow.soft,
-          opacity: 0.4,
-        }}
-      />
-
       <ScrollView
         contentContainerStyle={{ padding: 20, paddingBottom: 40 }}
         keyboardShouldPersistTaps="handled"

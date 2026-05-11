@@ -49,21 +49,8 @@ function MenuCard({ title, subtitle, theme, onPress }: MenuCardProps): JSX.Eleme
         shadowOpacity: 0.08,
         shadowRadius: 10,
         elevation: 2,
-        overflow: 'hidden',
       }}
     >
-      <View
-        style={{
-          position: 'absolute',
-          top: -20,
-          right: -20,
-          width: 70,
-          height: 70,
-          borderRadius: 35,
-          backgroundColor: theme.soft,
-          opacity: 0.7,
-        }}
-      />
       <View
         style={{
           width: 28,
@@ -110,31 +97,6 @@ export default function Home(): JSX.Element {
       className="flex-1 bg-white"
       contentContainerStyle={{ paddingBottom: 32 }}
     >
-      <View
-        style={{
-          position: 'absolute',
-          top: -40,
-          right: -50,
-          width: 180,
-          height: 180,
-          borderRadius: 90,
-          backgroundColor: PASTEL_THEMES.pink.soft,
-          opacity: 0.55,
-        }}
-      />
-      <View
-        style={{
-          position: 'absolute',
-          top: 40,
-          left: -40,
-          width: 110,
-          height: 110,
-          borderRadius: 55,
-          backgroundColor: PASTEL_THEMES.yellow.soft,
-          opacity: 0.55,
-        }}
-      />
-
       {/* Header */}
       <View className="flex-row items-center justify-between px-5 pb-2 pt-4">
         <View>
@@ -174,21 +136,8 @@ export default function Home(): JSX.Element {
           shadowOpacity: 0.08,
           shadowRadius: 14,
           elevation: 3,
-          overflow: 'hidden',
         }}
       >
-        <View
-          style={{
-            position: 'absolute',
-            top: -30,
-            right: -30,
-            width: 110,
-            height: 110,
-            borderRadius: 55,
-            backgroundColor: PASTEL_THEMES.blue.soft,
-            opacity: 0.85,
-          }}
-        />
         <View className="flex-row items-center justify-between">
           <View className="flex-row items-center" style={{ gap: 8 }}>
             <View
@@ -237,7 +186,7 @@ export default function Home(): JSX.Element {
         {preview.length === 0 ? (
           <View className="mt-4 items-center py-6">
             <Text className="text-sm text-gray-500">
-              오늘 생산할 메뉴가 없어요
+              오늘 생산할 메뉴가 없네... 까먹은거 아니지?
             </Text>
             <Pressable
               onPress={() => router.push('/checklist')}

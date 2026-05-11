@@ -82,31 +82,6 @@ export default function RecipeCategoriesScreen(): JSX.Element {
       className="flex-1 bg-white"
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <View
-        style={{
-          position: 'absolute',
-          top: -60,
-          right: -60,
-          width: 200,
-          height: 200,
-          borderRadius: 100,
-          backgroundColor: THEME.soft,
-          opacity: 0.7,
-        }}
-      />
-      <View
-        style={{
-          position: 'absolute',
-          top: 80,
-          left: -50,
-          width: 130,
-          height: 130,
-          borderRadius: 65,
-          backgroundColor: THEME.accent,
-          opacity: 0.18,
-        }}
-      />
-
       <View className="flex-row items-center justify-between px-5 pb-2 pt-4">
         <Pressable onPress={() => router.back()}>
           <Text className="text-base text-gray-700">← 뒤로가기</Text>

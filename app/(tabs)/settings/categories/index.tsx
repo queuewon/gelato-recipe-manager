@@ -25,33 +25,8 @@ function HubCard({ theme, title, subtitle, onPress }: HubCardProps): JSX.Element
         shadowOpacity: 0.08,
         shadowRadius: 10,
         elevation: 2,
-        overflow: 'hidden',
       }}
     >
-      <View
-        style={{
-          position: 'absolute',
-          top: -28,
-          right: -28,
-          width: 110,
-          height: 110,
-          borderRadius: 55,
-          backgroundColor: theme.soft,
-          opacity: 0.85,
-        }}
-      />
-      <View
-        style={{
-          position: 'absolute',
-          bottom: -22,
-          right: 38,
-          width: 60,
-          height: 60,
-          borderRadius: 30,
-          backgroundColor: theme.accent,
-          opacity: 0.35,
-        }}
-      />
       <View className="flex-row items-center justify-between">
         <View style={{ flex: 1 }}>
           <View
@@ -124,29 +99,29 @@ export default function CategoriesIndex(): JSX.Element {
           }}
         >
           <Text className="text-base font-semibold text-gray-900">
-            라벨을 예쁘게 정리해요
+            라벨을 예쁘게 정리해볼까..?
           </Text>
           <Text className="mt-1 text-xs text-gray-500">
-            레시피·재료·단위 라벨에 색상을 입혀 한눈에 구분할 수 있어요.
+            레시피·재료·단위 라벨에 색상을 입혀 한눈에 구분할 수 있게 해봤음.
           </Text>
         </View>
 
         <HubCard
           theme={PASTEL_THEMES.pink}
           title="레시피 카테고리"
-          subtitle="과일, 차, 곡물 등 레시피를 분류해요"
+          subtitle="과일, 차, 곡물 등 레시피를 분류하기"
           onPress={() => router.push('/settings/categories/recipes')}
         />
         <HubCard
           theme={PASTEL_THEMES.yellow}
           title="재료 카테고리"
-          subtitle="유제품, 견과 등 재료를 묶어요"
+          subtitle="유제품, 견과 등 재료를 묶기"
           onPress={() => router.push('/settings/categories/ingredients')}
         />
         <HubCard
           theme={PASTEL_THEMES.blue}
           title="포장 단위"
-          subtitle="개, 봉, 통 같은 단위를 관리해요"
+          subtitle="개, 봉, 통 같은 단위를 관리하기"
           onPress={() => router.push('/settings/categories/units')}
         />
       </ScrollView>
