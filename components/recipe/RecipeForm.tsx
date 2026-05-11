@@ -11,11 +11,14 @@ import {
   TextInput,
   View,
 } from 'react-native'
+import { PASTEL_THEMES } from '../../constants/colors'
 import { useCategoryStore } from '../../store/categoryStore'
 import { useIngredientStore } from '../../store/ingredientStore'
 import type { BaseCategory, Ingredient } from '../../types'
 import { EmptyState } from '../common/EmptyState'
 import { FilterChip } from '../common/FilterChip'
+
+const THEME = PASTEL_THEMES.pink
 
 interface RecipeIngredientInput {
   ingredient_id: number
@@ -39,6 +42,33 @@ interface RecipeFormProps {
 interface IngredientRow {
   ingredient: Ingredient
   amount: string
+}
+
+const inputStyle = {
+  backgroundColor: '#FFFFFF',
+  borderRadius: 14,
+  borderWidth: 1,
+  borderColor: THEME.ring,
+  paddingHorizontal: 16,
+  paddingVertical: 12,
+  fontSize: 15,
+  color: '#1A1A2E',
+} as const
+
+function FieldLabel({ children }: { children: string }): JSX.Element {
+  return (
+    <Text
+      style={{
+        marginBottom: 8,
+        fontSize: 12,
+        fontWeight: '700',
+        color: THEME.deep,
+        letterSpacing: 0.4,
+      }}
+    >
+      {children.toUpperCase()}
+    </Text>
+  )
 }
 
 export function RecipeForm({
@@ -180,7 +210,7 @@ export function RecipeForm({
 
   return (
     <KeyboardAvoidingView
-      className="flex-1"
+      className="flex-1 bg-white"
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <ScrollView
@@ -188,18 +218,16 @@ export function RecipeForm({
         contentContainerStyle={{ padding: 20, paddingBottom: 32 }}
         keyboardShouldPersistTaps="handled"
       >
-        {/* Name */}
-        <Text className="mb-2 text-sm font-medium text-gray-700">레시피명</Text>
+        <FieldLabel>레시피명</FieldLabel>
         <TextInput
           value={name}
           onChangeText={setName}
           placeholder="예: 피스타치오 젤라또"
-          placeholderTextColor="#9CA3AF"
-          className="mb-5 rounded-xl border border-gray-200 bg-white px-4 py-3 text-base text-gray-900"
+          placeholderTextColor="#C9A6B8"
+          style={{ ...inputStyle, marginBottom: 20 }}
         />
 
-        {/* Category */}
-        <Text className="mb-2 text-sm font-medium text-gray-700">카테고리</Text>
+        <FieldLabel>카테고리</FieldLabel>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -219,35 +247,59 @@ export function RecipeForm({
           ))}
           <Pressable
             onPress={() => setAddingCat((v) => !v)}
-            className="rounded-full border border-gray-200 bg-white px-4 py-2"
+            style={{
+              borderRadius: 999,
+              paddingHorizontal: 14,
+              paddingVertical: 8,
+              borderWidth: 1,
+              borderStyle: 'dashed',
+              borderColor: THEME.accent,
+              backgroundColor: '#FFFFFF',
+            }}
           >
-            <Text className="text-sm text-gray-500">+ 추가</Text>
+            <Text style={{ fontSize: 13, color: THEME.deep, fontWeight: '600' }}>
+              + 추가
+            </Text>
           </Pressable>
         </ScrollView>
 
         {addingCat && (
-          <View className="mb-4 flex-row items-center" style={{ gap: 8 }}>
+          <View
+            className="mb-4 mt-2 flex-row items-center"
+            style={{ gap: 8 }}
+          >
             <TextInput
               value={newCatText}
               onChangeText={setNewCatText}
               placeholder="새 카테고리명"
-              placeholderTextColor="#9CA3AF"
-              className="flex-1 rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900"
+              placeholderTextColor="#C9A6B8"
               autoFocus
+              style={{ ...inputStyle, flex: 1, paddingVertical: 10 }}
             />
             <Pressable
               onPress={handleAddCategory}
               disabled={addingCatBusy || !newCatText.trim()}
-              className="rounded-xl bg-[#1E90FF] px-3 py-2"
+              style={{
+                paddingHorizontal: 14,
+                paddingVertical: 10,
+                borderRadius: 12,
+                backgroundColor: THEME.deep,
+              }}
             >
-              <Text className="text-sm font-medium text-white">확인</Text>
+              <Text className="text-sm font-semibold text-white">확인</Text>
             </Pressable>
             <Pressable
               onPress={() => {
                 setAddingCat(false)
                 setNewCatText('')
               }}
-              className="rounded-xl border border-gray-200 px-3 py-2"
+              style={{
+                paddingHorizontal: 14,
+                paddingVertical: 10,
+                borderRadius: 12,
+                borderWidth: 1,
+                borderColor: '#E5E7EB',
+              }}
             >
               <Text className="text-sm text-gray-600">취소</Text>
             </Pressable>
@@ -256,55 +308,82 @@ export function RecipeForm({
 
         <View className="mb-5" />
 
-        {/* Batch Size */}
-        <Text className="mb-2 text-sm font-medium text-gray-700">
-          기본 배치량 (g)
-        </Text>
+        <FieldLabel>기본 배치량 (g)</FieldLabel>
         <TextInput
           value={batchSize}
           onChangeText={setBatchSize}
           placeholder="5000"
-          placeholderTextColor="#9CA3AF"
+          placeholderTextColor="#C9A6B8"
           keyboardType="numeric"
-          className="mb-5 rounded-xl border border-gray-200 bg-white px-4 py-3 text-base text-gray-900"
+          style={{ ...inputStyle, marginBottom: 20 }}
         />
 
-        {/* Memo */}
-        <Text className="mb-2 text-sm font-medium text-gray-700">
-          메모 (선택)
-        </Text>
+        <FieldLabel>메모 (선택)</FieldLabel>
         <TextInput
           value={memo}
           onChangeText={setMemo}
           placeholder="메모를 입력하세요"
-          placeholderTextColor="#9CA3AF"
+          placeholderTextColor="#C9A6B8"
           multiline
           textAlignVertical="top"
-          className="mb-6 min-h-[80px] rounded-xl border border-gray-200 bg-white px-4 py-3 text-base text-gray-900"
+          style={{ ...inputStyle, marginBottom: 24, minHeight: 90 }}
         />
 
-        {/* Ingredients */}
         <View className="mb-3 flex-row items-center justify-between">
-          <Text className="text-base font-semibold text-gray-900">재료</Text>
+          <View className="flex-row items-center" style={{ gap: 8 }}>
+            <View
+              style={{
+                width: 8,
+                height: 8,
+                borderRadius: 4,
+                backgroundColor: THEME.deep,
+              }}
+            />
+            <Text className="text-base font-bold text-gray-900">재료</Text>
+          </View>
           <Pressable
             onPress={() => setModalOpen(true)}
-            className="rounded-full bg-[#E8F4FF] px-3 py-1.5"
+            style={{
+              backgroundColor: THEME.soft,
+              paddingHorizontal: 12,
+              paddingVertical: 6,
+              borderRadius: 999,
+            }}
           >
-            <Text className="text-sm font-medium text-[#1E90FF]">재료 추가</Text>
+            <Text style={{ color: THEME.deep, fontSize: 13, fontWeight: '700' }}>
+              + 재료 추가
+            </Text>
           </Pressable>
         </View>
 
         {rows.length === 0 ? (
-          <View className="mb-2 rounded-xl border border-dashed border-gray-200 p-6">
-            <Text className="text-center text-sm text-gray-500">
-              재료를 추가해주세요
-            </Text>
+          <View
+            style={{
+              borderRadius: 16,
+              borderWidth: 1.5,
+              borderStyle: 'dashed',
+              borderColor: THEME.ring,
+              padding: 24,
+              alignItems: 'center',
+            }}
+          >
+            <Text className="text-sm text-gray-500">재료를 추가해주세요</Text>
           </View>
         ) : (
           rows.map((row, i) => (
             <View
               key={row.ingredient.id}
-              className="mb-2 flex-row items-center rounded-xl border border-gray-200 bg-white px-3 py-2.5"
+              style={{
+                marginBottom: 8,
+                flexDirection: 'row',
+                alignItems: 'center',
+                backgroundColor: '#FFFFFF',
+                borderRadius: 14,
+                borderWidth: 1,
+                borderColor: THEME.ring,
+                paddingHorizontal: 12,
+                paddingVertical: 10,
+              }}
             >
               <Text className="flex-1 text-base text-gray-900">
                 {row.ingredient.name}
@@ -313,15 +392,22 @@ export function RecipeForm({
                 value={row.amount}
                 onChangeText={(text) => updateRow(i, { amount: text })}
                 placeholder="0"
-                placeholderTextColor="#9CA3AF"
+                placeholderTextColor="#C9A6B8"
                 keyboardType="numeric"
-                className="w-20 rounded-md border border-gray-200 bg-white px-2 py-1 text-right text-base text-gray-900"
+                style={{
+                  width: 80,
+                  borderRadius: 8,
+                  borderWidth: 1,
+                  borderColor: '#E5E7EB',
+                  paddingHorizontal: 8,
+                  paddingVertical: 4,
+                  textAlign: 'right',
+                  fontSize: 15,
+                  color: '#1A1A2E',
+                }}
               />
               <Text className="ml-1 text-sm text-gray-500">g</Text>
-              <Pressable
-                onPress={() => removeRow(i)}
-                className="ml-3 px-2 py-1"
-              >
+              <Pressable onPress={() => removeRow(i)} className="ml-3 px-2 py-1">
                 <Text className="text-sm text-red-500">삭제</Text>
               </Pressable>
             </View>
@@ -330,35 +416,61 @@ export function RecipeForm({
       </ScrollView>
 
       {/* Bottom: Total + Submit */}
-      <View className="border-t border-gray-200 bg-white px-5 pb-4 pt-3">
+      <View
+        style={{
+          backgroundColor: '#FFFFFF',
+          borderTopWidth: 1,
+          borderTopColor: THEME.ring,
+          paddingHorizontal: 20,
+          paddingTop: 14,
+          paddingBottom: 18,
+        }}
+      >
         <View className="mb-3 flex-row items-center justify-between">
-          <Text className="text-sm text-gray-700">총 원가</Text>
-          <Text className="text-lg font-bold text-[#EF4444]">
+          <Text className="text-sm font-semibold text-gray-700">총 원가</Text>
+          <Text style={{ fontSize: 18, fontWeight: '800', color: '#EF4444' }}>
             {Math.round(totalCost).toLocaleString()}원
           </Text>
         </View>
         <Pressable
           onPress={handleSubmit}
           disabled={submitting}
-          className={`items-center rounded-xl py-3 ${
-            submitting ? 'bg-gray-300' : 'bg-[#1E90FF]'
-          }`}
+          style={{
+            alignItems: 'center',
+            paddingVertical: 14,
+            borderRadius: 14,
+            backgroundColor: submitting ? '#E5E7EB' : THEME.deep,
+            shadowColor: THEME.deep,
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: submitting ? 0 : 0.25,
+            shadowRadius: 8,
+            elevation: submitting ? 0 : 3,
+          }}
         >
-          <Text className="text-base font-semibold text-white">
+          <Text className="text-base font-bold text-white">
             {submitting ? '저장 중...' : submitLabel}
           </Text>
         </Pressable>
       </View>
 
-      {/* Modal: ingredient picker */}
       <Modal
         visible={modalOpen}
         animationType="slide"
         onRequestClose={() => setModalOpen(false)}
       >
         <View className="flex-1 bg-white">
-          <View className="flex-row items-center justify-between border-b border-gray-200 px-5 py-4">
-            <Text className="text-lg font-semibold text-gray-900">
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              borderBottomWidth: 1,
+              borderBottomColor: THEME.ring,
+              paddingHorizontal: 20,
+              paddingVertical: 16,
+            }}
+          >
+            <Text style={{ fontSize: 17, fontWeight: '700', color: THEME.deep }}>
               재료 선택
             </Text>
             <Pressable onPress={() => setModalOpen(false)}>
@@ -378,13 +490,20 @@ export function RecipeForm({
             renderItem={({ item }) => (
               <Pressable
                 onPress={() => {
-                  setRows((prev) => [
-                    ...prev,
-                    { ingredient: item, amount: '' },
-                  ])
+                  setRows((prev) => [...prev, { ingredient: item, amount: '' }])
                   setModalOpen(false)
                 }}
-                className="flex-row items-center justify-between rounded-xl border border-gray-200 bg-white px-4 py-3"
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  paddingHorizontal: 16,
+                  paddingVertical: 14,
+                  backgroundColor: '#FFFFFF',
+                  borderRadius: 14,
+                  borderWidth: 1,
+                  borderColor: THEME.ring,
+                }}
               >
                 <Text className="text-base font-medium text-gray-900">
                   {item.name}

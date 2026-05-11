@@ -5,8 +5,11 @@ import { Badge } from '../../../components/common/Badge'
 import { EmptyState } from '../../../components/common/EmptyState'
 import { FilterChip } from '../../../components/common/FilterChip'
 import { SearchBar } from '../../../components/common/SearchBar'
+import { PASTEL_THEMES } from '../../../constants/colors'
 import { useCategoryStore } from '../../../store/categoryStore'
 import { useIngredientStore } from '../../../store/ingredientStore'
+
+const THEME = PASTEL_THEMES.yellow
 
 export default function IngredientsIndex(): JSX.Element {
   const router = useRouter()
@@ -42,14 +45,44 @@ export default function IngredientsIndex(): JSX.Element {
   }, [ingredients, filter, search])
 
   return (
-    <View className="flex-1 bg-[#F8FAFC]">
+    <View className="flex-1 bg-white">
+      <View
+        style={{
+          position: 'absolute',
+          top: -50,
+          right: -50,
+          width: 180,
+          height: 180,
+          borderRadius: 90,
+          backgroundColor: THEME.soft,
+          opacity: 0.55,
+        }}
+      />
+
       <View className="flex-row items-center justify-between px-5 pb-2 pt-4">
-        <Text className="text-2xl font-bold text-gray-900">재료 관리</Text>
+        <View>
+          <Text style={{ fontSize: 24, fontWeight: '800', color: THEME.deep }}>
+            재료 관리
+          </Text>
+          <Text className="mt-0.5 text-xs text-gray-500">
+            가격과 재고 한눈에
+          </Text>
+        </View>
         <Pressable
           onPress={() => router.push('/ingredients/new')}
-          className="rounded-full bg-[#1E90FF] px-3 py-2"
+          style={{
+            backgroundColor: THEME.deep,
+            paddingHorizontal: 14,
+            paddingVertical: 10,
+            borderRadius: 999,
+            shadowColor: THEME.deep,
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.25,
+            shadowRadius: 6,
+            elevation: 3,
+          }}
         >
-          <Text className="text-sm font-semibold text-white">재료 등록</Text>
+          <Text className="text-sm font-bold text-white">+ 재료 등록</Text>
         </Pressable>
       </View>
 
@@ -96,10 +129,24 @@ export default function IngredientsIndex(): JSX.Element {
           return (
             <Pressable
               onPress={() => router.push(`/ingredients/${item.id}`)}
-              className="flex-row items-start justify-between rounded-xl border border-gray-200 bg-white p-4"
+              style={{
+                backgroundColor: '#FFFFFF',
+                borderRadius: 18,
+                padding: 16,
+                borderWidth: 1,
+                borderColor: THEME.ring,
+                shadowColor: THEME.deep,
+                shadowOffset: { width: 0, height: 3 },
+                shadowOpacity: 0.06,
+                shadowRadius: 8,
+                elevation: 2,
+                flexDirection: 'row',
+                alignItems: 'flex-start',
+                justifyContent: 'space-between',
+              }}
             >
-              <View className="flex-1 pr-3">
-                <Text className="text-base font-semibold text-gray-900">
+              <View style={{ flex: 1, paddingRight: 12 }}>
+                <Text className="text-base font-bold text-gray-900">
                   {item.name}
                 </Text>
                 <View className="mt-1 flex-row items-center">
@@ -108,9 +155,21 @@ export default function IngredientsIndex(): JSX.Element {
                   </Text>
                   <Pressable
                     onPress={() => router.push(`/ingredients/${item.id}`)}
-                    className="ml-2 rounded-full bg-[#E8F4FF] px-2 py-0.5"
+                    style={{
+                      marginLeft: 8,
+                      backgroundColor: THEME.soft,
+                      paddingHorizontal: 8,
+                      paddingVertical: 2,
+                      borderRadius: 999,
+                    }}
                   >
-                    <Text className="text-xs font-medium text-[#1E90FF]">
+                    <Text
+                      style={{
+                        fontSize: 11,
+                        fontWeight: '700',
+                        color: THEME.deep,
+                      }}
+                    >
                       수정
                     </Text>
                   </Pressable>

@@ -5,8 +5,11 @@ import { Badge } from '../../../components/common/Badge'
 import { EmptyState } from '../../../components/common/EmptyState'
 import { FilterChip } from '../../../components/common/FilterChip'
 import { SearchBar } from '../../../components/common/SearchBar'
+import { PASTEL_THEMES } from '../../../constants/colors'
 import { useCategoryStore } from '../../../store/categoryStore'
 import { useRecipeStore } from '../../../store/recipeStore'
+
+const THEME = PASTEL_THEMES.pink
 
 export default function RecipesIndex(): JSX.Element {
   const router = useRouter()
@@ -35,14 +38,48 @@ export default function RecipesIndex(): JSX.Element {
   }, [recipes, filter, search])
 
   return (
-    <View className="flex-1 bg-[#F8FAFC]">
+    <View className="flex-1 bg-white">
+      <View
+        style={{
+          position: 'absolute',
+          top: -50,
+          right: -50,
+          width: 180,
+          height: 180,
+          borderRadius: 90,
+          backgroundColor: THEME.soft,
+          opacity: 0.55,
+        }}
+      />
+
       <View className="flex-row items-center justify-between px-5 pb-2 pt-4">
-        <Text className="text-2xl font-bold text-gray-900">레시피</Text>
+        <View>
+          <Text style={{ fontSize: 24, fontWeight: '800', color: THEME.deep }}>
+            레시피
+          </Text>
+          <Text className="mt-0.5 text-xs text-gray-500">
+            등록된 젤라또를 한눈에
+          </Text>
+        </View>
         <Pressable
           onPress={() => router.push('/recipes/new')}
-          className="h-10 w-10 items-center justify-center rounded-full bg-[#1E90FF]"
+          style={{
+            height: 44,
+            width: 44,
+            borderRadius: 22,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: THEME.deep,
+            shadowColor: THEME.deep,
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.3,
+            shadowRadius: 6,
+            elevation: 3,
+          }}
         >
-          <Text className="text-2xl font-bold leading-6 text-white">+</Text>
+          <Text style={{ color: '#FFFFFF', fontSize: 22, fontWeight: '700' }}>
+            +
+          </Text>
         </Pressable>
       </View>
 
@@ -85,10 +122,24 @@ export default function RecipesIndex(): JSX.Element {
           return (
             <Pressable
               onPress={() => router.push(`/recipes/${item.id}`)}
-              className="flex-row items-center justify-between rounded-xl border border-gray-200 bg-white p-4"
+              style={{
+                backgroundColor: '#FFFFFF',
+                borderRadius: 18,
+                padding: 16,
+                borderWidth: 1,
+                borderColor: THEME.ring,
+                shadowColor: THEME.deep,
+                shadowOffset: { width: 0, height: 3 },
+                shadowOpacity: 0.06,
+                shadowRadius: 8,
+                elevation: 2,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
             >
-              <View className="flex-1 pr-3">
-                <Text className="text-base font-semibold text-gray-900">
+              <View style={{ flex: 1, paddingRight: 12 }}>
+                <Text className="text-base font-bold text-gray-900">
                   {item.name}
                 </Text>
                 <Text className="mt-1 text-xs text-gray-500">

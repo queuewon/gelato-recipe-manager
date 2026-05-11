@@ -1,10 +1,9 @@
 import { useRouter } from 'expo-router'
 import { useEffect, type JSX } from 'react'
 import { Pressable, ScrollView, Text, View } from 'react-native'
+import { PASTEL_THEMES, type PastelTheme } from '../../constants/colors'
 import { useChecklistStore } from '../../store/checklistStore'
 import type { ChecklistStatus } from '../../types'
-
-const PRIMARY = '#1E90FF'
 
 function statusMeta(s: ChecklistStatus): {
   label: string
@@ -15,7 +14,7 @@ function statusMeta(s: ChecklistStatus): {
     case 'done':
       return { label: '완료', bg: '#D1FAE5', text: '#065F46' }
     case 'in_progress':
-      return { label: '진행중', bg: '#FEF3C7', text: '#92400E' }
+      return { label: '진행중', bg: PASTEL_THEMES.yellow.soft, text: PASTEL_THEMES.yellow.deep }
     case 'pending':
       return { label: '대기', bg: '#F3F4F6', text: '#374151' }
   }
@@ -30,26 +29,62 @@ function nextStatus(s: ChecklistStatus): ChecklistStatus {
 interface MenuCardProps {
   title: string
   subtitle: string
+  theme: PastelTheme
   onPress?: () => void
-  disabled?: boolean
 }
 
-function MenuCard({
-  title,
-  subtitle,
-  onPress,
-  disabled,
-}: MenuCardProps): JSX.Element {
+function MenuCard({ title, subtitle, theme, onPress }: MenuCardProps): JSX.Element {
   return (
     <Pressable
-      onPress={disabled ? undefined : onPress}
-      disabled={disabled}
-      className={`rounded-xl border border-gray-200 bg-white p-4 ${
-        disabled ? 'opacity-50' : ''
-      }`}
-      style={{ width: '48%' }}
+      onPress={onPress}
+      style={{
+        width: '48%',
+        backgroundColor: '#FFFFFF',
+        borderRadius: 20,
+        padding: 16,
+        borderWidth: 1,
+        borderColor: theme.ring,
+        shadowColor: theme.deep,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.08,
+        shadowRadius: 10,
+        elevation: 2,
+        overflow: 'hidden',
+      }}
     >
-      <Text className="text-base font-semibold text-gray-900">{title}</Text>
+      <View
+        style={{
+          position: 'absolute',
+          top: -20,
+          right: -20,
+          width: 70,
+          height: 70,
+          borderRadius: 35,
+          backgroundColor: theme.soft,
+          opacity: 0.7,
+        }}
+      />
+      <View
+        style={{
+          width: 28,
+          height: 28,
+          borderRadius: 14,
+          backgroundColor: theme.soft,
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginBottom: 10,
+        }}
+      >
+        <View
+          style={{
+            width: 12,
+            height: 12,
+            borderRadius: 6,
+            backgroundColor: theme.deep,
+          }}
+        />
+      </View>
+      <Text className="text-base font-bold text-gray-900">{title}</Text>
       <Text className="mt-1 text-xs text-gray-500">{subtitle}</Text>
     </Pressable>
   )
@@ -72,43 +107,130 @@ export default function Home(): JSX.Element {
 
   return (
     <ScrollView
-      className="flex-1 bg-[#F8FAFC]"
+      className="flex-1 bg-white"
       contentContainerStyle={{ paddingBottom: 32 }}
     >
+      <View
+        style={{
+          position: 'absolute',
+          top: -40,
+          right: -50,
+          width: 180,
+          height: 180,
+          borderRadius: 90,
+          backgroundColor: PASTEL_THEMES.pink.soft,
+          opacity: 0.55,
+        }}
+      />
+      <View
+        style={{
+          position: 'absolute',
+          top: 40,
+          left: -40,
+          width: 110,
+          height: 110,
+          borderRadius: 55,
+          backgroundColor: PASTEL_THEMES.yellow.soft,
+          opacity: 0.55,
+        }}
+      />
+
       {/* Header */}
       <View className="flex-row items-center justify-between px-5 pb-2 pt-4">
         <View>
-          <Text className="text-2xl font-bold text-gray-900">Gelato</Text>
+          <Text
+            style={{
+              fontSize: 24,
+              fontWeight: '800',
+              color: PASTEL_THEMES.pink.deep,
+            }}
+          >
+            Indigo Gelato
+          </Text>
           <Text className="text-sm text-gray-500">Recipe Manager</Text>
         </View>
-        <Pressable className="rounded-full border border-gray-200 px-3 py-1.5">
-          <Text className="text-sm text-gray-700">알림</Text>
-        </Pressable>
       </View>
 
       {/* Greeting */}
       <View className="px-5 py-5">
-        <Text className="text-2xl font-bold text-gray-900">안녕, 누나! 👋</Text>
+        <Text className="text-2xl font-bold text-gray-900">안녕, 누나!</Text>
         <Text className="mt-1 text-base text-gray-600">
-          오늘도 맛있는 젤라또 만들자!
+          오늘도 맛있는 젤라또 만들자! (김경원이 만들어준 어플 ^^b)
         </Text>
       </View>
 
       {/* Today Production */}
-      <View className="mx-5 mb-6 rounded-xl border border-gray-200 bg-white p-4">
+      <View
+        style={{
+          marginHorizontal: 20,
+          marginBottom: 24,
+          backgroundColor: '#FFFFFF',
+          borderRadius: 22,
+          padding: 18,
+          borderWidth: 1,
+          borderColor: PASTEL_THEMES.blue.ring,
+          shadowColor: PASTEL_THEMES.blue.deep,
+          shadowOffset: { width: 0, height: 6 },
+          shadowOpacity: 0.08,
+          shadowRadius: 14,
+          elevation: 3,
+          overflow: 'hidden',
+        }}
+      >
+        <View
+          style={{
+            position: 'absolute',
+            top: -30,
+            right: -30,
+            width: 110,
+            height: 110,
+            borderRadius: 55,
+            backgroundColor: PASTEL_THEMES.blue.soft,
+            opacity: 0.85,
+          }}
+        />
         <View className="flex-row items-center justify-between">
-          <Text className="text-base font-semibold text-gray-900">
-            오늘 생산할 메뉴
-          </Text>
+          <View className="flex-row items-center" style={{ gap: 8 }}>
+            <View
+              style={{
+                width: 8,
+                height: 8,
+                borderRadius: 4,
+                backgroundColor: PASTEL_THEMES.blue.deep,
+              }}
+            />
+            <Text
+              style={{
+                color: PASTEL_THEMES.blue.deep,
+                fontWeight: '700',
+                fontSize: 15,
+              }}
+            >
+              오늘 생산할 메뉴
+            </Text>
+          </View>
           <Text className="text-sm text-gray-500">
             {done} / {total} 완료
           </Text>
         </View>
 
-        <View className="mt-3 h-2 w-full overflow-hidden rounded-full bg-gray-100">
+        <View
+          style={{
+            marginTop: 12,
+            height: 10,
+            width: '100%',
+            borderRadius: 999,
+            backgroundColor: PASTEL_THEMES.blue.soft,
+            overflow: 'hidden',
+          }}
+        >
           <View
-            className="h-full rounded-full"
-            style={{ width: `${progressPct}%`, backgroundColor: PRIMARY }}
+            style={{
+              height: '100%',
+              borderRadius: 999,
+              width: `${progressPct}%`,
+              backgroundColor: PASTEL_THEMES.blue.deep,
+            }}
           />
         </View>
 
@@ -119,9 +241,21 @@ export default function Home(): JSX.Element {
             </Text>
             <Pressable
               onPress={() => router.push('/checklist')}
-              className="mt-3 rounded-full bg-[#E8F4FF] px-4 py-2"
+              style={{
+                marginTop: 12,
+                paddingHorizontal: 16,
+                paddingVertical: 8,
+                borderRadius: 999,
+                backgroundColor: PASTEL_THEMES.blue.soft,
+              }}
             >
-              <Text className="text-sm font-medium text-[#1E90FF]">
+              <Text
+                style={{
+                  fontSize: 13,
+                  fontWeight: '700',
+                  color: PASTEL_THEMES.blue.deep,
+                }}
+              >
                 메뉴 추가하기
               </Text>
             </Pressable>
@@ -141,11 +275,21 @@ export default function Home(): JSX.Element {
                 >
                   <View className="flex-1 flex-row items-center">
                     <View
-                      className={`mr-3 h-5 w-5 items-center justify-center rounded border ${
-                        checked
-                          ? 'border-[#1E90FF] bg-[#1E90FF]'
-                          : 'border-gray-300 bg-white'
-                      }`}
+                      style={{
+                        marginRight: 12,
+                        width: 22,
+                        height: 22,
+                        borderRadius: 6,
+                        borderWidth: 1.5,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: checked
+                          ? PASTEL_THEMES.blue.deep
+                          : '#FFFFFF',
+                        borderColor: checked
+                          ? PASTEL_THEMES.blue.deep
+                          : PASTEL_THEMES.blue.accent,
+                      }}
                     >
                       {checked ? (
                         <Text className="text-xs font-bold text-white">✓</Text>
@@ -186,22 +330,32 @@ export default function Home(): JSX.Element {
 
       {/* Menu Grid */}
       <View className="px-5">
-        <Text className="mb-3 text-base font-semibold text-gray-900">
-          바로가기
-        </Text>
+        <View className="mb-3 flex-row items-center" style={{ gap: 8 }}>
+          <View
+            style={{
+              width: 8,
+              height: 8,
+              borderRadius: 4,
+              backgroundColor: PASTEL_THEMES.pink.deep,
+            }}
+          />
+          <Text className="text-base font-bold text-gray-900">바로가기</Text>
+        </View>
         <View className="flex-row flex-wrap" style={{ gap: 12 }}>
           <MenuCard
+            theme={PASTEL_THEMES.pink}
             title="레시피 목록"
             subtitle="등록된 젤라또"
             onPress={() => router.push('/recipes')}
           />
           <MenuCard
+            theme={PASTEL_THEMES.yellow}
             title="재료 관리"
             subtitle="가격 & 재고"
             onPress={() => router.push('/ingredients')}
           />
-          <MenuCard title="원가 분석" subtitle="추후 지원" disabled />
           <MenuCard
+            theme={PASTEL_THEMES.blue}
             title="오늘 생산"
             subtitle="체크리스트"
             onPress={() => router.push('/checklist')}

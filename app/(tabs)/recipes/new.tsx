@@ -5,7 +5,10 @@ import {
   RecipeForm,
   type RecipeFormValues,
 } from '../../../components/recipe/RecipeForm'
+import { PASTEL_THEMES } from '../../../constants/colors'
 import { useRecipeStore } from '../../../store/recipeStore'
+
+const THEME = PASTEL_THEMES.pink
 
 export default function RecipeNew(): JSX.Element {
   const router = useRouter()
@@ -26,12 +29,26 @@ export default function RecipeNew(): JSX.Element {
   }
 
   return (
-    <View className="flex-1 bg-[#F8FAFC]">
+    <View className="flex-1 bg-white">
+      <View
+        style={{
+          position: 'absolute',
+          top: -50,
+          right: -50,
+          width: 160,
+          height: 160,
+          borderRadius: 80,
+          backgroundColor: THEME.soft,
+          opacity: 0.5,
+        }}
+      />
       <View className="flex-row items-center justify-between px-5 pb-2 pt-4">
         <Pressable onPress={() => router.back()}>
           <Text className="text-base text-gray-700">← 뒤로가기</Text>
         </Pressable>
-        <Text className="text-lg font-semibold text-gray-900">레시피 등록</Text>
+        <Text style={{ fontSize: 17, fontWeight: '700', color: THEME.deep }}>
+          레시피 등록
+        </Text>
         <View style={{ width: 60 }} />
       </View>
       <RecipeForm onSubmit={handleSubmit} submitLabel="등록" />

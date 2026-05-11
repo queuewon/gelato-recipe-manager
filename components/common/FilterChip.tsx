@@ -1,11 +1,14 @@
 import type { JSX } from 'react'
 import { Pressable, Text } from 'react-native'
+import { PASTEL_THEMES } from '../../constants/colors'
 
 interface FilterChipProps {
   label: string
   isActive: boolean
   onPress: () => void
 }
+
+const ACTIVE = PASTEL_THEMES.pink
 
 export function FilterChip({
   label,
@@ -15,18 +18,21 @@ export function FilterChip({
   return (
     <Pressable
       onPress={onPress}
-      className={
-        isActive
-          ? 'rounded-full border border-[#1E90FF] bg-[#E8F4FF] px-4 py-2'
-          : 'rounded-full border border-gray-200 bg-white px-4 py-2'
-      }
+      style={{
+        borderRadius: 999,
+        paddingHorizontal: 14,
+        paddingVertical: 8,
+        backgroundColor: isActive ? ACTIVE.soft : '#FFFFFF',
+        borderWidth: 1,
+        borderColor: isActive ? ACTIVE.accent : '#E5E7EB',
+      }}
     >
       <Text
-        className={
-          isActive
-            ? 'text-sm font-medium text-[#1E90FF]'
-            : 'text-sm text-gray-600'
-        }
+        style={{
+          fontSize: 13,
+          fontWeight: isActive ? '700' : '500',
+          color: isActive ? ACTIVE.deep : '#6B7280',
+        }}
       >
         {label}
       </Text>

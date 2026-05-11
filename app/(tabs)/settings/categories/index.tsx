@@ -100,7 +100,7 @@ export default function CategoriesIndex(): JSX.Element {
   const router = useRouter()
 
   return (
-    <View className="flex-1 bg-[#FFFBF7]">
+    <View className="flex-1 bg-white">
       <View className="flex-row items-center justify-between px-5 pb-2 pt-4">
         <Pressable onPress={() => router.back()}>
           <Text className="text-base text-gray-700">← 뒤로가기</Text>

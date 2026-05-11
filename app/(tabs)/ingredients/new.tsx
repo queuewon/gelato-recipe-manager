@@ -12,8 +12,38 @@ import {
   View,
 } from 'react-native'
 import { FilterChip } from '../../../components/common/FilterChip'
+import { PASTEL_THEMES } from '../../../constants/colors'
 import { useCategoryStore } from '../../../store/categoryStore'
 import { useIngredientStore } from '../../../store/ingredientStore'
+
+const THEME = PASTEL_THEMES.yellow
+
+const inputStyle = {
+  backgroundColor: '#FFFFFF',
+  borderRadius: 14,
+  borderWidth: 1,
+  borderColor: THEME.ring,
+  paddingHorizontal: 16,
+  paddingVertical: 12,
+  fontSize: 15,
+  color: '#1A1A2E',
+} as const
+
+function FieldLabel({ children }: { children: string }): JSX.Element {
+  return (
+    <Text
+      style={{
+        marginBottom: 8,
+        fontSize: 12,
+        fontWeight: '700',
+        color: THEME.deep,
+        letterSpacing: 0.4,
+      }}
+    >
+      {children.toUpperCase()}
+    </Text>
+  )
+}
 
 export default function IngredientForm(): JSX.Element {
   const router = useRouter()
@@ -251,14 +281,26 @@ export default function IngredientForm(): JSX.Element {
 
   return (
     <KeyboardAvoidingView
-      className="flex-1 bg-[#F8FAFC]"
+      className="flex-1 bg-white"
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
+      <View
+        style={{
+          position: 'absolute',
+          top: -50,
+          right: -50,
+          width: 160,
+          height: 160,
+          borderRadius: 80,
+          backgroundColor: THEME.soft,
+          opacity: 0.45,
+        }}
+      />
       <View className="flex-row items-center justify-between px-5 pb-2 pt-4">
         <Pressable onPress={() => router.back()}>
           <Text className="text-base text-gray-700">← 뒤로가기</Text>
         </Pressable>
-        <Text className="text-lg font-semibold text-gray-900">
+        <Text style={{ fontSize: 17, fontWeight: '700', color: THEME.deep }}>
           {editId !== null ? '재료 수정' : '재료 등록'}
         </Text>
         <View style={{ width: 60 }} />
@@ -268,18 +310,16 @@ export default function IngredientForm(): JSX.Element {
         contentContainerStyle={{ padding: 20, paddingBottom: 32 }}
         keyboardShouldPersistTaps="handled"
       >
-        {/* Name */}
-        <Text className="mb-2 text-sm font-medium text-gray-700">재료명</Text>
+        <FieldLabel>재료명</FieldLabel>
         <TextInput
           value={name}
           onChangeText={setName}
           placeholder="예: 우유"
-          placeholderTextColor="#9CA3AF"
-          className="mb-5 rounded-xl border border-gray-200 bg-white px-4 py-3 text-base text-gray-900"
+          placeholderTextColor="#C8B074"
+          style={{ ...inputStyle, marginBottom: 20 }}
         />
 
-        {/* Category */}
-        <Text className="mb-2 text-sm font-medium text-gray-700">카테고리</Text>
+        <FieldLabel>카테고리</FieldLabel>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -300,44 +340,86 @@ export default function IngredientForm(): JSX.Element {
                 value={newCatText}
                 onChangeText={setNewCatText}
                 placeholder="카테고리명"
-                placeholderTextColor="#9CA3AF"
+                placeholderTextColor="#C8B074"
                 autoFocus
-                className="rounded-2xl border border-[#1E90FF] bg-white px-3 py-1.5 text-sm text-gray-900"
-                style={{ minWidth: 80 }}
+                style={{
+                  borderRadius: 999,
+                  borderWidth: 1,
+                  borderColor: THEME.accent,
+                  paddingHorizontal: 12,
+                  paddingVertical: 6,
+                  fontSize: 13,
+                  color: '#1A1A2E',
+                  backgroundColor: '#FFF',
+                  minWidth: 90,
+                }}
               />
               <Pressable
                 onPress={handleAddCategory}
                 disabled={addingCatBusy || !newCatText.trim()}
-                className="rounded-2xl bg-[#1E90FF] px-3 py-1.5"
+                style={{
+                  borderRadius: 999,
+                  backgroundColor: THEME.deep,
+                  paddingHorizontal: 12,
+                  paddingVertical: 6,
+                }}
               >
-                <Text className="text-sm font-medium text-white">확인</Text>
+                <Text className="text-sm font-bold text-white">확인</Text>
               </Pressable>
               <Pressable
-                onPress={() => { setAddingCat(false); setNewCatText('') }}
-                className="rounded-2xl border border-gray-300 bg-white px-3 py-1.5"
+                onPress={() => {
+                  setAddingCat(false)
+                  setNewCatText('')
+                }}
+                style={{
+                  borderRadius: 999,
+                  borderWidth: 1,
+                  borderColor: '#E5E7EB',
+                  paddingHorizontal: 12,
+                  paddingVertical: 6,
+                  backgroundColor: '#FFF',
+                }}
               >
                 <Text className="text-sm text-gray-600">취소</Text>
               </Pressable>
             </View>
           ) : (
-            <FilterChip
-              label="+ 추가"
-              isActive={false}
+            <Pressable
               onPress={() => setAddingCat(true)}
-            />
+              style={{
+                borderRadius: 999,
+                paddingHorizontal: 14,
+                paddingVertical: 8,
+                borderWidth: 1,
+                borderStyle: 'dashed',
+                borderColor: THEME.accent,
+                backgroundColor: '#FFF',
+              }}
+            >
+              <Text style={{ fontSize: 13, color: THEME.deep, fontWeight: '600' }}>
+                + 추가
+              </Text>
+            </Pressable>
           )}
         </ScrollView>
 
-        {/* Purchase Info */}
-        <Text className="mb-2 text-sm font-medium text-gray-700">구매 정보</Text>
-        <View className="rounded-xl border border-gray-200 p-3">
+        <FieldLabel>구매 정보</FieldLabel>
+        <View
+          style={{
+            backgroundColor: '#FFFFFF',
+            borderRadius: 14,
+            borderWidth: 1,
+            borderColor: THEME.ring,
+            padding: 12,
+          }}
+        >
           <View className="mb-2 flex-row items-center">
             <Text className="w-20 text-sm text-gray-600">구매가격</Text>
             <TextInput
               value={purchasePrice}
               onChangeText={setPurchasePrice}
               placeholder="2800"
-              placeholderTextColor="#9CA3AF"
+              placeholderTextColor="#C8B074"
               keyboardType="numeric"
               className="flex-1 text-right text-base text-gray-900"
             />
@@ -349,7 +431,7 @@ export default function IngredientForm(): JSX.Element {
               value={unitG}
               onChangeText={setUnitG}
               placeholder="1000"
-              placeholderTextColor="#9CA3AF"
+              placeholderTextColor="#C8B074"
               keyboardType="numeric"
               className="flex-1 text-right text-base text-gray-900"
             />
@@ -361,7 +443,7 @@ export default function IngredientForm(): JSX.Element {
               value={unitCount}
               onChangeText={setUnitCount}
               placeholder="1"
-              placeholderTextColor="#9CA3AF"
+              placeholderTextColor="#C8B074"
               keyboardType="numeric"
               className="flex-1 text-right text-base text-gray-900"
             />
@@ -370,11 +452,8 @@ export default function IngredientForm(): JSX.Element {
         </View>
         <View className="mt-2 flex-row items-center justify-between">
           <Text className="text-xs text-gray-500">세는 단위</Text>
-          <Pressable
-            onPress={() => setEditingUnits((v) => !v)}
-            hitSlop={8}
-          >
-            <Text className="text-xs font-medium text-[#1E90FF]">
+          <Pressable onPress={() => setEditingUnits((v) => !v)} hitSlop={8}>
+            <Text style={{ fontSize: 12, fontWeight: '700', color: THEME.deep }}>
               {editingUnits ? '완료' : '편집'}
             </Text>
           </Pressable>
@@ -409,39 +488,71 @@ export default function IngredientForm(): JSX.Element {
                 value={newUnitText}
                 onChangeText={setNewUnitText}
                 placeholder="단위명"
-                placeholderTextColor="#9CA3AF"
+                placeholderTextColor="#C8B074"
                 autoFocus
-                className="rounded-2xl border border-[#1E90FF] bg-white px-3 py-1.5 text-sm text-gray-900"
-                style={{ minWidth: 70 }}
+                style={{
+                  borderRadius: 999,
+                  borderWidth: 1,
+                  borderColor: THEME.accent,
+                  paddingHorizontal: 12,
+                  paddingVertical: 6,
+                  fontSize: 13,
+                  color: '#1A1A2E',
+                  backgroundColor: '#FFF',
+                  minWidth: 70,
+                }}
               />
               <Pressable
                 onPress={handleAddUnit}
                 disabled={addingUnitBusy || !newUnitText.trim()}
-                className="rounded-2xl bg-[#1E90FF] px-3 py-1.5"
+                style={{
+                  borderRadius: 999,
+                  backgroundColor: THEME.deep,
+                  paddingHorizontal: 12,
+                  paddingVertical: 6,
+                }}
               >
-                <Text className="text-sm font-medium text-white">확인</Text>
+                <Text className="text-sm font-bold text-white">확인</Text>
               </Pressable>
               <Pressable
                 onPress={() => {
                   setAddingUnit(false)
                   setNewUnitText('')
                 }}
-                className="rounded-2xl border border-gray-300 bg-white px-3 py-1.5"
+                style={{
+                  borderRadius: 999,
+                  borderWidth: 1,
+                  borderColor: '#E5E7EB',
+                  paddingHorizontal: 12,
+                  paddingVertical: 6,
+                  backgroundColor: '#FFF',
+                }}
               >
                 <Text className="text-sm text-gray-600">취소</Text>
               </Pressable>
             </View>
           ) : (
-            <FilterChip
-              label="+ 추가"
-              isActive={false}
+            <Pressable
               onPress={() => setAddingUnit(true)}
-            />
+              style={{
+                borderRadius: 999,
+                paddingHorizontal: 14,
+                paddingVertical: 8,
+                borderWidth: 1,
+                borderStyle: 'dashed',
+                borderColor: THEME.accent,
+                backgroundColor: '#FFF',
+              }}
+            >
+              <Text style={{ fontSize: 13, color: THEME.deep, fontWeight: '600' }}>
+                + 추가
+              </Text>
+            </Pressable>
           )}
         </ScrollView>
         <View className="mb-5 mt-1.5">
           {pricePerG !== null ? (
-            <Text className="text-xs text-[#1E90FF]">
+            <Text style={{ fontSize: 12, color: THEME.deep, fontWeight: '700' }}>
               1g당 {(Math.round(pricePerG * 100) / 100).toLocaleString()}원
             </Text>
           ) : (
@@ -451,86 +562,140 @@ export default function IngredientForm(): JSX.Element {
           )}
         </View>
 
-        {/* Stock */}
-        <Text className="mb-2 text-sm font-medium text-gray-700">재고</Text>
-        <View className="mb-5 flex-row items-center rounded-xl border border-gray-200 bg-white px-4 py-3">
+        <FieldLabel>재고</FieldLabel>
+        <View
+          style={{
+            marginBottom: 20,
+            flexDirection: 'row',
+            alignItems: 'center',
+            backgroundColor: '#FFFFFF',
+            borderRadius: 14,
+            borderWidth: 1,
+            borderColor: THEME.ring,
+            paddingHorizontal: 16,
+            paddingVertical: 12,
+          }}
+        >
           <TextInput
             value={stockCount}
             onChangeText={setStockCount}
             placeholder="0"
-            placeholderTextColor="#9CA3AF"
+            placeholderTextColor="#C8B074"
             keyboardType="numeric"
             className="flex-1 text-base text-gray-900"
           />
           <Text className="ml-1 text-sm text-gray-500">{stockUnit}</Text>
         </View>
 
-        {/* Supplier */}
         <View className="mb-2 flex-row items-center justify-between">
-          <Text className="text-sm font-medium text-gray-700">공급업체</Text>
+          <Text
+            style={{
+              fontSize: 12,
+              fontWeight: '700',
+              color: THEME.deep,
+              letterSpacing: 0.4,
+            }}
+          >
+            공급업체
+          </Text>
           <Pressable
             onPress={() => setSupplierModalOpen(true)}
-            className="rounded-full bg-[#E8F4FF] px-3 py-1.5"
+            style={{
+              backgroundColor: THEME.soft,
+              paddingHorizontal: 12,
+              paddingVertical: 6,
+              borderRadius: 999,
+            }}
           >
-            <Text className="text-sm font-medium text-[#1E90FF]">
+            <Text style={{ color: THEME.deep, fontSize: 12, fontWeight: '700' }}>
               + 새 공급업체
             </Text>
           </Pressable>
         </View>
         {suppliers.length === 0 ? (
-          <View className="rounded-xl border border-dashed border-gray-200 p-4">
-            <Text className="text-center text-sm text-gray-500">
+          <View
+            style={{
+              borderRadius: 14,
+              borderWidth: 1.5,
+              borderStyle: 'dashed',
+              borderColor: THEME.ring,
+              padding: 16,
+              alignItems: 'center',
+            }}
+          >
+            <Text className="text-sm text-gray-500">
               등록된 공급업체가 없어요
             </Text>
           </View>
         ) : (
           <View style={{ gap: 8 }}>
-            {suppliers.map((s) => (
-              <Pressable
-                key={s.id}
-                onPress={() => setSupplierId(s.id)}
-                className={`rounded-xl border px-4 py-3 ${
-                  supplierId === s.id
-                    ? 'border-[#1E90FF] bg-[#E8F4FF]'
-                    : 'border-gray-200 bg-white'
-                }`}
-              >
-                <Text
-                  className={`text-base ${
-                    supplierId === s.id
-                      ? 'font-medium text-[#1E90FF]'
-                      : 'text-gray-900'
-                  }`}
+            {suppliers.map((s) => {
+              const active = supplierId === s.id
+              return (
+                <Pressable
+                  key={s.id}
+                  onPress={() => setSupplierId(s.id)}
+                  style={{
+                    paddingHorizontal: 16,
+                    paddingVertical: 12,
+                    borderRadius: 14,
+                    borderWidth: 1,
+                    borderColor: active ? THEME.accent : '#E5E7EB',
+                    backgroundColor: active ? THEME.softer : '#FFF',
+                  }}
                 >
-                  {s.name}
-                </Text>
-                {s.contact ? (
-                  <Text className="mt-0.5 text-xs text-gray-500">
-                    {s.contact}
+                  <Text
+                    style={{
+                      fontSize: 15,
+                      fontWeight: active ? '700' : '500',
+                      color: active ? THEME.deep : '#1A1A2E',
+                    }}
+                  >
+                    {s.name}
                   </Text>
-                ) : null}
-              </Pressable>
-            ))}
+                  {s.contact ? (
+                    <Text className="mt-0.5 text-xs text-gray-500">
+                      {s.contact}
+                    </Text>
+                  ) : null}
+                </Pressable>
+              )
+            })}
           </View>
         )}
       </ScrollView>
 
-      {/* Bottom Submit */}
-      <View className="border-t border-gray-200 bg-white px-5 pb-4 pt-3">
+      <View
+        style={{
+          backgroundColor: '#FFFFFF',
+          borderTopWidth: 1,
+          borderTopColor: THEME.ring,
+          paddingHorizontal: 20,
+          paddingTop: 14,
+          paddingBottom: 18,
+        }}
+      >
         <Pressable
           onPress={handleSubmit}
           disabled={submitting}
-          className={`items-center rounded-xl py-3 ${
-            submitting ? 'bg-gray-300' : 'bg-[#1E90FF]'
-          }`}
+          style={{
+            alignItems: 'center',
+            paddingVertical: 14,
+            borderRadius: 14,
+            backgroundColor: submitting ? '#E5E7EB' : THEME.deep,
+            shadowColor: THEME.deep,
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: submitting ? 0 : 0.25,
+            shadowRadius: 8,
+            elevation: submitting ? 0 : 3,
+          }}
         >
-          <Text className="text-base font-semibold text-white">
+          <Text className="text-base font-bold text-white">
             {submitting ? '저장 중...' : '저장'}
           </Text>
         </Pressable>
       </View>
 
-      {/* Supplier Modal */}
       <Modal
         visible={supplierModalOpen}
         animationType="slide"
@@ -546,7 +711,14 @@ export default function IngredientForm(): JSX.Element {
             onPress={() => setSupplierModalOpen(false)}
           />
           <View className="rounded-t-3xl bg-white p-6">
-            <Text className="mb-4 text-lg font-semibold text-gray-900">
+            <Text
+              style={{
+                marginBottom: 16,
+                fontSize: 17,
+                fontWeight: '700',
+                color: THEME.deep,
+              }}
+            >
               새 공급업체
             </Text>
 
@@ -555,8 +727,8 @@ export default function IngredientForm(): JSX.Element {
               value={supplierName}
               onChangeText={setSupplierName}
               placeholder="예: 한국유제품"
-              placeholderTextColor="#9CA3AF"
-              className="mb-3 rounded-xl border border-gray-200 px-4 py-3 text-base text-gray-900"
+              placeholderTextColor="#C8B074"
+              style={{ ...inputStyle, marginBottom: 12 }}
             />
 
             <Text className="mb-1 text-sm text-gray-500">연락처 (선택)</Text>
@@ -564,8 +736,8 @@ export default function IngredientForm(): JSX.Element {
               value={supplierContact}
               onChangeText={setSupplierContact}
               placeholder="010-0000-0000"
-              placeholderTextColor="#9CA3AF"
-              className="mb-3 rounded-xl border border-gray-200 px-4 py-3 text-base text-gray-900"
+              placeholderTextColor="#C8B074"
+              style={{ ...inputStyle, marginBottom: 12 }}
             />
 
             <Text className="mb-1 text-sm text-gray-500">메모 (선택)</Text>
@@ -573,27 +745,38 @@ export default function IngredientForm(): JSX.Element {
               value={supplierMemo}
               onChangeText={setSupplierMemo}
               placeholder="메모"
-              placeholderTextColor="#9CA3AF"
+              placeholderTextColor="#C8B074"
               multiline
               textAlignVertical="top"
-              className="mb-5 min-h-[60px] rounded-xl border border-gray-200 px-4 py-3 text-base text-gray-900"
+              style={{ ...inputStyle, marginBottom: 20, minHeight: 70 }}
             />
 
             <View className="flex-row" style={{ gap: 12 }}>
               <Pressable
                 onPress={() => setSupplierModalOpen(false)}
-                className="flex-1 items-center rounded-xl border border-gray-200 py-3"
+                style={{
+                  flex: 1,
+                  alignItems: 'center',
+                  paddingVertical: 12,
+                  borderRadius: 14,
+                  borderWidth: 1,
+                  borderColor: '#E5E7EB',
+                }}
               >
                 <Text className="text-base text-gray-700">취소</Text>
               </Pressable>
               <Pressable
                 onPress={handleCreateSupplier}
                 disabled={supplierSubmitting}
-                className={`flex-1 items-center rounded-xl py-3 ${
-                  supplierSubmitting ? 'bg-gray-300' : 'bg-[#1E90FF]'
-                }`}
+                style={{
+                  flex: 1,
+                  alignItems: 'center',
+                  paddingVertical: 12,
+                  borderRadius: 14,
+                  backgroundColor: supplierSubmitting ? '#E5E7EB' : THEME.deep,
+                }}
               >
-                <Text className="text-base font-semibold text-white">
+                <Text className="text-base font-bold text-white">
                   {supplierSubmitting ? '저장 중...' : '저장'}
                 </Text>
               </Pressable>

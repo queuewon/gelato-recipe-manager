@@ -11,8 +11,8 @@ import {
   Text,
   View,
 } from 'react-native'
+import { PASTEL_THEMES } from '../../../constants/colors'
 import { useCategoryStore } from '../../../store/categoryStore'
-
 import { useChecklistStore } from '../../../store/checklistStore'
 import { useIngredientStore } from '../../../store/ingredientStore'
 import { useRecipeStore } from '../../../store/recipeStore'
@@ -143,57 +143,141 @@ export default function Settings(): JSX.Element {
 
   return (
     <KeyboardAvoidingView
-      className="flex-1 bg-[#F8FAFC]"
+      className="flex-1 bg-white"
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
+      <View
+        style={{
+          position: 'absolute',
+          top: -50,
+          right: -50,
+          width: 180,
+          height: 180,
+          borderRadius: 90,
+          backgroundColor: PASTEL_THEMES.pink.soft,
+          opacity: 0.5,
+        }}
+      />
+      <View
+        style={{
+          position: 'absolute',
+          top: 100,
+          left: -50,
+          width: 130,
+          height: 130,
+          borderRadius: 65,
+          backgroundColor: PASTEL_THEMES.yellow.soft,
+          opacity: 0.4,
+        }}
+      />
+
       <ScrollView
         contentContainerStyle={{ padding: 20, paddingBottom: 40 }}
         keyboardShouldPersistTaps="handled"
       >
-        <Text className="mb-5 text-2xl font-bold text-gray-900">설정</Text>
+        <Text
+          style={{
+            marginBottom: 20,
+            fontSize: 24,
+            fontWeight: '800',
+            color: PASTEL_THEMES.pink.deep,
+          }}
+        >
+          설정
+        </Text>
 
-        {/* Category Management */}
-        <Section title="카테고리 관리">
+        <Section
+          title="카테고리 관리"
+          theme={PASTEL_THEMES.pink}
+        >
           <Pressable
             onPress={() => router.push('/settings/categories')}
-            className="flex-row items-center justify-between rounded-xl border border-gray-200 bg-white px-4 py-3"
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              paddingHorizontal: 16,
+              paddingVertical: 14,
+              backgroundColor: '#FFFFFF',
+              borderRadius: 16,
+              borderWidth: 1,
+              borderColor: PASTEL_THEMES.pink.ring,
+              shadowColor: PASTEL_THEMES.pink.deep,
+              shadowOffset: { width: 0, height: 3 },
+              shadowOpacity: 0.05,
+              shadowRadius: 8,
+              elevation: 1,
+            }}
           >
-            <Text className="text-base text-gray-900">카테고리 관리</Text>
-            <Text className="text-lg text-gray-400">›</Text>
+            <Text className="text-base font-medium text-gray-900">
+              카테고리 관리
+            </Text>
+            <Text
+              style={{
+                color: PASTEL_THEMES.pink.deep,
+                fontSize: 20,
+                opacity: 0.6,
+              }}
+            >
+              ›
+            </Text>
           </Pressable>
         </Section>
 
-        {/* Data Management */}
-        <Section title="데이터 관리">
+        <Section title="데이터 관리" theme={PASTEL_THEMES.blue}>
           <Pressable
             onPress={handleExport}
             disabled={busy}
-            className={`mb-2 items-center rounded-xl py-3 ${
-              busy ? 'bg-gray-300' : 'bg-[#1E90FF]'
-            }`}
+            style={{
+              marginBottom: 10,
+              alignItems: 'center',
+              paddingVertical: 14,
+              borderRadius: 14,
+              backgroundColor: busy ? '#E5E7EB' : PASTEL_THEMES.blue.deep,
+              shadowColor: PASTEL_THEMES.blue.deep,
+              shadowOffset: { width: 0, height: 4 },
+              shadowOpacity: busy ? 0 : 0.2,
+              shadowRadius: 6,
+              elevation: busy ? 0 : 2,
+            }}
           >
-            <Text className="text-sm font-semibold text-white">백업하기</Text>
+            <Text className="text-sm font-bold text-white">백업하기</Text>
           </Pressable>
           <Pressable
             onPress={handleImport}
             disabled={busy}
-            className={`items-center rounded-xl border py-3 ${
-              busy ? 'border-gray-200' : 'border-[#1E90FF]'
-            }`}
+            style={{
+              alignItems: 'center',
+              paddingVertical: 14,
+              borderRadius: 14,
+              borderWidth: 1.5,
+              borderColor: busy ? '#E5E7EB' : PASTEL_THEMES.blue.accent,
+              backgroundColor: '#FFFFFF',
+            }}
           >
             <Text
-              className={`text-sm font-semibold ${
-                busy ? 'text-gray-400' : 'text-[#1E90FF]'
-              }`}
+              style={{
+                fontSize: 14,
+                fontWeight: '700',
+                color: busy ? '#9CA3AF' : PASTEL_THEMES.blue.deep,
+              }}
             >
               백업에서 복원
             </Text>
           </Pressable>
         </Section>
 
-        {/* Unit Setting */}
-        <Section title="단위 설정">
-          <View className="rounded-xl border border-gray-200 bg-white px-4 py-3">
+        <Section title="단위 설정" theme={PASTEL_THEMES.yellow}>
+          <View
+            style={{
+              backgroundColor: '#FFFFFF',
+              borderRadius: 16,
+              borderWidth: 1,
+              borderColor: PASTEL_THEMES.yellow.ring,
+              paddingHorizontal: 16,
+              paddingVertical: 14,
+            }}
+          >
             <Text className="text-base text-gray-900">기본 단위: g</Text>
             <Text className="mt-1 text-xs text-gray-500">
               현재는 그램(g)만 지원해요. 추후 확장 예정.
@@ -201,26 +285,38 @@ export default function Settings(): JSX.Element {
           </View>
         </Section>
 
-        {/* Reset */}
-        <Section title="데이터 초기화">
+        <Section
+          title="데이터 초기화"
+          theme={{
+            soft: '#FFE4E6',
+            deep: '#BE123C',
+            ring: '#FECACA',
+          }}
+        >
           <Pressable
             onPress={handleReset}
             disabled={busy}
-            className={`items-center rounded-xl border py-3 ${
-              busy ? 'border-gray-200' : 'border-red-300'
-            }`}
+            style={{
+              alignItems: 'center',
+              paddingVertical: 14,
+              borderRadius: 14,
+              borderWidth: 1.5,
+              borderColor: busy ? '#E5E7EB' : '#FECACA',
+              backgroundColor: '#FFF1F2',
+            }}
           >
             <Text
-              className={`text-sm font-semibold ${
-                busy ? 'text-gray-400' : 'text-red-500'
-              }`}
+              style={{
+                fontSize: 14,
+                fontWeight: '700',
+                color: busy ? '#9CA3AF' : '#BE123C',
+              }}
             >
               모든 데이터 삭제
             </Text>
           </Pressable>
         </Section>
 
-        {/* App Version */}
         <View className="mt-2 items-center">
           <Text className="text-xs text-gray-400">앱 버전 {APP_VERSION}</Text>
         </View>
@@ -229,17 +325,41 @@ export default function Settings(): JSX.Element {
   )
 }
 
+interface SectionTheme {
+  soft: string
+  deep: string
+  ring: string
+}
+
 interface SectionProps {
   title: string
+  theme: SectionTheme
   children: React.ReactNode
 }
 
-function Section({ title, children }: SectionProps): JSX.Element {
+function Section({ title, theme, children }: SectionProps): JSX.Element {
   return (
     <View className="mb-6">
-      <Text className="mb-2 text-base font-semibold text-gray-900">
-        {title}
-      </Text>
+      <View className="mb-3 flex-row items-center" style={{ gap: 8 }}>
+        <View
+          style={{
+            width: 8,
+            height: 8,
+            borderRadius: 4,
+            backgroundColor: theme.deep,
+          }}
+        />
+        <Text
+          style={{
+            fontSize: 13,
+            fontWeight: '700',
+            color: theme.deep,
+            letterSpacing: 0.4,
+          }}
+        >
+          {title.toUpperCase()}
+        </Text>
+      </View>
       {children}
     </View>
   )

@@ -79,8 +79,7 @@ export default function RecipeCategoriesScreen(): JSX.Element {
 
   return (
     <KeyboardAvoidingView
-      className="flex-1"
-      style={{ backgroundColor: THEME.softer }}
+      className="flex-1 bg-white"
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <View
@@ -175,10 +174,10 @@ export default function RecipeCategoriesScreen(): JSX.Element {
                   <View
                     key={cat.name}
                     style={{
-                      backgroundColor: THEME.softer,
+                      backgroundColor: '#FFFFFF',
                       borderRadius: 16,
                       borderWidth: 1,
-                      borderColor: isEditing ? THEME.accent : 'transparent',
+                      borderColor: isEditing ? THEME.accent : THEME.ring,
                     }}
                   >
                     <View className="flex-row items-center justify-between px-3 py-3">

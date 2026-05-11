@@ -2,9 +2,12 @@ import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useEffect, useMemo, useState, type JSX } from 'react'
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native'
 import { EmptyState } from '../../../../components/common/EmptyState'
+import { PASTEL_THEMES } from '../../../../constants/colors'
 import { useIngredientStore } from '../../../../store/ingredientStore'
 import { useRecipeStore } from '../../../../store/recipeStore'
 import type { BaseCategory, RecipeVersion } from '../../../../types'
+
+const THEME = PASTEL_THEMES.pink
 
 interface Snapshot {
   name: string
@@ -152,7 +155,19 @@ export default function RecipeHistory(): JSX.Element {
   }
 
   return (
-    <View className="flex-1 bg-[#F8FAFC]">
+    <View className="flex-1 bg-white">
+      <View
+        style={{
+          position: 'absolute',
+          top: -50,
+          right: -50,
+          width: 160,
+          height: 160,
+          borderRadius: 80,
+          backgroundColor: THEME.soft,
+          opacity: 0.45,
+        }}
+      />
       <View className="flex-row items-center justify-between px-5 pb-2 pt-4">
         <Pressable onPress={() => router.back()}>
           <Text className="text-base text-gray-700">← 뒤로가기</Text>
@@ -160,7 +175,9 @@ export default function RecipeHistory(): JSX.Element {
       </View>
 
       <View className="px-5 pb-4">
-        <Text className="text-2xl font-bold text-gray-900">수정 이력</Text>
+        <Text style={{ fontSize: 24, fontWeight: '800', color: THEME.deep }}>
+          수정 이력
+        </Text>
         <Text className="mt-1 text-sm text-gray-500">
           {selectedRecipe?.name ?? ''}
         </Text>
@@ -184,7 +201,19 @@ export default function RecipeHistory(): JSX.Element {
             return (
               <View
                 key={v.id}
-                className="mb-3 overflow-hidden rounded-xl border border-gray-200"
+                style={{
+                  marginBottom: 12,
+                  backgroundColor: '#FFFFFF',
+                  borderRadius: 18,
+                  borderWidth: 1,
+                  borderColor: THEME.ring,
+                  overflow: 'hidden',
+                  shadowColor: THEME.deep,
+                  shadowOffset: { width: 0, height: 3 },
+                  shadowOpacity: 0.05,
+                  shadowRadius: 8,
+                  elevation: 1,
+                }}
               >
                 <View className="flex-row items-center">
                   <Pressable
@@ -192,12 +221,26 @@ export default function RecipeHistory(): JSX.Element {
                     className="flex-1 px-4 py-4"
                   >
                     <View className="flex-row items-center">
-                      <Text className="text-base font-semibold text-gray-900">
+                      <Text className="text-base font-bold text-gray-900">
                         v{v.version_no}
                       </Text>
                       {isCurrent ? (
-                        <View className="ml-2 rounded-full bg-[#E8F4FF] px-2 py-0.5">
-                          <Text className="text-xs font-medium text-[#1E90FF]">
+                        <View
+                          style={{
+                            marginLeft: 8,
+                            backgroundColor: THEME.soft,
+                            paddingHorizontal: 8,
+                            paddingVertical: 2,
+                            borderRadius: 999,
+                          }}
+                        >
+                          <Text
+                            style={{
+                              color: THEME.deep,
+                              fontSize: 11,
+                              fontWeight: '700',
+                            }}
+                          >
                             현재
                           </Text>
                         </View>
@@ -210,9 +253,22 @@ export default function RecipeHistory(): JSX.Element {
                   {!isCurrent ? (
                     <Pressable
                       onPress={() => handleRestore(v.id)}
-                      className="mr-3 rounded-full border border-[#1E90FF] px-3 py-1.5"
+                      style={{
+                        marginRight: 12,
+                        paddingHorizontal: 12,
+                        paddingVertical: 6,
+                        borderRadius: 999,
+                        borderWidth: 1,
+                        borderColor: THEME.accent,
+                      }}
                     >
-                      <Text className="text-sm font-medium text-[#1E90FF]">
+                      <Text
+                        style={{
+                          color: THEME.deep,
+                          fontSize: 13,
+                          fontWeight: '700',
+                        }}
+                      >
                         복원
                       </Text>
                     </Pressable>

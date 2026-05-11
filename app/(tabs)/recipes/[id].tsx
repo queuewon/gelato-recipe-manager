@@ -10,10 +10,12 @@ import {
 } from 'react-native'
 import { Badge } from '../../../components/common/Badge'
 import { EmptyState } from '../../../components/common/EmptyState'
+import { PASTEL_THEMES } from '../../../constants/colors'
 import { useRecipeStore } from '../../../store/recipeStore'
 import { scaleAmount } from '../../../utils/batchScaler'
 import { calcBatchCost, calcTotalCost } from '../../../utils/costCalculator'
 
+const THEME = PASTEL_THEMES.pink
 const STEP = 500
 const MIN_BATCH = 500
 
@@ -81,13 +83,13 @@ export default function RecipeDetail(): JSX.Element {
   if (!selectedRecipe || selectedRecipe.id !== recipeId) {
     if (isLoading) {
       return (
-        <View className="flex-1 items-center justify-center bg-[#F8FAFC]">
-          <ActivityIndicator />
+        <View className="flex-1 items-center justify-center bg-white">
+          <ActivityIndicator color={THEME.deep} />
         </View>
       )
     }
     return (
-      <View className="flex-1 bg-[#F8FAFC]">
+      <View className="flex-1 bg-white">
         <View className="flex-row items-center justify-between px-5 pb-2 pt-4">
           <Pressable onPress={() => router.back()}>
             <Text className="text-base text-gray-700">← 뒤로가기</Text>
@@ -105,9 +107,22 @@ export default function RecipeDetail(): JSX.Element {
 
   return (
     <ScrollView
-      className="flex-1 bg-[#F8FAFC]"
+      className="flex-1 bg-white"
       contentContainerStyle={{ paddingBottom: 32 }}
     >
+      <View
+        style={{
+          position: 'absolute',
+          top: -50,
+          right: -50,
+          width: 180,
+          height: 180,
+          borderRadius: 90,
+          backgroundColor: THEME.soft,
+          opacity: 0.5,
+        }}
+      />
+
       {/* Top Nav */}
       <View className="flex-row items-center justify-between px-5 pb-2 pt-4">
         <Pressable onPress={() => router.back()}>
@@ -116,15 +131,29 @@ export default function RecipeDetail(): JSX.Element {
         <View className="flex-row" style={{ gap: 8 }}>
           <Pressable
             onPress={handleDelete}
-            className="rounded-full border border-red-200 px-4 py-2"
+            style={{
+              backgroundColor: '#FFE4E6',
+              paddingHorizontal: 16,
+              paddingVertical: 8,
+              borderRadius: 999,
+            }}
           >
-            <Text className="text-sm font-medium text-red-500">삭제</Text>
+            <Text style={{ color: '#BE123C', fontWeight: '700', fontSize: 13 }}>
+              삭제
+            </Text>
           </Pressable>
           <Pressable
             onPress={() => router.push(`/recipes/edit/${recipeId}`)}
-            className="rounded-full bg-[#E8F4FF] px-4 py-2"
+            style={{
+              backgroundColor: THEME.soft,
+              paddingHorizontal: 16,
+              paddingVertical: 8,
+              borderRadius: 999,
+            }}
           >
-            <Text className="text-sm font-medium text-[#1E90FF]">수정</Text>
+            <Text style={{ color: THEME.deep, fontWeight: '700', fontSize: 13 }}>
+              수정
+            </Text>
           </Pressable>
         </View>
       </View>
@@ -146,36 +175,95 @@ export default function RecipeDetail(): JSX.Element {
       </View>
 
       {/* Batch Size Adjuster */}
-      <View className="mx-5 mb-5 rounded-xl border border-gray-200 p-4">
-        <Text className="text-sm text-gray-500">배치량 조절 (g)</Text>
+      <View
+        style={{
+          marginHorizontal: 20,
+          marginBottom: 20,
+          backgroundColor: '#FFFFFF',
+          borderRadius: 20,
+          padding: 18,
+          borderWidth: 1,
+          borderColor: THEME.ring,
+          shadowColor: THEME.deep,
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.06,
+          shadowRadius: 10,
+          elevation: 2,
+        }}
+      >
+        <Text className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+          배치량 조절 (g)
+        </Text>
         <View className="mt-3 flex-row items-center justify-center">
           <Pressable
-            onPress={() =>
-              setBatchSize((p) => Math.max(MIN_BATCH, p - STEP))
-            }
-            className="h-10 w-10 items-center justify-center rounded-full bg-[#E8F4FF]"
+            onPress={() => setBatchSize((p) => Math.max(MIN_BATCH, p - STEP))}
+            style={{
+              height: 44,
+              width: 44,
+              borderRadius: 22,
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: THEME.soft,
+            }}
           >
-            <Text className="text-xl font-bold text-[#1E90FF]">−</Text>
+            <Text style={{ color: THEME.deep, fontSize: 22, fontWeight: '700' }}>
+              −
+            </Text>
           </Pressable>
-          <Text className="mx-6 text-2xl font-bold text-gray-900">
+          <Text
+            style={{
+              marginHorizontal: 28,
+              fontSize: 26,
+              fontWeight: '800',
+              color: THEME.deep,
+            }}
+          >
             {batchSize.toLocaleString()}
           </Text>
           <Pressable
             onPress={() => setBatchSize((p) => p + STEP)}
-            className="h-10 w-10 items-center justify-center rounded-full bg-[#E8F4FF]"
+            style={{
+              height: 44,
+              width: 44,
+              borderRadius: 22,
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: THEME.soft,
+            }}
           >
-            <Text className="text-xl font-bold text-[#1E90FF]">＋</Text>
+            <Text style={{ color: THEME.deep, fontSize: 22, fontWeight: '700' }}>
+              +
+            </Text>
           </Pressable>
         </View>
       </View>
 
       {/* Ingredients Table */}
-      <View className="mx-5 mb-5 overflow-hidden rounded-xl border border-gray-200">
-        <View className="flex-row border-b border-gray-200 bg-gray-50 px-4 py-3">
-          <Text className="flex-1 text-xs font-semibold text-gray-500">
+      <View
+        style={{
+          marginHorizontal: 20,
+          marginBottom: 20,
+          backgroundColor: '#FFFFFF',
+          borderRadius: 20,
+          borderWidth: 1,
+          borderColor: THEME.ring,
+          overflow: 'hidden',
+        }}
+      >
+        <View
+          style={{
+            flexDirection: 'row',
+            paddingHorizontal: 16,
+            paddingVertical: 12,
+            backgroundColor: THEME.softer,
+            borderBottomWidth: 1,
+            borderBottomColor: THEME.ring,
+          }}
+        >
+          <Text className="flex-1 text-xs font-semibold text-gray-600">
             재료명
           </Text>
-          <Text className="text-xs font-semibold text-gray-500">사용량(g)</Text>
+          <Text className="text-xs font-semibold text-gray-600">사용량(g)</Text>
         </View>
         {selectedRecipe.ingredients.map((ri, i, arr) => {
           const scaled = scaleAmount(ri.amount, baseBatch, batchSize)
@@ -190,7 +278,7 @@ export default function RecipeDetail(): JSX.Element {
               <Text className="flex-1 text-sm text-gray-800">
                 {ri.ingredient.name}
               </Text>
-              <Text className="text-sm font-medium text-gray-900">
+              <Text className="text-sm font-bold text-gray-900">
                 {Math.round(scaled).toLocaleString()}
               </Text>
             </View>
@@ -199,9 +287,25 @@ export default function RecipeDetail(): JSX.Element {
       </View>
 
       {/* Total Cost */}
-      <View className="mx-5 mb-6 flex-row items-center justify-between rounded-xl bg-gray-50 px-4 py-4">
-        <Text className="text-sm font-medium text-gray-700">총 원가</Text>
-        <Text className="text-lg font-bold text-[#EF4444]">
+      <View
+        style={{
+          marginHorizontal: 20,
+          marginBottom: 24,
+          backgroundColor: PASTEL_THEMES.yellow.softer,
+          borderRadius: 20,
+          paddingHorizontal: 18,
+          paddingVertical: 16,
+          borderWidth: 1,
+          borderColor: PASTEL_THEMES.yellow.ring,
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}
+      >
+        <Text style={{ fontSize: 14, fontWeight: '700', color: PASTEL_THEMES.yellow.deep }}>
+          총 원가
+        </Text>
+        <Text style={{ fontSize: 20, fontWeight: '800', color: '#EF4444' }}>
           {Math.round(scaledTotalCost).toLocaleString()}원
         </Text>
       </View>
@@ -209,11 +313,21 @@ export default function RecipeDetail(): JSX.Element {
       {/* Versions Preview */}
       <View className="mx-5">
         <View className="flex-row items-center justify-between">
-          <Text className="text-base font-semibold text-gray-900">수정이력</Text>
-          <Pressable
-            onPress={() => router.push(`/recipes/history/${recipeId}`)}
-          >
-            <Text className="text-sm text-[#1E90FF]">전체 보기</Text>
+          <View className="flex-row items-center" style={{ gap: 8 }}>
+            <View
+              style={{
+                width: 8,
+                height: 8,
+                borderRadius: 4,
+                backgroundColor: THEME.deep,
+              }}
+            />
+            <Text className="text-base font-bold text-gray-900">수정이력</Text>
+          </View>
+          <Pressable onPress={() => router.push(`/recipes/history/${recipeId}`)}>
+            <Text style={{ color: THEME.deep, fontWeight: '600', fontSize: 13 }}>
+              전체 보기
+            </Text>
           </Pressable>
         </View>
         {versions.length === 0 ? (
@@ -221,7 +335,16 @@ export default function RecipeDetail(): JSX.Element {
             기록된 이력이 없어요
           </Text>
         ) : (
-          <View className="mt-3 overflow-hidden rounded-xl border border-gray-200">
+          <View
+            style={{
+              marginTop: 12,
+              backgroundColor: '#FFFFFF',
+              borderRadius: 16,
+              borderWidth: 1,
+              borderColor: THEME.ring,
+              overflow: 'hidden',
+            }}
+          >
             {versions.slice(0, 3).map((v, i, arr) => {
               const isLast = i === arr.length - 1
               return (
@@ -231,7 +354,7 @@ export default function RecipeDetail(): JSX.Element {
                     isLast ? '' : 'border-b border-gray-100'
                   }`}
                 >
-                  <Text className="text-sm font-medium text-gray-800">
+                  <Text className="text-sm font-bold text-gray-800">
                     v{v.version_no}
                   </Text>
                   <Text className="text-xs text-gray-500">{v.created_at}</Text>

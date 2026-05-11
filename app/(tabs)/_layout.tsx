@@ -1,16 +1,21 @@
 import { Tabs } from 'expo-router'
 import type { JSX } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { PASTEL_THEMES } from '../../constants/colors'
 
 export default function TabsLayout(): JSX.Element {
   return (
-    <SafeAreaView edges={['top']} className="flex-1 bg-[#F8FAFC]">
+    <SafeAreaView edges={['top']} className="flex-1 bg-white">
       <Tabs
         screenOptions={{
-          tabBarActiveTintColor: '#1E90FF',
+          tabBarActiveTintColor: PASTEL_THEMES.pink.deep,
           tabBarInactiveTintColor: '#9CA3AF',
           tabBarIcon: () => null,
-          tabBarLabelStyle: { fontSize: 13 },
+          tabBarLabelStyle: { fontSize: 13, fontWeight: '600' },
+          tabBarStyle: {
+            backgroundColor: '#FFFFFF',
+            borderTopColor: PASTEL_THEMES.pink.ring,
+          },
           headerShown: false,
         }}
       >

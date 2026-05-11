@@ -14,7 +14,10 @@ import {
 } from 'react-native'
 import { Badge } from '../../../components/common/Badge'
 import { EmptyState } from '../../../components/common/EmptyState'
+import { PASTEL_THEMES } from '../../../constants/colors'
 import { useIngredientStore } from '../../../store/ingredientStore'
+
+const THEME = PASTEL_THEMES.yellow
 
 export default function IngredientDetail(): JSX.Element {
   const router = useRouter()
@@ -40,14 +43,14 @@ export default function IngredientDetail(): JSX.Element {
   if (isLoading && !selectedIngredient) {
     return (
       <View className="flex-1 items-center justify-center bg-white">
-        <ActivityIndicator />
+        <ActivityIndicator color={THEME.deep} />
       </View>
     )
   }
 
   if (!selectedIngredient || selectedIngredient.id !== ingredientId) {
     return (
-      <View className="flex-1 bg-[#F8FAFC]">
+      <View className="flex-1 bg-white">
         <View className="flex-row items-center px-5 pb-2 pt-4">
           <Pressable onPress={() => router.back()}>
             <Text className="text-base text-gray-700">← 뒤로</Text>
@@ -79,34 +82,43 @@ export default function IngredientDetail(): JSX.Element {
   }
 
   const handleDelete = (): void => {
-    Alert.alert(
-      '재료 삭제',
-      `"${ing.name}"을(를) 삭제하시겠어요?`,
-      [
-        { text: '취소', style: 'cancel' },
-        {
-          text: '삭제',
-          style: 'destructive',
-          onPress: () => {
-            void (async () => {
-              try {
-                await deleteIngredient(ingredientId)
-                router.back()
-              } catch (e) {
-                Alert.alert(
-                  '삭제 실패',
-                  e instanceof Error ? e.message : String(e),
-                )
-              }
-            })()
-          },
+    Alert.alert('재료 삭제', `"${ing.name}"을(를) 삭제하시겠어요?`, [
+      { text: '취소', style: 'cancel' },
+      {
+        text: '삭제',
+        style: 'destructive',
+        onPress: () => {
+          void (async () => {
+            try {
+              await deleteIngredient(ingredientId)
+              router.back()
+            } catch (e) {
+              Alert.alert(
+                '삭제 실패',
+                e instanceof Error ? e.message : String(e),
+              )
+            }
+          })()
         },
-      ],
-    )
+      },
+    ])
   }
 
   return (
-    <View className="flex-1 bg-[#F8FAFC]">
+    <View className="flex-1 bg-white">
+      <View
+        style={{
+          position: 'absolute',
+          top: -50,
+          right: -50,
+          width: 180,
+          height: 180,
+          borderRadius: 90,
+          backgroundColor: THEME.soft,
+          opacity: 0.5,
+        }}
+      />
+
       {/* Top Nav */}
       <View className="flex-row items-center justify-between px-5 pb-2 pt-4">
         <Pressable onPress={() => router.back()}>
@@ -114,9 +126,16 @@ export default function IngredientDetail(): JSX.Element {
         </Pressable>
         <Pressable
           onPress={() => router.push(`/ingredients/new?edit=${ingredientId}`)}
-          className="rounded-full bg-[#E8F4FF] px-4 py-2"
+          style={{
+            backgroundColor: THEME.soft,
+            paddingHorizontal: 16,
+            paddingVertical: 8,
+            borderRadius: 999,
+          }}
         >
-          <Text className="text-sm font-medium text-[#1E90FF]">수정</Text>
+          <Text style={{ color: THEME.deep, fontWeight: '700', fontSize: 13 }}>
+            수정
+          </Text>
         </Pressable>
       </View>
 
@@ -135,13 +154,31 @@ export default function IngredientDetail(): JSX.Element {
         </View>
 
         {/* Current Info */}
-        <View className="mx-5 mb-5 rounded-xl border border-gray-200">
+        <View
+          style={{
+            marginHorizontal: 20,
+            marginBottom: 20,
+            backgroundColor: '#FFFFFF',
+            borderRadius: 18,
+            borderWidth: 1,
+            borderColor: THEME.ring,
+            overflow: 'hidden',
+            shadowColor: THEME.deep,
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.06,
+            shadowRadius: 10,
+            elevation: 2,
+          }}
+        >
           <InfoRow
             label="현재가"
             value={`${Math.round(ing.package_price).toLocaleString()}원 / ${ing.package_amount.toLocaleString()}g`}
             isFirst
           />
-          <InfoRow label="기준(g)" value={`${ing.package_amount.toLocaleString()} g`} />
+          <InfoRow
+            label="기준(g)"
+            value={`${ing.package_amount.toLocaleString()} g`}
+          />
           <InfoRow
             label="재고"
             value={`${ing.stock_count.toLocaleString()}${ing.stock_unit}`}
@@ -152,26 +189,60 @@ export default function IngredientDetail(): JSX.Element {
         {/* Price History */}
         <View className="mx-5 mb-5">
           <View className="mb-3 flex-row items-center justify-between">
-            <Text className="text-base font-semibold text-gray-900">
-              가격 변동 이력
-            </Text>
+            <View className="flex-row items-center" style={{ gap: 8 }}>
+              <View
+                style={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: 4,
+                  backgroundColor: THEME.deep,
+                }}
+              />
+              <Text className="text-base font-bold text-gray-900">
+                가격 변동 이력
+              </Text>
+            </View>
             <Pressable
               onPress={() => setPriceModalOpen(true)}
-              className="rounded-full bg-[#E8F4FF] px-3 py-1.5"
+              style={{
+                backgroundColor: THEME.soft,
+                paddingHorizontal: 12,
+                paddingVertical: 6,
+                borderRadius: 999,
+              }}
             >
-              <Text className="text-sm font-medium text-[#1E90FF]">
+              <Text
+                style={{ color: THEME.deep, fontWeight: '700', fontSize: 13 }}
+              >
                 + 가격 등록
               </Text>
             </Pressable>
           </View>
           {ing.priceHistory.length === 0 ? (
-            <View className="rounded-xl border border-dashed border-gray-200 p-6">
-              <Text className="text-center text-sm text-gray-500">
+            <View
+              style={{
+                borderRadius: 16,
+                borderWidth: 1.5,
+                borderStyle: 'dashed',
+                borderColor: THEME.ring,
+                padding: 24,
+                alignItems: 'center',
+              }}
+            >
+              <Text className="text-sm text-gray-500">
                 기록된 이력이 없어요
               </Text>
             </View>
           ) : (
-            <View className="overflow-hidden rounded-xl border border-gray-200">
+            <View
+              style={{
+                backgroundColor: '#FFFFFF',
+                borderRadius: 16,
+                borderWidth: 1,
+                borderColor: THEME.ring,
+                overflow: 'hidden',
+              }}
+            >
               {ing.priceHistory.map((h, i, arr) => {
                 const older = i + 1 < arr.length ? arr[i + 1] : null
                 const delta = older ? h.package_price - older.package_price : 0
@@ -187,7 +258,7 @@ export default function IngredientDetail(): JSX.Element {
                       <Text className="text-xs text-gray-500">
                         {h.recorded_at}
                       </Text>
-                      <Text className="mt-0.5 text-sm font-medium text-gray-900">
+                      <Text className="mt-0.5 text-sm font-bold text-gray-900">
                         {Math.round(h.package_price).toLocaleString()}원 /{' '}
                         {h.package_amount.toLocaleString()}g
                       </Text>
@@ -197,7 +268,7 @@ export default function IngredientDetail(): JSX.Element {
                         <Text className="text-xs text-gray-400">-</Text>
                       ) : (
                         <Text
-                          className={`text-xs font-medium ${
+                          className={`text-xs font-bold ${
                             delta > 0 ? 'text-red-500' : 'text-green-600'
                           }`}
                         >
@@ -219,9 +290,16 @@ export default function IngredientDetail(): JSX.Element {
         <View className="mx-5 mb-2">
           <Pressable
             onPress={handleDelete}
-            className="items-center rounded-xl border border-red-200 bg-white py-3"
+            style={{
+              alignItems: 'center',
+              paddingVertical: 14,
+              borderRadius: 14,
+              borderWidth: 1,
+              borderColor: '#FECACA',
+              backgroundColor: '#FFF1F2',
+            }}
           >
-            <Text className="text-base font-semibold text-red-500">
+            <Text style={{ color: '#BE123C', fontWeight: '700', fontSize: 15 }}>
               재료 삭제
             </Text>
           </Pressable>
@@ -244,7 +322,14 @@ export default function IngredientDetail(): JSX.Element {
             onPress={() => setPriceModalOpen(false)}
           />
           <View className="rounded-t-3xl bg-white p-6">
-            <Text className="mb-4 text-lg font-semibold text-gray-900">
+            <Text
+              style={{
+                marginBottom: 16,
+                fontSize: 17,
+                fontWeight: '700',
+                color: THEME.deep,
+              }}
+            >
               새 가격 등록
             </Text>
             <Text className="mb-2 text-sm text-gray-500">
@@ -255,24 +340,43 @@ export default function IngredientDetail(): JSX.Element {
               value={newPrice}
               onChangeText={setNewPrice}
               placeholder={String(Math.round(ing.package_price))}
-              placeholderTextColor="#9CA3AF"
-              className="rounded-xl border border-gray-200 px-4 py-3 text-base text-gray-900"
+              placeholderTextColor="#C8B074"
+              style={{
+                borderRadius: 14,
+                borderWidth: 1,
+                borderColor: THEME.ring,
+                paddingHorizontal: 16,
+                paddingVertical: 12,
+                fontSize: 15,
+                color: '#1A1A2E',
+              }}
             />
             <View className="mt-5 flex-row" style={{ gap: 12 }}>
               <Pressable
                 onPress={() => setPriceModalOpen(false)}
-                className="flex-1 items-center rounded-xl border border-gray-200 py-3"
+                style={{
+                  flex: 1,
+                  alignItems: 'center',
+                  paddingVertical: 12,
+                  borderRadius: 14,
+                  borderWidth: 1,
+                  borderColor: '#E5E7EB',
+                }}
               >
                 <Text className="text-base text-gray-700">취소</Text>
               </Pressable>
               <Pressable
                 onPress={handleNewPriceSubmit}
                 disabled={submitting}
-                className={`flex-1 items-center rounded-xl py-3 ${
-                  submitting ? 'bg-gray-300' : 'bg-[#1E90FF]'
-                }`}
+                style={{
+                  flex: 1,
+                  alignItems: 'center',
+                  paddingVertical: 12,
+                  borderRadius: 14,
+                  backgroundColor: submitting ? '#E5E7EB' : THEME.deep,
+                }}
               >
-                <Text className="text-base font-semibold text-white">
+                <Text className="text-base font-bold text-white">
                   {submitting ? '저장 중...' : '저장'}
                 </Text>
               </Pressable>
@@ -298,7 +402,7 @@ function InfoRow({ label, value, isFirst }: InfoRowProps): JSX.Element {
       }`}
     >
       <Text className="text-sm text-gray-500">{label}</Text>
-      <Text className="text-sm font-medium text-gray-900">{value}</Text>
+      <Text className="text-sm font-bold text-gray-900">{value}</Text>
     </View>
   )
 }
