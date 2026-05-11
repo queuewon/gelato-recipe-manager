@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router'
 import { useEffect, type JSX } from 'react'
-import { Pressable, ScrollView, Text, View } from 'react-native'
+import { Image, Pressable, ScrollView, Text, View } from 'react-native'
 import { PASTEL_THEMES, type PastelTheme } from '../../constants/colors'
 import { useChecklistStore } from '../../store/checklistStore'
 import type { ChecklistStatus } from '../../types'
@@ -111,6 +111,11 @@ export default function Home(): JSX.Element {
           </Text>
           <Text className="text-sm text-gray-500">Recipe Manager</Text>
         </View>
+        <Image
+          source={require('../../assets/indigo-gelato-heart.jpg')}
+          style={{ width: 56, height: 56 }}
+          resizeMode="contain"
+        />
       </View>
 
       {/* Greeting */}

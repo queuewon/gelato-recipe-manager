@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router'
 import { useEffect, useState, type JSX } from 'react'
 import {
   Alert,
+  Image,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -292,8 +293,13 @@ export default function Settings(): JSX.Element {
           </Pressable>
         </Section>
 
-        <View className="mt-2 items-center">
-          <Text className="text-xs text-gray-400">앱 버전 {APP_VERSION}</Text>
+        <View className="mt-4 items-center">
+          <Image
+            source={require('../../../assets/indigo-gelato-mascot.jpg')}
+            style={{ width: 120, height: 120 }}
+            resizeMode="contain"
+          />
+          <Text className="mt-1 text-xs text-gray-400">앱 버전 {APP_VERSION}</Text>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
