@@ -11,6 +11,7 @@ import {
   TextInput,
   View,
 } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { PASTEL_THEMES } from '../../constants/colors'
 import { useCategoryStore } from '../../store/categoryStore'
 import { useIngredientStore } from '../../store/ingredientStore'
@@ -83,6 +84,7 @@ export function RecipeForm({
   const loadCategories = useCategoryStore((s) => s.loadCategories)
   const addRecipeCategory = useCategoryStore((s) => s.addRecipeCategory)
 
+  const insets = useSafeAreaInsets()
   const [name, setName] = useState(initial?.name ?? '')
   const [category, setCategory] = useState<string>(
     initial?.base_category ?? '',
@@ -468,12 +470,13 @@ export function RecipeForm({
               borderBottomColor: THEME.ring,
               paddingHorizontal: 20,
               paddingVertical: 16,
+              paddingTop: insets.top + 16,
             }}
           >
             <Text style={{ fontSize: 17, fontWeight: '700', color: THEME.deep }}>
               재료 선택
             </Text>
-            <Pressable onPress={() => setModalOpen(false)}>
+            <Pressable onPress={() => setModalOpen(false)} hitSlop={12}>
               <Text className="text-base text-gray-700">닫기</Text>
             </Pressable>
           </View>
