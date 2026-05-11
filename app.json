@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Indigo Gelato",
-    "slug": "gelato-app",
+    "slug": "indigo-gelato",
     "scheme": "gelato",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -37,7 +37,7 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "6b98a0e9-a75c-4d4d-9703-ec2e8b79fb37"
+        "projectId": "fbaf146a-528f-4efd-b6fc-585e07fe56d8"
       }
     },
     "owner": "oneiricxel"
